@@ -38,6 +38,12 @@ type IEnumerable[T any] interface {
 	// FirstBy returns the first element in a sequence that satisfies a specified condition
 	FirstBy(predicate func(T) bool) T
 
+	// FirstOrDefault returns the first element of a sequence, or a specified default value if the sequence contains no elements.
+	FirstOrDefault(defaultValue T) T
+
+	// FirstOrDefaultBy returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found
+	FirstOrDefaultBy(predicate func(T) bool, defaultValue T) T
+
 	//GetEnumerator() IEnumerator
 	//Group(keySelector interface{}) enumerable
 	//GroupBy(fieldName string) enumerable
@@ -92,13 +98,16 @@ type IEnumerable[T any] interface {
 	// FirstSafe returns the first element of a sequence, with error if sequence contains no element
 	FirstSafe() (T, error)
 
-	// FirstSafeBy returns the first element in a sequence that satisfies a specified condition, with error if sequence contains no element
+	// FirstSafeBy returns the first element in a sequence that satisfies a specified condition, with error if sequence contains no element or predicate is nil
 	FirstSafeBy(predicate func(T) bool) (T, error)
+
+	// FirstOrDefaultSafeBy returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found, with error if predicate is nil
+	FirstOrDefaultSafeBy(predicate func(T) bool, defaultValue T) (T, error)
 
 	// LastSafe returns the last element of a sequence, with error if sequence contains no element
 	LastSafe() (T, error)
 
-	// LastSafeBy returns the last element in a sequence that satisfies a specified condition, with error if sequence contains no element
+	// LastSafeBy returns the last element in a sequence that satisfies a specified condition, with error if sequence contains no element or predicate is nil
 	LastSafeBy(predicate func(T) bool) (T, error)
 
 	// Extra comparators
