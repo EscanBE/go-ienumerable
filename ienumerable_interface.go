@@ -31,7 +31,13 @@ type IEnumerable[T any] interface {
 	//FindBy(fields map[string]interface{}) IEnumerable
 	//FindIndex(predicate interface{}) int
 	//FindIndexBy(fields map[string]interface{}) int
-	//First() IEnumerable
+
+	// First returns the first element of a sequence
+	First() T
+
+	// FirstBy returns the first element in a sequence that satisfies a specified condition
+	FirstBy(predicate func(T) bool) T
+
 	//GetEnumerator() IEnumerator
 	//Group(keySelector interface{}) enumerable
 	//GroupBy(fieldName string) enumerable
@@ -74,6 +80,14 @@ type IEnumerable[T any] interface {
 
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
+
+	// Extra
+
+	// FirstSafe returns the first element of a sequence, with error if sequence contains no element
+	FirstSafe() (T, error)
+
+	// FirstSafeBy returns the first element in a sequence that satisfies a specified condition, with error if sequence contains no element
+	FirstSafeBy(predicate func(T) bool) (T, error)
 
 	// Extra comparators
 

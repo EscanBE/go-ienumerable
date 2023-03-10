@@ -7,6 +7,8 @@ func (src *enumerable[T]) Any() bool {
 
 func (src *enumerable[T]) AnyBy(predicate func(T) bool) bool {
 	src.assertSrcNonNil()
+	src.assertPredicateNonNil(predicate)
+
 	if len(src.data) < 1 {
 		return false
 	}

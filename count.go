@@ -7,6 +7,8 @@ func (src *enumerable[T]) Count() int {
 
 func (src *enumerable[T]) CountBy(predicate func(T) bool) int {
 	src.assertSrcNonNil()
+	src.assertPredicateNonNil(predicate)
+
 	if len(src.data) < 1 {
 		return 0
 	}

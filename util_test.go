@@ -97,3 +97,12 @@ func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, e IEnumerable
 	assert.Equalf(t, c.hasEqualsComparator, cast.equalsComparator != nil, "equals comparator state has changed, expect %s, but got %s", exists(c.hasEqualsComparator), exists(cast.equalsComparator != nil))
 	assert.Equalf(t, c.hasLessComparator, cast.lessComparator != nil, "less comparator state has changed, expect %s, but got %s", exists(c.hasLessComparator), exists(cast.lessComparator != nil))
 }
+
+func deferWantPanicDepends(t *testing.T, wantPanic bool) {
+	err := recover()
+	if err == nil && wantPanic {
+		t.Errorf("expect panic")
+	} else if err != nil && !wantPanic {
+		t.Errorf("expect not panic")
+	}
+}
