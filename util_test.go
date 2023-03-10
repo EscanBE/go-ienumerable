@@ -19,6 +19,12 @@ func createEmptyEnumerable() IEnumerable[any] {
 	}
 }
 
+func createEmptyIntEnumerable() IEnumerable[int] {
+	return &enumerable[int]{
+		data: make([]int, 0),
+	}
+}
+
 func createIntEnumerable(from, to int) IEnumerable[int] {
 	if from > to {
 		panic(fmt.Errorf("createIntEnumerable from %d > to %d", from, to))
@@ -27,7 +33,7 @@ func createIntEnumerable(from, to int) IEnumerable[int] {
 	for i := from; i <= to; i++ {
 		data = append(data, i)
 	}
-	return NewIEnumerable[int](data...)
+	return injectIntComparators(NewIEnumerable[int](data...))
 }
 
 func createRandomIntEnumerable(size int) IEnumerable[int] {
@@ -35,7 +41,17 @@ func createRandomIntEnumerable(size int) IEnumerable[int] {
 	for i := 0; i < size; i++ {
 		data[i] = rand.Int()
 	}
-	return NewIEnumerable[int](data...)
+	return injectIntComparators(NewIEnumerable[int](data...))
+}
+
+func injectIntComparators(e IEnumerable[int]) IEnumerable[int] {
+	return e.
+		WithLessComparator(func(i1, i2 int) bool {
+			return i1 < i2
+		}).
+		WithEqualsComparator(func(i1, i2 int) bool {
+			return i1 == i2
+		})
 }
 
 type copiedOriginal[T comparable] struct {
@@ -54,19 +70,21 @@ func backupForAssetUnchanged[T comparable](e IEnumerable[T]) copiedOriginal[T] {
 }
 
 func (c copiedOriginal[T]) assertUnchanged(t *testing.T, e IEnumerable[T]) {
-	cast := e.(*enumerable[T])
-	if len(c.data) != len(cast.data) {
-		assert.Lenf(t, cast.data, len(c.data), "data of source IEnumerable has been changed, expect len %d but changed to %d", len(c.data), len(cast.data))
+	eData := e.exposeData()
+	if len(c.data) != len(eData) {
+		assert.Lenf(t, eData, len(c.data), "data of source IEnumerable has been changed, expect len %d but changed to %d", len(c.data), len(eData))
 	} else if len(c.data) > 0 {
 		for i1, d1 := range c.data {
-			d2 := cast.data[i1]
+			d2 := eData[i1]
 			assert.Equalf(t, d1, d2, "data of source IEnumerable has been changed, expect element at [%d] = %d but changed to %d", i1, d1, d2)
 		}
 	}
 
-	if c.hasLessComparator != (cast.lessComparator != nil) {
+	c.assertUnchangedIgnoreData(t, e)
+}
 
-	}
+func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, e IEnumerable[T]) {
+	cast := e.(*enumerable[T])
 
 	exists := func(b bool) string {
 		if b {

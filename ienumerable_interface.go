@@ -64,8 +64,9 @@ type IEnumerable[T any] interface {
 	//UniqBy(fieldName string) IEnumerable
 	//Value(res interface{})
 	//Values() IEnumerable
-	//Where(predicate interface{}) IEnumerable
-	//WhereBy(fields map[string]interface{}) IEnumerable
+
+	// Where filters a sequence of values based on a predicate.
+	Where(predicate func(T) bool) IEnumerable[T]
 
 	// Extra comparators
 
@@ -78,4 +79,8 @@ type IEnumerable[T any] interface {
 	// into this IEnumerable which automatically serves for methods like...
 	// TODO
 	WithLessComparator(less func(d1, d2 T) bool) IEnumerable[T]
+
+	// internal APIs
+
+	exposeData() []T
 }

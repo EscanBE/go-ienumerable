@@ -1,12 +1,16 @@
 package go_ienumerable
 
+func (src *enumerable[T]) exposeData() []T {
+	return src.data
+}
+
 func (src *enumerable[T]) assertSrcNonNil() {
 	if src == nil {
 		panic("src is nil")
 	}
 }
 
-func (src *enumerable[T]) copyExceptData() IEnumerable[T] {
+func (src *enumerable[T]) copyExceptData() *enumerable[T] {
 	return &enumerable[T]{
 		data:             nil,
 		equalsComparator: src.equalsComparator,
@@ -14,7 +18,7 @@ func (src *enumerable[T]) copyExceptData() IEnumerable[T] {
 	}
 }
 
-func (src *enumerable[T]) withData(data []T) IEnumerable[T] {
+func (src *enumerable[T]) withData(data []T) *enumerable[T] {
 	src.data = data
 	return src
 }
