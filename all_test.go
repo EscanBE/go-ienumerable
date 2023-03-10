@@ -12,13 +12,17 @@ func Test_enumerable_All(t *testing.T) {
 	assert.True(t, createEmptyEnumerable().All(func(t any) bool {
 		return true
 	}))
+
 	i1 := createIntEnumerable(1, 3)
+	bi1 := backupForAssetUnchanged(i1)
 	assert.True(t, i1.All(func(t int) bool {
 		return t < 4
 	}))
 	assert.False(t, i1.All(func(t int) bool {
 		return t >= 2
 	}))
+	bi1.assertUnchanged(t, i1)
+
 	i2 := createRandomIntEnumerable(10)
 	assert.True(t, i2.All(func(t int) bool {
 		return t >= 0

@@ -8,12 +8,17 @@ type IEnumerable[T any] interface {
 	// All returns true if all elements matches with predicate, also true when empty
 	All(predicate func(T) bool) bool
 
-	//AllBy(fields map[string]interface{}) bool
-	//Any(predicate interface{}) bool
-	//AnyBy(fields map[string]interface{}) bool
+	// Any determines whether a sequence contains any elements.
+	Any() bool
 
-	// Count returns the number of the elements of the IEnumerable
+	// AnyBy determines whether any element of a sequence satisfies a condition.
+	AnyBy(predicate func(T) bool) bool
+
+	// Count returns the number of elements in a sequence.
 	Count() int
+
+	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
+	CountBy(predicate func(T) bool) int
 
 	//Distinct(selector interface{}) IEnumerable
 	//DistinctBy(fieldName string) IEnumerable
@@ -61,10 +66,6 @@ type IEnumerable[T any] interface {
 	//Values() IEnumerable
 	//Where(predicate interface{}) IEnumerable
 	//WhereBy(fields map[string]interface{}) IEnumerable
-
-	// Extra
-
-	CountBy(predicate func(T) bool) int
 
 	// Extra comparators
 
