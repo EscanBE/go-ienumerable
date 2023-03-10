@@ -1,7 +1,6 @@
 package go_ienumerable
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -64,8 +63,10 @@ func Test_enumerable_FirstSafeBy_FirstBy(t *testing.T) {
 
 			if tt.wantErr {
 				defer deferWantPanicDepends(t, true)
-
 				_ = tt.src.FirstBy(tt.predicate)
+			} else if err == nil {
+				gotResult = tt.src.FirstBy(tt.predicate)
+				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 			}
 		})
 	}
@@ -108,8 +109,10 @@ func Test_enumerable_FirstSafe_First(t *testing.T) {
 
 			if tt.wantErr {
 				defer deferWantPanicDepends(t, true)
-				fmt.Println("reach")
 				_ = tt.src.First()
+			} else if err == nil {
+				gotResult = tt.src.First()
+				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 			}
 		})
 	}
