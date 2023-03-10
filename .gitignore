@@ -1,3 +1,9 @@
+.idea/
+.vs/
+~DS_Store
+*.swp
+*.log
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
