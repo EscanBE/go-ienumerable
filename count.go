@@ -1,16 +1,18 @@
 package go_ienumerable
 
-func (e *enumerable[T]) Count() int {
-	return len(e.data)
+func (src *enumerable[T]) Count() int {
+	src.assertSrcNonNil()
+	return len(src.data)
 }
 
-func (e *enumerable[T]) CountBy(predicate func(T) bool) int {
-	if len(e.data) < 1 {
+func (src *enumerable[T]) CountBy(predicate func(T) bool) int {
+	src.assertSrcNonNil()
+	if len(src.data) < 1 {
 		return 0
 	}
 
 	count := 0
-	for _, t := range e.data {
+	for _, t := range src.data {
 		if predicate(t) {
 			count++
 		}

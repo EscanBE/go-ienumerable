@@ -7,6 +7,9 @@ var _ IEnumerable[any] = &enumerable[any]{}
 // Contract: in method implementation, the inner array data would not be changed in source enumerable, only perform a soft copy of the data array
 type enumerable[T any] struct {
 	data []T
+
+	equalsComparator func(d1, d2 T) bool
+	lessComparator   func(d1, d2 T) bool
 }
 
 func NewIEnumerable[T any](data ...T) IEnumerable[T] {

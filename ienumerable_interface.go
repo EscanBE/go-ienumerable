@@ -4,11 +4,17 @@ type IEnumerable[T any] interface {
 	// C#
 
 	//Aggregate(fn interface{}, memo interface{}) IEnumerable
-	//All(predicate interface{}) bool
+
+	// All returns true if all elements matches with predicate, also true when empty
+	All(predicate func(T) bool) bool
+
 	//AllBy(fields map[string]interface{}) bool
 	//Any(predicate interface{}) bool
 	//AnyBy(fields map[string]interface{}) bool
+
+	// Count returns the number of the elements of the IEnumerable
 	Count() int
+
 	//Distinct(selector interface{}) IEnumerable
 	//DistinctBy(fieldName string) IEnumerable
 	//Each(action interface{})
@@ -46,7 +52,7 @@ type IEnumerable[T any] interface {
 	//SelectManyBy(fieldName string) IEnumerable
 	//Sort(selector interface{}) IEnumerable
 	//SortBy(fieldName string) IEnumerable
-	//Size() int
+
 	//Skip(count int) IEnumerable
 	//Take(count int) IEnumerable
 	//Uniq(selector interface{}) IEnumerable
@@ -59,4 +65,16 @@ type IEnumerable[T any] interface {
 	// Extra
 
 	CountBy(predicate func(T) bool) int
+
+	// Extra comparators
+
+	// WithEqualsComparator the equalsComparator will be embedded
+	// into this IEnumerable which automatically serves for methods like...
+	// TODO
+	WithEqualsComparator(equalsComparable func(d1, d2 T) bool) IEnumerable[T]
+
+	// WithLessComparator the lessComparator will be embedded
+	// into this IEnumerable which automatically serves for methods like...
+	// TODO
+	WithLessComparator(less func(d1, d2 T) bool) IEnumerable[T]
 }
