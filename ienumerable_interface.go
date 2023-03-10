@@ -58,7 +58,9 @@ type IEnumerable[T any] interface {
 	//Sort(selector interface{}) IEnumerable
 	//SortBy(fieldName string) IEnumerable
 
-	//Skip(count int) IEnumerable
+	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
+	Skip(count int) IEnumerable[T]
+
 	//Take(count int) IEnumerable
 	//Uniq(selector interface{}) IEnumerable
 	//UniqBy(fieldName string) IEnumerable
