@@ -72,6 +72,9 @@ type IEnumerable[T any] interface {
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
 
+	// ToArray creates an array from a IEnumerable[T].
+	ToArray() []T
+
 	// Extra comparators
 
 	// WithEqualsComparator the equalsComparator will be embedded
