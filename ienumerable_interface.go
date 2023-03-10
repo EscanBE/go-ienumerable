@@ -61,7 +61,9 @@ type IEnumerable[T any] interface {
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
 
-	//Take(count int) IEnumerable
+	// Take returns a specified number of contiguous elements from the start of a sequence.
+	Take(count int) IEnumerable[T]
+
 	//Uniq(selector interface{}) IEnumerable
 	//UniqBy(fieldName string) IEnumerable
 	//Value(res interface{})
