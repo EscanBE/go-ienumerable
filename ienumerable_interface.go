@@ -57,6 +57,12 @@ type IEnumerable[T any] interface {
 	// LastBy returns the last element in a sequence that satisfies a specified condition
 	LastBy(predicate func(T) bool) T
 
+	// LastOrDefault returns the last element of a sequence, or a specified default value if the sequence contains no elements.
+	LastOrDefault(defaultValue T) T
+
+	// LastOrDefaultBy returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
+	LastOrDefaultBy(predicate func(T) bool, defaultValue T) T
+
 	//Map(selector interface{}) IEnumerable
 	//MapBy(fieldName string) IEnumerable
 	//MapMany(selector interface{}) IEnumerable
@@ -103,6 +109,9 @@ type IEnumerable[T any] interface {
 
 	// FirstOrDefaultSafeBy returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found, with error if predicate is nil
 	FirstOrDefaultSafeBy(predicate func(T) bool, defaultValue T) (T, error)
+
+	// LastOrDefaultSafeBy returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found, with error if predicate is nil
+	LastOrDefaultSafeBy(predicate func(T) bool, defaultValue T) (T, error)
 
 	// LastSafe returns the last element of a sequence, with error if sequence contains no element
 	LastSafe() (T, error)
