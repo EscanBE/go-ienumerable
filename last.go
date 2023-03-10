@@ -2,23 +2,23 @@ package go_ienumerable
 
 import "fmt"
 
-func (src *enumerable[T]) First() T {
-	result, err := src.FirstSafe()
+func (src *enumerable[T]) Last() T {
+	result, err := src.LastSafe()
 	if err != nil {
 		panic(err)
 	}
 	return result
 }
 
-func (src *enumerable[T]) FirstBy(predicate func(T) bool) T {
-	result, err := src.FirstSafeBy(predicate)
+func (src *enumerable[T]) LastBy(predicate func(T) bool) T {
+	result, err := src.LastSafeBy(predicate)
 	if err != nil {
 		panic(err)
 	}
 	return result
 }
 
-func (src *enumerable[T]) FirstSafe() (result T, err error) {
+func (src *enumerable[T]) LastSafe() (result T, err error) {
 	src.assertSrcNonNil()
 
 	if len(src.data) < 1 {
@@ -26,11 +26,11 @@ func (src *enumerable[T]) FirstSafe() (result T, err error) {
 		return
 	}
 
-	result = src.data[0]
+	result = src.data[len(src.data)-1]
 	return
 }
 
-func (src *enumerable[T]) FirstSafeBy(predicate func(T) bool) (result T, err error) {
+func (src *enumerable[T]) LastSafeBy(predicate func(T) bool) (result T, err error) {
 	src.assertSrcNonNil()
 	if predicate == nil {
 		err = getErrorNilPredicate()
@@ -42,9 +42,9 @@ func (src *enumerable[T]) FirstSafeBy(predicate func(T) bool) (result T, err err
 		return
 	}
 
-	for _, d := range src.data {
-		if predicate(d) {
-			result = d
+	for i := len(src.data) - 1; i >= 0; i-- {
+		if predicate(src.data[i]) {
+			result = src.data[i]
 			return
 		}
 	}

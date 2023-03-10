@@ -44,7 +44,13 @@ type IEnumerable[T any] interface {
 	//Index(keySelector interface{}) IEnumerable
 	//IndexBy(fieldName string) IEnumerable
 	//Keys() IEnumerable
-	//Last() IEnumerable
+
+	// Last returns the last element of a sequence
+	Last() T
+
+	// LastBy returns the last element in a sequence that satisfies a specified condition
+	LastBy(predicate func(T) bool) T
+
 	//Map(selector interface{}) IEnumerable
 	//MapBy(fieldName string) IEnumerable
 	//MapMany(selector interface{}) IEnumerable
@@ -88,6 +94,12 @@ type IEnumerable[T any] interface {
 
 	// FirstSafeBy returns the first element in a sequence that satisfies a specified condition, with error if sequence contains no element
 	FirstSafeBy(predicate func(T) bool) (T, error)
+
+	// LastSafe returns the last element of a sequence, with error if sequence contains no element
+	LastSafe() (T, error)
+
+	// LastSafeBy returns the last element in a sequence that satisfies a specified condition, with error if sequence contains no element
+	LastSafeBy(predicate func(T) bool) (T, error)
 
 	// Extra comparators
 
