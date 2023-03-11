@@ -6,6 +6,8 @@ import (
 )
 
 func Test_IEnumerator(t *testing.T) {
+	assert.Empty(t, Empty[string]().exposeData())
+
 	testEnumerator[int](t, NewIEnumerator(2, 3, 4, 5, 6))
 }
 

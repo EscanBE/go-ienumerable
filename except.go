@@ -11,7 +11,7 @@ func (src *enumerable[T]) Except(second IEnumerable[T]) IEnumerable[T] {
 	return src.ExceptBy(second, src.equalityComparer)
 }
 
-func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityComparer func(t1, t2 T) bool) IEnumerable[T] {
+func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
 	src.assertSrcNonNil()
 	src.assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)

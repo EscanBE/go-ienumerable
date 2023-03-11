@@ -12,8 +12,16 @@ type enumerable[T any] struct {
 	lessComparer     func(d1, d2 T) bool
 }
 
+// NewIEnumerable returns an IEnumerable with the same time as data elements
 func NewIEnumerable[T any](data ...T) IEnumerable[T] {
 	return &enumerable[T]{
 		data: copySlice(data),
+	}
+}
+
+// Empty returns an empty IEnumerable with specific type
+func Empty[T any]() IEnumerable[T] {
+	return &enumerable[T]{
+		data: make([]T, 0),
 	}
 }

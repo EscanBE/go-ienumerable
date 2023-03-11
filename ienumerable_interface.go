@@ -20,9 +20,8 @@ type IEnumerable[T any] interface {
 	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
 	CountBy(predicate func(T) bool) int
 
-	//Distinct(selector interface{}) IEnumerable
-	//DistinctBy(fieldName string) IEnumerable
-	//Each(action interface{})
+	//Distinct() IEnumerable[T]
+	//DistinctBy(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
 	// Except produces the set difference of two sequences.
 	//
@@ -31,14 +30,16 @@ type IEnumerable[T any] interface {
 
 	// ExceptBy produces the set difference of two sequences by using the
 	// specified equality comparer to compare values.
-	ExceptBy(second IEnumerable[T], equalsComparer func(d1, d2 T) bool) IEnumerable[T]
+	ExceptBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
-	//Filter(predicate interface{}) IEnumerable
-	//FilterBy(fields map[string]interface{}) IEnumerable
-	//Find(predicate interface{}) IEnumerable
-	//FindBy(fields map[string]interface{}) IEnumerable
-	//FindIndex(predicate interface{}) int
-	//FindIndexBy(fields map[string]interface{}) int
+	// Union produces the set union of two sequences.
+	//
+	// Require: equality comparer provided via WithEqualsComparer
+	// Union(second IEnumerable[T]) IEnumerable[T]
+
+	// UnionBy produces the set union of two sequences by using the
+	// specified equality comparer to compare values.
+	// UnionBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
 	// First returns the first element of a sequence
 	First() T
@@ -55,11 +56,7 @@ type IEnumerable[T any] interface {
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]
 
-	//Group(keySelector interface{}) enumerable
 	//GroupBy(fieldName string) enumerable
-	//Index(keySelector interface{}) IEnumerable
-	//IndexBy(fieldName string) IEnumerable
-	//Keys() IEnumerable
 
 	// Last returns the last element of a sequence
 	Last() T
@@ -72,12 +69,6 @@ type IEnumerable[T any] interface {
 
 	// LastOrDefaultBy returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
 	LastOrDefaultBy(predicate func(T) bool, defaultValue T) T
-
-	//Map(selector interface{}) IEnumerable
-	//MapBy(fieldName string) IEnumerable
-	//MapMany(selector interface{}) IEnumerable
-	//MapManyBy(fieldName string) IEnumerable
-	//Object() IEnumerable
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
@@ -97,28 +88,17 @@ type IEnumerable[T any] interface {
 	// specified less comparer to compare values.
 	OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T]
 
-	//Reduce(fn interface{}, memo interface{}) IEnumerable
-	//Reject(predicate interface{}) IEnumerable
-	//RejectBy(fields map[string]interface{}) IEnumerable
-
 	// Reverse inverts the order of the elements in a sequence.
 	Reverse() IEnumerable[T]
 
 	//Select(selector interface{}) IEnumerable
-	//SelectBy(fieldName string) IEnumerable
 	//SelectMany(selector interface{}) IEnumerable
-	//SelectManyBy(fieldName string) IEnumerable
-	//Sort(selector interface{}) IEnumerable
-	//SortBy(fieldName string) IEnumerable
 
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
 
 	// Take returns a specified number of contiguous elements from the start of a sequence.
 	Take(count int) IEnumerable[T]
-
-	//Uniq(selector interface{}) IEnumerable
-	//UniqBy(fieldName string) IEnumerable
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
@@ -150,7 +130,7 @@ type IEnumerable[T any] interface {
 
 	// WithEqualsComparer the equality comparer, to indicate if 2 input values are equals, will be embedded
 	// into this IEnumerable which automatically serves for methods like:
-	// Except
+	// Except, Union, Distinct
 	WithEqualsComparer(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
 	// WithLessComparer the less comparer, to indicate if left input is lower than right input, will be embedded
