@@ -58,10 +58,6 @@ func getErrorNilSelector() error {
 	return fmt.Errorf("selector is nil")
 }
 
-func (src *enumerable[T]) copy() IEnumerable[T] {
-	return src.copyExceptData().withData(copySlice(src.data))
-}
-
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {
 	if src == nil {
 		return nil

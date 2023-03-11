@@ -66,4 +66,12 @@ func Test_enumerable_Select(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
+
+	t.Run("nil selector", func(t *testing.T) {
+		eSrc := NewIEnumerable[int8]().WithDefaultComparers()
+
+		defer deferWantPanicDepends(t, true)
+
+		_ = eSrc.Select(nil)
+	})
 }

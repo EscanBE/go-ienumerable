@@ -119,3 +119,83 @@ func deferWantPanicDepends(t *testing.T, wantPanic bool) {
 		t.Errorf("expect not panic but got %v", err)
 	}
 }
+
+func Test_enumerable_copyExceptData(t *testing.T) {
+	t.Run("copy all except data", func(t *testing.T) {
+		e := new(enumerable[int])
+		e.data = []int{2, 3}
+		e.equalityComparer = func(v1, v2 int) bool {
+			return v1 == v2
+		}
+		e.lessComparer = func(v1, v2 int) bool {
+			return v1 < v2
+		}
+
+		copied := e.copyExceptData()
+		assert.Len(t, copied.data, 0)
+		assert.NotNil(t, copied.equalityComparer)
+		assert.NotNil(t, copied.lessComparer)
+	})
+
+	t.Run("copy nil yields nil", func(t *testing.T) {
+		e := new(enumerable[int])
+		e = nil
+
+		copied := e.copyExceptData()
+
+		assert.Nil(t, copied)
+	})
+}
+
+func Test_enumerable_withData(t *testing.T) {
+	t.Run("data copied", func(t *testing.T) {
+		e := new(enumerable[int])
+		e.data = []int{2, 3}
+
+		copied := e.copyExceptData().withData(e.data)
+		assert.Len(t, copied.data, 2)
+	})
+
+	t.Run("copy nil yields nil", func(t *testing.T) {
+		e := new(enumerable[int])
+		e = nil
+
+		copied := e.copyExceptData().withData([]int{})
+
+		assert.Nil(t, copied)
+	})
+}
+
+func Test_enumerable_withEmptyData(t *testing.T) {
+	t.Run("data copied", func(t *testing.T) {
+		e := new(enumerable[int])
+		e.data = []int{2, 3}
+
+		copied := e.copyExceptData().withEmptyData()
+		assert.Len(t, copied.data, 0)
+	})
+
+	t.Run("copy nil yields nil", func(t *testing.T) {
+		e := new(enumerable[int])
+		e = nil
+
+		copied := e.copyExceptData().withEmptyData()
+
+		assert.Nil(t, copied)
+	})
+}
+
+func Test_enumerable_assertSrcNonNil(t *testing.T) {
+	e := new(enumerable[int])
+	e = nil
+
+	defer deferWantPanicDepends(t, true)
+	e.assertSrcNonNil()
+}
+
+func Test_enumerable_assertPredicateNonNil(t *testing.T) {
+	e := new(enumerable[int])
+
+	defer deferWantPanicDepends(t, true)
+	e.assertPredicateNonNil(nil)
+}

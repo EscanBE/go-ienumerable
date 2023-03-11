@@ -147,13 +147,7 @@ func (src *enumerable[T]) WithDefaultComparers() IEnumerable[T] {
 		src.lessComparer = func(v1, v2 T) bool {
 			b1 := any(v1).(bool)
 			b2 := any(v2).(bool)
-			if b1 == b2 {
-				return false
-			}
-			if b1 && !b2 {
-				return false
-			}
-			return true
+			return !b1 && b2
 		}
 		break
 	default:
@@ -172,11 +166,6 @@ const (
 func panicRequire(require requireWithExtraFunc) {
 	requiresName := getRequireName(require)
 	panic(fmt.Errorf("the following comparer must be set: [%s]", strings.Join(requiresName, ",")))
-}
-
-func panicRequireEither(require requireWithExtraFunc) {
-	requiresName := getRequireName(require)
-	panic(fmt.Errorf("either of the following comparers must be set: [%s]", strings.Join(requiresName, ",")))
 }
 
 func getRequireName(require requireWithExtraFunc) []string {

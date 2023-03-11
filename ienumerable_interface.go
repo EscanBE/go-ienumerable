@@ -93,7 +93,7 @@ type IEnumerable[T any] interface {
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types is required.
 	//
-	// There are some Unbox* utilities methods added into this Golang port like:
+	// There are some Unbox* utility methods added into this Golang port like:
 	// UnboxInt8, UnboxString, UnboxBool, ... so can do combo like example:
 	//
 	// src.Select(x => x + 1).UnboxInt() and will result IEnumerable[int]
@@ -286,5 +286,4 @@ type IEnumerable[T any] interface {
 
 	exposeData() []T
 	len() int
-	copy() IEnumerable[T]
 }
