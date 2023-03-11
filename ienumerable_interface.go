@@ -82,8 +82,10 @@ type IEnumerable[T any] interface {
 	//Reduce(fn interface{}, memo interface{}) IEnumerable
 	//Reject(predicate interface{}) IEnumerable
 	//RejectBy(fields map[string]interface{}) IEnumerable
-	//Reverse(selector interface{}) IEnumerable
-	//ReverseBy(fieldName string) IEnumerable
+
+	// Reverse inverts the order of the elements in a sequence.
+	Reverse() IEnumerable[T]
+
 	//Select(selector interface{}) IEnumerable
 	//SelectBy(fieldName string) IEnumerable
 	//SelectMany(selector interface{}) IEnumerable
