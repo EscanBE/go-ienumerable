@@ -193,6 +193,13 @@ func Test_enumerable_assertSrcNonNil(t *testing.T) {
 	e.assertSrcNonNil()
 }
 
+func Test_enumerable_assertSrcNonEmpty(t *testing.T) {
+	e := new(enumerable[int])
+
+	defer deferWantPanicDepends(t, true)
+	e.assertSrcNonEmpty()
+}
+
 func Test_enumerable_assertPredicateNonNil(t *testing.T) {
 	e := new(enumerable[int])
 
@@ -215,5 +222,23 @@ func Test_enumerable_assertSelectorNonNil(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 
 		e.assertArraySelectorNonNil(nil)
+	})
+}
+
+func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
+	t.Run("aggregate func", func(t *testing.T) {
+		e := new(enumerable[int])
+
+		defer deferWantPanicDepends(t, true)
+
+		e.assertAggregateFuncNonNil(nil)
+	})
+
+	t.Run("aggregate any seed func", func(t *testing.T) {
+		e := new(enumerable[int])
+
+		defer deferWantPanicDepends(t, true)
+
+		e.assertAggregateAnySeedFuncNonNil(nil)
 	})
 }

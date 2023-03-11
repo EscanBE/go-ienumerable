@@ -3,7 +3,19 @@ package go_ienumerable
 type IEnumerable[T any] interface {
 	// C#
 
-	//Aggregate(fn interface{}, memo interface{}) IEnumerable
+	// Aggregate applies an accumulator function over a sequence.
+	Aggregate(f func(pr, v T) T) T
+
+	// AggregateWithSeed applies an accumulator function over a sequence.
+	// The specified seed value is used as the initial accumulator value.
+	AggregateWithSeed(seed T, f func(pr, v T) T) T
+
+	// AggregateWithAnySeed applies an accumulator function over a sequence.
+	// The specified seed value is used as the initial accumulator value.
+	//
+	// Notice, the type (specified as 'any') of the seed and the aggregate function 'f' param and result,
+	// must be the same type
+	AggregateWithAnySeed(seed any, f func(pr any, v T) any) any
 
 	// All returns true if all elements matches with predicate, also true when empty
 	All(predicate func(T) bool) bool

@@ -16,6 +16,12 @@ func (src *enumerable[T]) assertSrcNonNil() {
 	}
 }
 
+func (src *enumerable[T]) assertSrcNonEmpty() {
+	if len(src.data) < 1 {
+		panic("src contains no element")
+	}
+}
+
 func (col *enumerator[T]) assertCollectionNonNil() {
 	if col == nil {
 		panic("collection is nil")
@@ -44,6 +50,10 @@ func (src *enumerable[T]) assertComparerNonNil(comparer func(T, T) bool) {
 	}
 }
 
+func getErrorNilComparer() error {
+	return fmt.Errorf("comparer is nil")
+}
+
 func (src *enumerable[T]) assertSelectorNonNil(selector func(T) any) {
 	if selector == nil {
 		panic(getErrorNilSelector())
@@ -56,12 +66,24 @@ func (src *enumerable[T]) assertArraySelectorNonNil(selector func(T) []any) {
 	}
 }
 
-func getErrorNilComparer() error {
-	return fmt.Errorf("comparer is nil")
-}
-
 func getErrorNilSelector() error {
 	return fmt.Errorf("selector is nil")
+}
+
+func (src *enumerable[T]) assertAggregateFuncNonNil(f func(T, T) T) {
+	if f == nil {
+		panic(getErrorNilAggregateFunc())
+	}
+}
+
+func (src *enumerable[T]) assertAggregateAnySeedFuncNonNil(f func(any, T) any) {
+	if f == nil {
+		panic(getErrorNilAggregateFunc())
+	}
+}
+
+func getErrorNilAggregateFunc() error {
+	return fmt.Errorf("aggregate function is nil")
 }
 
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {
