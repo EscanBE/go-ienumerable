@@ -151,6 +151,14 @@ type IEnumerable[T any] interface {
 	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
 	SumInt64() int64
 
+	// SumFloat32 computes the sum of a sequence of integer/float values.
+	//
+	// Notice 1: will panic if sum is overflow float32
+	//
+	// Notice 2: will panic if element in array is not integer/float or is integer/float but overflow float32
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64 + accepted floats: float32/64)
+	SumFloat32() float32
+
 	// SumFloat64 computes the sum of a sequence of integer/float values.
 	//
 	// Notice 1: will panic if sum is overflow float64
