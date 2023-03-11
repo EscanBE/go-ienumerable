@@ -50,6 +50,12 @@ func (src *enumerable[T]) assertSelectorNonNil(selector func(T) any) {
 	}
 }
 
+func (src *enumerable[T]) assertArraySelectorNonNil(selector func(T) []any) {
+	if selector == nil {
+		panic(getErrorNilSelector())
+	}
+}
+
 func getErrorNilComparer() error {
 	return fmt.Errorf("comparer is nil")
 }

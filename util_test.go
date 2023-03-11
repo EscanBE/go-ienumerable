@@ -199,3 +199,21 @@ func Test_enumerable_assertPredicateNonNil(t *testing.T) {
 	defer deferWantPanicDepends(t, true)
 	e.assertPredicateNonNil(nil)
 }
+
+func Test_enumerable_assertSelectorNonNil(t *testing.T) {
+	t.Run("selector", func(t *testing.T) {
+		e := new(enumerable[int])
+
+		defer deferWantPanicDepends(t, true)
+
+		e.assertSelectorNonNil(nil)
+	})
+
+	t.Run("array selector", func(t *testing.T) {
+		e := new(enumerable[int])
+
+		defer deferWantPanicDepends(t, true)
+
+		e.assertArraySelectorNonNil(nil)
+	})
+}

@@ -96,12 +96,24 @@ type IEnumerable[T any] interface {
 	// There are some Unbox* utility methods added into this Golang port like:
 	// UnboxInt8, UnboxString, UnboxBool, ... so can do combo like example:
 	//
-	// src.Select(x => x + 1).UnboxInt() and will result IEnumerable[int]
+	// IEnumerable[int](src).Select(x => x + 1).UnboxInt() and will result IEnumerable[int]
 	//
 	// Notice: no comparer from source will be brought along with new IEnumerable[any]
 	Select(selector func(v T) any) IEnumerable[any]
 
-	//SelectMany(selector interface{}) IEnumerable
+	// SelectMany projects each element of a sequence to an IEnumerable[T]
+	// and flattens the resulting sequences into one sequence.
+	//
+	// Due to limitation of current Go, there is no way to directly cast into target type
+	// in just one command, so additional transform from 'any' to target types is required.
+	//
+	// There are some Unbox* utility methods added into this Golang port like:
+	// UnboxInt8, UnboxString, UnboxBool, ... so can do combo like example:
+	//
+	// IEnumerable[[]int](src).SelectMany([]int{x,y} => []any{x * 2, y * 2}).UnboxInt() and will result IEnumerable[int]
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[any]
+	SelectMany(selector func(v T) []any) IEnumerable[any]
 
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
