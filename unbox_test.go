@@ -1,6 +1,7 @@
 package go_ienumerable
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -378,5 +379,43 @@ func Test_enumerable_Unbox(t *testing.T) {
 		NewIEnumerable[int64](5, 3).Select(func(v int64) any {
 			return v
 		}).UnboxBool()
+	})
+
+	t.Run("panic message when non-nil", func(t *testing.T) {
+		eSrc := NewIEnumerable[int32](2, 3).WithDefaultComparers()
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic but not panicked")
+				return
+			}
+
+			errMsg := fmt.Sprintf("%v", err)
+			assert.Contains(t, errMsg, "value 2 of type int32 can not be casted to int64")
+		}()
+
+		eSrc.Select(func(v int32) any {
+			return v
+		}).UnboxInt64()
+	})
+
+	t.Run("panic message when nil value", func(t *testing.T) {
+		eSrc := NewIEnumerable[int32](2, 3).WithDefaultComparers()
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic but not panicked")
+				return
+			}
+
+			errMsg := fmt.Sprintf("%v", err)
+			assert.Contains(t, errMsg, "value <nil> of type <nil> can not be casted to int64")
+		}()
+
+		eSrc.Select(func(v int32) any {
+			return nil
+		}).UnboxInt64()
 	})
 }
