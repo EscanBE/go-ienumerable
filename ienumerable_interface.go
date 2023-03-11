@@ -13,7 +13,7 @@ type IEnumerable[T any] interface {
 	// AggregateWithAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
-	// Notice, the type (specified as 'any') of the seed and the aggregate function 'f' param and result,
+	// Notice, the type (specified as 'any') of the seed and the aggregate function `f` param and result,
 	// must be the same type
 	AggregateWithAnySeed(seed any, f func(pr any, v T) any) any
 
@@ -25,6 +25,9 @@ type IEnumerable[T any] interface {
 
 	// AnyBy determines whether any element of a sequence satisfies a condition.
 	AnyBy(predicate func(T) bool) bool
+
+	// Append appends a value to the end of the sequence and return a new sequence ends with input `element`
+	Append(element T) IEnumerable[T]
 
 	// Count returns the number of elements in a sequence.
 	Count() int
