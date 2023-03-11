@@ -29,6 +29,8 @@ type IEnumerable[T any] interface {
 	// Append appends a value to the end of the sequence and return a new sequence ends with input `element`
 	Append(element T) IEnumerable[T]
 
+	// AsEnumerable() IEnumerable[T] <= will not be implemented because no inheritance in Go thus never use
+
 	// Count returns the number of elements in a sequence.
 	Count() int
 
