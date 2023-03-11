@@ -392,7 +392,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 			}
 
 			errMsg := fmt.Sprintf("%v", err)
-			assert.Contains(t, errMsg, "value 2 of type int32 can not be casted to int64")
+			assert.Contains(t, errMsg, "value 2 of type int32 cannot be casted to int64")
 		}()
 
 		eSrc.Select(func(v int32) any {
@@ -411,7 +411,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 			}
 
 			errMsg := fmt.Sprintf("%v", err)
-			assert.Contains(t, errMsg, "value <nil> of type <nil> can not be casted to int64")
+			assert.Contains(t, errMsg, "value <nil> of type <nil> cannot be casted to int64")
 		}()
 
 		eSrc.Select(func(v int32) any {

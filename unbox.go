@@ -275,5 +275,5 @@ func (src *enumerable[T]) UnboxBool() IEnumerable[bool] {
 }
 
 func makeCastError(v any, t string) error {
-	return fmt.Errorf("value %v of type %T can not be casted to %s", v, v, t)
+	return fmt.Errorf("value %v of type %T cannot be casted to %s", v, v, t)
 }

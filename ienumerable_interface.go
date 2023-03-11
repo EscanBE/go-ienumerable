@@ -135,6 +135,14 @@ type IEnumerable[T any] interface {
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
 
+	// SumInt32 computes the sum of a sequence of integer values.
+	//
+	// Notice 1: will panic if sum is overflow int32
+	//
+	// Notice 2: will panic if element in array is not integer or is integer but overflow int32
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
+	SumInt32() int32
+
 	// Take returns a specified number of contiguous elements from the start of a sequence.
 	Take(count int) IEnumerable[T]
 
