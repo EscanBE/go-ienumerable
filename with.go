@@ -5,13 +5,13 @@ import (
 	"strings"
 )
 
-func (src *enumerable[T]) WithEqualsComparer(equalsComparable func(d1 T, d2 T) bool) IEnumerable[T] {
-	src.equalityComparer = equalsComparable
+func (src *enumerable[T]) WithEqualsComparer(equalsComparer func(v1 T, v2 T) bool) IEnumerable[T] {
+	src.equalityComparer = equalsComparer
 	return src
 }
 
-func (src *enumerable[T]) WithLessComparer(less func(d1 T, d2 T) bool) IEnumerable[T] {
-	src.lessComparer = less
+func (src *enumerable[T]) WithLessComparer(lessComparer func(left T, right T) bool) IEnumerable[T] {
+	src.lessComparer = lessComparer
 	return src
 }
 

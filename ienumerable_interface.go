@@ -24,13 +24,14 @@ type IEnumerable[T any] interface {
 	//DistinctBy(fieldName string) IEnumerable
 	//Each(action interface{})
 
-	// Except produces the set difference of two sequences by using the
-	// equality comparer provided with WithEqualsComparer to compare values.
+	// Except produces the set difference of two sequences.
+	//
+	// Require: equality comparer provided via WithEqualsComparer
 	Except(second IEnumerable[T]) IEnumerable[T]
 
 	// ExceptBy produces the set difference of two sequences by using the
 	// specified equality comparer to compare values.
-	ExceptBy(second IEnumerable[T], equalsComparable func(d1, d2 T) bool) IEnumerable[T]
+	ExceptBy(second IEnumerable[T], equalsComparer func(d1, d2 T) bool) IEnumerable[T]
 
 	//Filter(predicate interface{}) IEnumerable
 	//FilterBy(fields map[string]interface{}) IEnumerable
@@ -77,8 +78,25 @@ type IEnumerable[T any] interface {
 	//MapMany(selector interface{}) IEnumerable
 	//MapManyBy(fieldName string) IEnumerable
 	//Object() IEnumerable
-	//Order(selector interface{}) IEnumerable
-	//OrderBy(fieldName string) IEnumerable
+
+	// Order sorts the elements of a sequence in ascending order.
+	//
+	// Require: less comparer provided via WithLessComparer
+	Order() IEnumerable[T]
+
+	// OrderBy sorts the elements of a sequence in ascending order.
+	// specified less comparer to compare values.
+	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
+
+	// OrderByDescending sorts the elements of a sequence in descending order.
+	//
+	// Require: less comparer provided via WithLessComparer
+	OrderByDescending() IEnumerable[T]
+
+	// OrderByDescendingBy sorts the elements of a sequence in descending order.
+	// specified less comparer to compare values.
+	OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T]
+
 	//Reduce(fn interface{}, memo interface{}) IEnumerable
 	//Reject(predicate interface{}) IEnumerable
 	//RejectBy(fields map[string]interface{}) IEnumerable
@@ -130,15 +148,15 @@ type IEnumerable[T any] interface {
 
 	// Extra comparers
 
-	// WithEqualsComparer the equality comparer will be embedded
+	// WithEqualsComparer the equality comparer, to indicate if 2 input values are equals, will be embedded
 	// into this IEnumerable which automatically serves for methods like:
 	// Except
-	WithEqualsComparer(equalsComparable func(d1, d2 T) bool) IEnumerable[T]
+	WithEqualsComparer(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
-	// WithLessComparer the less comparer will be embedded
-	// into this IEnumerable which automatically serves for methods like...
-	// TODO
-	WithLessComparer(less func(d1, d2 T) bool) IEnumerable[T]
+	// WithLessComparer the less comparer, to indicate if left input is lower than right input, will be embedded
+	// into this IEnumerable which automatically serves for methods like:
+	// Order, OrderByDescending
+	WithLessComparer(lessComparer func(left, right T) bool) IEnumerable[T]
 
 	// internal APIs
 

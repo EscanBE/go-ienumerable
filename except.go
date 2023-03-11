@@ -20,7 +20,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityComparer func(
 		return src.copyExceptData().withData(copySlice(src.exposeData()))
 	}
 
-	if src.len() < 1 {
+	if len(src.data) < 1 {
 		return src.copyExceptData().withEmptyData()
 	}
 
