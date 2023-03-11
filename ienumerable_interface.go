@@ -143,6 +143,14 @@ type IEnumerable[T any] interface {
 	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
 	SumInt32() int32
 
+	// SumInt64 computes the sum of a sequence of integer values.
+	//
+	// Notice 1: will panic if sum is overflow int64
+	//
+	// Notice 2: will panic if element in array is not integer or is integer but overflow int64
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
+	SumInt64() int64
+
 	// Take returns a specified number of contiguous elements from the start of a sequence.
 	Take(count int) IEnumerable[T]
 

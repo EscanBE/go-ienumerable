@@ -47,19 +47,19 @@ func Test_enumerable_SumInt32(t *testing.T) {
 		_ = NewIEnumerable[float64]().SumInt32()
 	})
 
-	t.Run("empty returns 0 any integer type", func(t *testing.T) {
+	t.Run("empty of any integer type always returns 0", func(t *testing.T) {
 		defer deferWantPanicDepends(t, false)
 
-		_ = NewIEnumerable[int8]().SumInt32()
-		_ = NewIEnumerable[uint8]().SumInt32()
-		_ = NewIEnumerable[int16]().SumInt32()
-		_ = NewIEnumerable[uint16]().SumInt32()
-		_ = NewIEnumerable[int32]().SumInt32()
-		_ = NewIEnumerable[uint32]().SumInt32()
-		_ = NewIEnumerable[int64]().SumInt32()
-		_ = NewIEnumerable[uint64]().SumInt32()
-		_ = NewIEnumerable[int]().SumInt32()
-		_ = NewIEnumerable[uint]().SumInt32()
+		assert.Equal(t, 0, int(NewIEnumerable[int8]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint8]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[int16]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint16]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[int32]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint32]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[int64]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint64]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[int]().SumInt32()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint]().SumInt32()))
 	})
 
 	t.Run("panic if result is overflow int32", func(t *testing.T) {
@@ -69,10 +69,10 @@ func Test_enumerable_SumInt32(t *testing.T) {
 				t.Errorf("expect error")
 				return
 			}
-			assert.Equal(t, "overflow int32", fmt.Sprintf("%v", err))
+			assert.Equal(t, "overflow", fmt.Sprintf("%v", err))
 		}()
 
-		result := NewIEnumerable[int64](int64(math.MaxInt32), int64(math.MinInt32), int64(math.MaxInt32), 2).SumInt32()
+		result := NewIEnumerable[int64](int64(math.MaxInt32), int64(math.MaxInt32), int64(math.MinInt32), int64(math.MinInt32), int64(math.MaxInt32), 3).SumInt32()
 		fmt.Printf("Result: %d", result)
 	})
 
@@ -189,5 +189,149 @@ func Test_enumerable_SumInt32(t *testing.T) {
 			string(str),
 		)
 		eSrc.SumInt32()
+	})
+}
+
+func Test_enumerable_SumInt64(t *testing.T) {
+	t.Run("accept any int with value in range int64", func(t *testing.T) {
+		//goland:noinspection GoRedundantConversion
+		eSrc := NewIEnumerable[any](
+			int8(1), uint8(2),
+			int16(3), uint16(4),
+			int32(5), uint32(6),
+			int64(7), uint64(8),
+			int(9), uint(10),
+			int8(-1), int16(-1), int32(-1), int64(-1), int(-1),
+		)
+		assert.Equal(t, int64(50), eSrc.SumInt64())
+	})
+
+	t.Run("empty returns 0 for only integer (string)", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), "type string cannot be tried to cast to int64")
+		}()
+
+		_ = NewIEnumerable[string]().SumInt64()
+	})
+
+	t.Run("empty returns 0 for only integer (float)", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), "type float64 cannot be tried to cast to int64")
+		}()
+
+		_ = NewIEnumerable[float64]().SumInt64()
+	})
+
+	t.Run("empty of any integer type always returns 0", func(t *testing.T) {
+		defer deferWantPanicDepends(t, false)
+
+		assert.Equal(t, 0, int(NewIEnumerable[int8]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint8]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[int16]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint16]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[int32]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint32]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[int64]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint64]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[int]().SumInt64()))
+		assert.Equal(t, 0, int(NewIEnumerable[uint]().SumInt64()))
+	})
+
+	t.Run("panic if result is overflow int64 (positive)", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Equal(t, "overflow", fmt.Sprintf("%v", err))
+		}()
+
+		result := NewIEnumerable[int64](int64(math.MaxInt64), int64(math.MaxInt64), int64(math.MinInt64), int64(math.MinInt64), int64(math.MaxInt64), 3).SumInt64()
+		fmt.Printf("Result: %d", result)
+	})
+
+	t.Run("panic if result is overflow int64 (negative)", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Equal(t, "overflow", fmt.Sprintf("%v", err))
+		}()
+
+		result := NewIEnumerable[int64](int64(math.MaxInt64), int64(math.MaxInt64), int64(math.MinInt64), int64(math.MinInt64), int64(math.MinInt64), -3).SumInt64()
+		fmt.Printf("Result: %d", result)
+	})
+
+	t.Run("panic when sum overflow int64 (uint64)", func(t *testing.T) {
+		u := uint64(math.MaxUint64)
+		assert.Equal(t, float64(math.MaxUint64), float64(u))
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 cannot be casted to int64")
+		}()
+		eSrc := NewIEnumerable[any](u)
+		eSrc.SumInt64()
+	})
+
+	t.Run("panic when sum overflow int64 (uint)", func(t *testing.T) {
+		if math.MaxUint == math.MaxUint32 { // skip x86
+			return
+		}
+		u := uint(math.MaxUint)
+		assert.Equal(t, float64(math.MaxUint), float64(u))
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			errStr := fmt.Sprintf("%v", err)
+			if strings.Contains(errStr, "value 18446744073709551615 of type uint cannot be casted to int64") {
+				// ok (x64)
+			} else {
+				t.Errorf("un-wanted error: %s", errStr)
+			}
+		}()
+		eSrc := NewIEnumerable[any](u)
+		eSrc.SumInt64()
+	})
+
+	t.Run("panic when element is not integer", func(t *testing.T) {
+		str := "Hello World!"
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int64", str))
+		}()
+		//goland:noinspection GoRedundantConversion
+		eSrc := NewIEnumerable[any](
+			int8(1), uint8(2),
+			int16(3), uint16(4),
+			int32(5), uint32(6),
+			int64(7), uint64(8),
+			int(9), uint(10),
+			string(str),
+		)
+		eSrc.SumInt64()
 	})
 }
