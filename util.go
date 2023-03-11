@@ -44,8 +44,18 @@ func (src *enumerable[T]) assertComparerNonNil(comparer func(T, T) bool) {
 	}
 }
 
+func (src *enumerable[T]) assertSelectorNonNil(selector func(T) any) {
+	if selector == nil {
+		panic(getErrorNilSelector())
+	}
+}
+
 func getErrorNilComparer() error {
 	return fmt.Errorf("comparer is nil")
+}
+
+func getErrorNilSelector() error {
+	return fmt.Errorf("selector is nil")
 }
 
 func (src *enumerable[T]) copy() IEnumerable[T] {

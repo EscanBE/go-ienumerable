@@ -88,7 +88,19 @@ type IEnumerable[T any] interface {
 	// Reverse inverts the order of the elements in a sequence.
 	Reverse() IEnumerable[T]
 
-	//Select(selector interface{}) IEnumerable
+	// Select projects each element of a sequence into a new form.
+	//
+	// Due to limitation of current Go, there is no way to directly cast into target type
+	// in just one command, so additional transform from 'any' to target types is required.
+	//
+	// There are some Unbox* utilities methods added into this Golang port like:
+	// UnboxInt8, UnboxString, UnboxBool, ... so can do combo like example:
+	//
+	// src.Select(x => x + 1).UnboxInt() and will result IEnumerable[int]
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[any]
+	Select(selector func(v T) any) IEnumerable[any]
+
 	//SelectMany(selector interface{}) IEnumerable
 
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
