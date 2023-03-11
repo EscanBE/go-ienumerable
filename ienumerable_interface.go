@@ -20,8 +20,14 @@ type IEnumerable[T any] interface {
 	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
 	CountBy(predicate func(T) bool) int
 
-	//Distinct() IEnumerable[T]
-	//DistinctBy(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+	// Distinct returns distinct elements from a sequence.
+	//
+	// Require: equality comparer provided via WithEqualsComparer
+	Distinct() IEnumerable[T]
+
+	// DistinctBy returns distinct elements from a sequence by using the
+	// specified equality comparer to compare values.
+	DistinctBy(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
 	// Except produces the set difference of two sequences.
 	//
@@ -128,12 +134,12 @@ type IEnumerable[T any] interface {
 
 	// Extra comparers
 
-	// WithEqualsComparer the equality comparer, to indicate if 2 input values are equals, will be embedded
+	// WithEqualsComparer the equality comparer, to indicate if 2 source values are equals, will be embedded
 	// into this IEnumerable which automatically serves for methods like:
 	// Except, Union, Distinct
 	WithEqualsComparer(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
-	// WithLessComparer the less comparer, to indicate if left input is lower than right input, will be embedded
+	// WithLessComparer the less comparer, to indicate if left source is lower than right source, will be embedded
 	// into this IEnumerable which automatically serves for methods like:
 	// Order, OrderByDescending
 	WithLessComparer(lessComparer func(left, right T) bool) IEnumerable[T]
