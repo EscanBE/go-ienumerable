@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func Test_enumerable_Distinct(t *testing.T) {
+func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 	fEquals := func(t1, t2 int) bool {
 		return t1 == t2
 	}
@@ -30,7 +30,7 @@ func Test_enumerable_Distinct(t *testing.T) {
 			want:    NewIEnumerable[int](2),
 		},
 		{
-			name:      "panic",
+			name:      "panic due to no equality comparer",
 			source:    NewIEnumerable[int](2),
 			fEquals:   nil,
 			wantPanic: true,

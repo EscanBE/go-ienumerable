@@ -11,6 +11,10 @@ func (src *enumerable[T]) Distinct() IEnumerable[T] {
 }
 
 func (src *enumerable[T]) DistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
+	return src.internalDistinctBy(equalityComparer)
+}
+
+func (src *enumerable[T]) internalDistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
 	src.assertSrcNonNil()
 	src.assertComparerNonNil(equalityComparer)
 

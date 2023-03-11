@@ -1,5 +1,6 @@
 package go_ienumerable
 
+// ensure implementation
 var _ IEnumerable[any] = &enumerable[any]{}
 
 // Enumerable is a port from C# linq, support many convenient utilities
