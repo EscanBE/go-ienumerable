@@ -8,7 +8,7 @@ func (src *enumerable[T]) Skip(count int) IEnumerable[T] {
 	}
 
 	if len(src.data) <= count { // skipped all
-		return src.copyExceptData()
+		return src.copyExceptData().withEmptyData()
 	}
 
 	return src.copyExceptData().withData(src.data[count:])

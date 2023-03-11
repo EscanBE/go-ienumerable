@@ -27,7 +27,7 @@ func Test_enumerable_Where(t *testing.T) {
 			predicate: func(i int) bool {
 				return i > 5
 			},
-			want: injectIntComparators(createEmptyIntEnumerable()),
+			want: injectIntComparers(createEmptyIntEnumerable()),
 		},
 		{
 			name: "empty",

@@ -31,13 +31,13 @@ func Test_enumerable_Skip(t *testing.T) {
 			name:  "all",
 			src:   createIntEnumerable(1, 5),
 			count: 5,
-			want:  injectIntComparators(createEmptyIntEnumerable()),
+			want:  injectIntComparers(createEmptyIntEnumerable()),
 		},
 		{
 			name:  "all",
 			src:   createIntEnumerable(1, 5),
 			count: 6,
-			want:  injectIntComparators(createEmptyIntEnumerable()),
+			want:  injectIntComparers(createEmptyIntEnumerable()),
 		},
 		{
 			name:  "empty",

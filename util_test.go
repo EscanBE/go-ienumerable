@@ -33,7 +33,7 @@ func createIntEnumerable(from, to int) IEnumerable[int] {
 	for i := from; i <= to; i++ {
 		data = append(data, i)
 	}
-	return injectIntComparators(NewIEnumerable[int](data...))
+	return injectIntComparers(NewIEnumerable[int](data...))
 }
 
 func createRandomIntEnumerable(size int) IEnumerable[int] {
@@ -41,35 +41,48 @@ func createRandomIntEnumerable(size int) IEnumerable[int] {
 	for i := 0; i < size; i++ {
 		data[i] = rand.Int()
 	}
-	return injectIntComparators(NewIEnumerable[int](data...))
+	return injectIntComparers(NewIEnumerable[int](data...))
 }
 
-func injectIntComparators(e IEnumerable[int]) IEnumerable[int] {
+func injectIntComparers(e IEnumerable[int]) IEnumerable[int] {
 	return e.
-		WithLessComparator(func(i1, i2 int) bool {
+		WithLessComparer(func(i1, i2 int) bool {
 			return i1 < i2
 		}).
-		WithEqualsComparator(func(i1, i2 int) bool {
+		WithEqualsComparer(func(i1, i2 int) bool {
 			return i1 == i2
 		})
 }
 
 type copiedOriginal[T comparable] struct {
-	data                []T
-	hasEqualsComparator bool
-	hasLessComparator   bool
+	isNil             bool
+	data              []T
+	hasEqualsComparer bool
+	hasLessComparer   bool
 }
 
 func backupForAssetUnchanged[T comparable](e IEnumerable[T]) copiedOriginal[T] {
+	if e == nil {
+		return copiedOriginal[T]{
+			isNil: true,
+		}
+	}
 	cast := e.(*enumerable[T])
 	return copiedOriginal[T]{
-		data:                copySlice(cast.data),
-		hasEqualsComparator: cast.equalsComparator != nil,
-		hasLessComparator:   cast.lessComparator != nil,
+		data:              copySlice(cast.data),
+		hasEqualsComparer: cast.equalityComparer != nil,
+		hasLessComparer:   cast.lessComparer != nil,
 	}
 }
 
 func (c copiedOriginal[T]) assertUnchanged(t *testing.T, e IEnumerable[T]) {
+	if c.isNil {
+		if e != nil {
+			t.Errorf("copied of original is nil but got asset with non-nil %v", e)
+		}
+		return
+	}
+
 	eData := e.exposeData()
 	if len(c.data) != len(eData) {
 		assert.Lenf(t, eData, len(c.data), "data of source IEnumerable has been changed, expect len %d but changed to %d", len(c.data), len(eData))
@@ -94,8 +107,8 @@ func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, e IEnumerable
 		}
 	}
 
-	assert.Equalf(t, c.hasEqualsComparator, cast.equalsComparator != nil, "equals comparator state has changed, expect %s, but got %s", exists(c.hasEqualsComparator), exists(cast.equalsComparator != nil))
-	assert.Equalf(t, c.hasLessComparator, cast.lessComparator != nil, "less comparator state has changed, expect %s, but got %s", exists(c.hasLessComparator), exists(cast.lessComparator != nil))
+	assert.Equalf(t, c.hasEqualsComparer, cast.equalityComparer != nil, "equality comparer state has changed, expect %s, but got %s", exists(c.hasEqualsComparer), exists(cast.equalityComparer != nil))
+	assert.Equalf(t, c.hasLessComparer, cast.lessComparer != nil, "less comparer state has changed, expect %s, but got %s", exists(c.hasLessComparer), exists(cast.lessComparer != nil))
 }
 
 func deferWantPanicDepends(t *testing.T, wantPanic bool) {
@@ -103,6 +116,6 @@ func deferWantPanicDepends(t *testing.T, wantPanic bool) {
 	if err == nil && wantPanic {
 		t.Errorf("expect panic")
 	} else if err != nil && !wantPanic {
-		t.Errorf("expect not panic")
+		t.Errorf("expect not panic but got %v", err)
 	}
 }

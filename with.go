@@ -5,37 +5,42 @@ import (
 	"strings"
 )
 
-func (src *enumerable[T]) WithEqualsComparator(equalsComparable func(d1 T, d2 T) bool) IEnumerable[T] {
-	src.equalsComparator = equalsComparable
+func (src *enumerable[T]) WithEqualsComparer(equalsComparable func(d1 T, d2 T) bool) IEnumerable[T] {
+	src.equalityComparer = equalsComparable
 	return src
 }
 
-func (src *enumerable[T]) WithLessComparator(less func(d1 T, d2 T) bool) IEnumerable[T] {
-	src.lessComparator = less
+func (src *enumerable[T]) WithLessComparer(less func(d1 T, d2 T) bool) IEnumerable[T] {
+	src.lessComparer = less
 	return src
 }
 
 type requireWithExtraFunc byte
 
 const (
-	requireEqualsComparator requireWithExtraFunc = 0b01
-	requireLessComparator   requireWithExtraFunc = 0b10
+	requireEqualityComparer requireWithExtraFunc = 0b01
+	requireLessComparer     requireWithExtraFunc = 0b10
 )
+
+func panicRequire(require requireWithExtraFunc) {
+	requiresName := getRequireName(require)
+	panic(fmt.Errorf("the following comparer must be set: [%s]", strings.Join(requiresName, ",")))
+}
 
 func panicRequireEither(require requireWithExtraFunc) {
 	requiresName := getRequireName(require)
-	panic(fmt.Errorf("either of the following comparators must be set: [%s]", strings.Join(requiresName, ",")))
+	panic(fmt.Errorf("either of the following comparers must be set: [%s]", strings.Join(requiresName, ",")))
 }
 
 func getRequireName(require requireWithExtraFunc) []string {
 	result := make([]string, 0)
 
-	if require&requireEqualsComparator == requireEqualsComparator {
-		result = append(result, "Equals Comparator (can be set using WithEqualsComparator)")
+	if require&requireEqualityComparer == requireEqualityComparer {
+		result = append(result, "Equals Comparer (can be set using WithEqualsComparer)")
 	}
 
-	if require&requireLessComparator == requireLessComparator {
-		result = append(result, "Less Comparator (can be set using WithLessComparator)")
+	if require&requireLessComparer == requireLessComparer {
+		result = append(result, "Less Comparer (can be set using WithLessComparer)")
 	}
 
 	return result

@@ -8,8 +8,8 @@ var _ IEnumerable[any] = &enumerable[any]{}
 type enumerable[T any] struct {
 	data []T
 
-	equalsComparator func(d1, d2 T) bool
-	lessComparator   func(d1, d2 T) bool
+	equalityComparer func(d1, d2 T) bool
+	lessComparer     func(d1, d2 T) bool
 }
 
 func NewIEnumerable[T any](data ...T) IEnumerable[T] {

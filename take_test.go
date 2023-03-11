@@ -25,7 +25,7 @@ func Test_enumerable_Take(t *testing.T) {
 			name:  "negative",
 			src:   createIntEnumerable(2, 11),
 			count: -1 * (rand.Intn(100) + 1),
-			want:  injectIntComparators(createEmptyIntEnumerable()),
+			want:  injectIntComparers(createEmptyIntEnumerable()),
 		},
 		{
 			name:  "all",

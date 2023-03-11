@@ -23,8 +23,15 @@ type IEnumerable[T any] interface {
 	//Distinct(selector interface{}) IEnumerable
 	//DistinctBy(fieldName string) IEnumerable
 	//Each(action interface{})
-	//Except(predicate interface{}) IEnumerable
-	//ExceptBy(fields map[string]interface{}) IEnumerable
+
+	// Except produces the set difference of two sequences by using the
+	// equality comparer provided with WithEqualsComparer to compare values.
+	Except(second IEnumerable[T]) IEnumerable[T]
+
+	// ExceptBy produces the set difference of two sequences by using the
+	// specified equality comparer to compare values.
+	ExceptBy(second IEnumerable[T], equalsComparable func(d1, d2 T) bool) IEnumerable[T]
+
 	//Filter(predicate interface{}) IEnumerable
 	//FilterBy(fields map[string]interface{}) IEnumerable
 	//Find(predicate interface{}) IEnumerable
@@ -119,19 +126,21 @@ type IEnumerable[T any] interface {
 	// LastSafeBy returns the last element in a sequence that satisfies a specified condition, with error if sequence contains no element or predicate is nil
 	LastSafeBy(predicate func(T) bool) (T, error)
 
-	// Extra comparators
+	// Extra comparers
 
-	// WithEqualsComparator the equalsComparator will be embedded
+	// WithEqualsComparer the equality comparer will be embedded
+	// into this IEnumerable which automatically serves for methods like:
+	// Except
+	WithEqualsComparer(equalsComparable func(d1, d2 T) bool) IEnumerable[T]
+
+	// WithLessComparer the less comparer will be embedded
 	// into this IEnumerable which automatically serves for methods like...
 	// TODO
-	WithEqualsComparator(equalsComparable func(d1, d2 T) bool) IEnumerable[T]
-
-	// WithLessComparator the lessComparator will be embedded
-	// into this IEnumerable which automatically serves for methods like...
-	// TODO
-	WithLessComparator(less func(d1, d2 T) bool) IEnumerable[T]
+	WithLessComparer(less func(d1, d2 T) bool) IEnumerable[T]
 
 	// internal APIs
 
 	exposeData() []T
+	len() int
+	copy() IEnumerable[T]
 }
