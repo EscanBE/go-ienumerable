@@ -16,6 +16,12 @@ func (src *enumerable[T]) assertSrcNonNil() {
 	}
 }
 
+func (col *enumerator[T]) assertCollectionNonNil() {
+	if col == nil {
+		panic("collection is nil")
+	}
+}
+
 func (src *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
 	if second == nil {
 		panic("second IEnumerable is nil")

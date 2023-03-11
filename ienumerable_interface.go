@@ -51,7 +51,9 @@ type IEnumerable[T any] interface {
 	// FirstOrDefaultBy returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found
 	FirstOrDefaultBy(predicate func(T) bool, defaultValue T) T
 
-	//GetEnumerator() IEnumerator
+	// GetEnumerator returns an enumerator that iterates through a collection.
+	GetEnumerator() IEnumerator[T]
+
 	//Group(keySelector interface{}) enumerable
 	//GroupBy(fieldName string) enumerable
 	//Index(keySelector interface{}) IEnumerable
@@ -97,8 +99,6 @@ type IEnumerable[T any] interface {
 
 	//Uniq(selector interface{}) IEnumerable
 	//UniqBy(fieldName string) IEnumerable
-	//Value(res interface{})
-	//Values() IEnumerable
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
