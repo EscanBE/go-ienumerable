@@ -108,4 +108,29 @@ func Test_enumerable_Order(t *testing.T) {
 
 		bSrc.assertUnchanged(t, src)
 	})
+
+	t.Run("Order string", func(t *testing.T) {
+		src := NewIEnumerable[string]("2", "22", "11").WithDefaultComparers()
+		bSrc := backupForAssetUnchanged(src)
+
+		got := src.Order().exposeData()
+		assert.Equal(t, "11", got[0])
+		assert.Equal(t, "2", got[1])
+		assert.Equal(t, "22", got[2])
+
+		bSrc.assertUnchanged(t, src)
+	})
+
+	t.Run("Order boolean", func(t *testing.T) {
+		src := NewIEnumerable[bool](true, false, true, false).WithDefaultComparers()
+		bSrc := backupForAssetUnchanged(src)
+
+		got := src.Order().exposeData()
+		assert.False(t, got[0])
+		assert.False(t, got[1])
+		assert.True(t, got[2])
+		assert.True(t, got[3])
+
+		bSrc.assertUnchanged(t, src)
+	})
 }

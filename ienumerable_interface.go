@@ -138,6 +138,13 @@ type IEnumerable[T any] interface {
 	// Order, OrderByDescending
 	WithLessComparer(lessComparer func(left, right T) bool) IEnumerable[T]
 
+	// WithDefaultComparers automatically detect type of T and inject comparers of the corresponding type.
+	//
+	// BEWARE: If the type of T is not a supported type, a panic will be raised.
+	//
+	// Supported types: int8/16/32/64, uint8/16/32/64, int, uint, uintptr, float32/64, complex64/128 (equality comparer only), string
+	WithDefaultComparers() IEnumerable[T]
+
 	// internal APIs
 
 	exposeData() []T
