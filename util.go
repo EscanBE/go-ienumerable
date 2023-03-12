@@ -30,13 +30,19 @@ func (src *enumerable[T]) assertSrcNonEmpty() {
 	}
 }
 
+func (_ *enumerable[T]) assertSizeGt0(size int) {
+	if size < 1 {
+		panic("size is below 1")
+	}
+}
+
 func (col *enumerator[T]) assertCollectionNonNil() {
 	if col == nil {
 		panic("collection is nil")
 	}
 }
 
-func (src *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
+func (_ *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
 	if second == nil {
 		panic("second IEnumerable is nil")
 	}

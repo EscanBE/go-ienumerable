@@ -16,8 +16,7 @@ func (src *enumerable[T]) WithLessComparer(lessComparer func(left T, right T) bo
 }
 
 func (src *enumerable[T]) WithDefaultComparers() IEnumerable[T] {
-	_type := fmt.Sprintf("%T", *new(T))
-	switch _type {
+	switch src.dataType {
 	case "int8":
 		src.equalityComparer = func(v1, v2 T) bool {
 			return any(v1).(int8) == any(v2).(int8)
@@ -151,7 +150,7 @@ func (src *enumerable[T]) WithDefaultComparers() IEnumerable[T] {
 		}
 		break
 	default:
-		panic(fmt.Errorf("not yet supported inject comparers for type %s", _type))
+		panic(fmt.Errorf("not yet supported inject comparers for type %s", src.dataType))
 	}
 	return src
 }

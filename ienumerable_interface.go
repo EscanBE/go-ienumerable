@@ -79,6 +79,16 @@ type IEnumerable[T any] interface {
 	// Count returns the number of elements in a sequence.
 	Count() int
 
+	// ChunkToAny (Chunk) splits the elements of a sequence into chunks of size at most size.
+	//
+	// Due to limitation of Golang that can not define a method signature like
+	//
+	// `func (src *enumerable[T]) ChunkToAny(size int) IEnumerable[[]T]`
+	//
+	// so the method Chunk is temporary renamed to ChunkToAny and the name Chunk is reserved for future
+	// for implementation when Go supports the above method signature
+	ChunkToAny(size int) IEnumerable[[]any]
+
 	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
 	CountBy(predicate func(T) bool) int
 

@@ -30,6 +30,7 @@ func TestNewIEnumerable_dataType(t *testing.T) {
 	type SampleStruct struct {
 	}
 	assert.Equal(t, "go_ienumerable.SampleStruct", NewIEnumerable[SampleStruct]().exposeDataType())
+	assert.Equal(t, "[]interface {}", NewIEnumerable[[]any]().exposeDataType())
 	assert.Equal(t, "[]int8", NewIEnumerable[[]int8]().exposeDataType())
 	assert.Equal(t, "[]uint8", NewIEnumerable[[]uint8]().exposeDataType())
 	assert.Equal(t, "[]uint8", NewIEnumerable[[]byte]().exposeDataType())
