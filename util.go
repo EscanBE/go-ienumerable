@@ -26,8 +26,12 @@ func (src *enumerable[T]) assertSrcNonNil() {
 
 func (src *enumerable[T]) assertSrcNonEmpty() {
 	if len(src.data) < 1 {
-		panic("source contains no element")
+		panic(getErrorSrcContainsNoElement())
 	}
+}
+
+func getErrorSrcContainsNoElement() error {
+	return fmt.Errorf("source contains no element")
 }
 
 func (_ *enumerable[T]) assertSizeGt0(size int) {
@@ -100,6 +104,18 @@ func (src *enumerable[T]) assertAggregateAnySeedFuncNonNil(f func(any, T) any) {
 
 func getErrorNilAggregateFunc() error {
 	return fmt.Errorf("aggregate function is nil")
+}
+
+func getErrorMoreThanOne() error {
+	return fmt.Errorf("more than one element")
+}
+
+func getErrorMoreThanOneMatch() error {
+	return fmt.Errorf("more than one element satisfies the condition in predicate")
+}
+
+func getErrorNoMatch() error {
+	return fmt.Errorf("no element satisfies the condition in predicate")
 }
 
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {

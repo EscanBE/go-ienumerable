@@ -18,5 +18,5 @@ func (src *enumerable[T]) LastBy(predicate func(T) bool) T {
 		}
 	}
 
-	panic("no element satisfies the condition in predicate")
+	panic(getErrorNoMatch())
 }

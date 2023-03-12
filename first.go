@@ -1,7 +1,5 @@
 package go_ienumerable
 
-import "fmt"
-
 func (src *enumerable[T]) First() T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
@@ -20,5 +18,5 @@ func (src *enumerable[T]) FirstBy(predicate func(T) bool) T {
 		}
 	}
 
-	panic(fmt.Errorf("no element satisfies the condition in predicate"))
+	panic(getErrorNoMatch())
 }

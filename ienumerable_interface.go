@@ -292,6 +292,14 @@ type IEnumerable[T any] interface {
 	// Notice: no comparer from source will be brought along with new IEnumerable[any]
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
+	// Single returns the only element of a sequence,
+	// and panic if there is not exactly one element in the sequence.
+	Single() T
+
+	// SingleBy returns the only element of a sequence that satisfies a specified condition,
+	// and panic if more than one such element exists.
+	SingleBy(predicate func(T) bool) T
+
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
 
