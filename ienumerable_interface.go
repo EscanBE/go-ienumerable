@@ -146,6 +146,9 @@ type IEnumerable[T any] interface {
 	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
 	ElementAtReverseOrDefault(reverseIndex int) T
 
+	// Empty returns an empty IEnumerable[T] that has the specified type argument.
+	Empty() IEnumerable[T]
+
 	// Except produces the set difference of two sequences.
 	//
 	// Require: equality comparer provided via WithEqualsComparer
