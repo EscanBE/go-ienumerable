@@ -164,6 +164,12 @@ type IEnumerable[T any] interface {
 	// FirstBy returns the first element in a sequence that satisfies a specified condition
 	FirstBy(predicate func(T) bool) T
 
+	// FirstOrDefault returns the first element of a sequence, or a default value of type if the sequence contains no elements.
+	FirstOrDefault() T
+
+	// FirstOrDefaultBy returns the first element of the sequence that satisfies a condition, or a default value of type if no such element is found
+	FirstOrDefaultBy(predicate func(T) bool) T
+
 	// FirstOrDefaultUsing returns the first element of a sequence, or a specified default value if the sequence contains no elements.
 	FirstOrDefaultUsing(defaultValue T) T
 
@@ -180,6 +186,12 @@ type IEnumerable[T any] interface {
 
 	// LastBy returns the last element in a sequence that satisfies a specified condition
 	LastBy(predicate func(T) bool) T
+
+	// LastOrDefault returns the last element of a sequence, or a default value of type if the sequence contains no elements.
+	LastOrDefault() T
+
+	// LastOrDefaultBy returns the last element of the sequence that satisfies a condition, or a default value of type if no such element is found
+	LastOrDefaultBy(predicate func(T) bool) T
 
 	// LastOrDefaultUsing returns the last element of a sequence, or a specified default value if the sequence contains no elements.
 	LastOrDefaultUsing(defaultValue T) T
