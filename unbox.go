@@ -2,68 +2,16 @@ package go_ienumerable
 
 import "fmt"
 
-func (src *enumerable[T]) UnboxInt8() IEnumerable[int8] {
+func (src *enumerable[T]) UnboxByte() IEnumerable[byte] {
 	size := len(src.data)
-	result := make([]int8, size)
+	result := make([]byte, size)
 	if size > 0 {
 		for i, v := range src.data {
-			if cast, ok := any(v).(int8); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "int8"))
-			}
+			result[i] = src.unboxAnyAsByte(v)
 		}
 	}
 
-	return NewIEnumerable[int8](result...)
-}
-
-func (src *enumerable[T]) UnboxUInt8() IEnumerable[uint8] {
-	size := len(src.data)
-	result := make([]uint8, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(uint8); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "uint8"))
-			}
-		}
-	}
-
-	return NewIEnumerable[uint8](result...)
-}
-
-func (src *enumerable[T]) UnboxInt16() IEnumerable[int16] {
-	size := len(src.data)
-	result := make([]int16, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(int16); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "int16"))
-			}
-		}
-	}
-
-	return NewIEnumerable[int16](result...)
-}
-
-func (src *enumerable[T]) UnboxUInt16() IEnumerable[uint16] {
-	size := len(src.data)
-	result := make([]uint16, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(uint16); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "uint16"))
-			}
-		}
-	}
-
-	return NewIEnumerable[uint16](result...)
+	return NewIEnumerable[byte](result...)
 }
 
 func (src *enumerable[T]) UnboxInt32() IEnumerable[int32] {
@@ -71,31 +19,11 @@ func (src *enumerable[T]) UnboxInt32() IEnumerable[int32] {
 	result := make([]int32, size)
 	if size > 0 {
 		for i, v := range src.data {
-			if cast, ok := any(v).(int32); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "int32"))
-			}
+			result[i] = src.unboxAnyAsInt32(v)
 		}
 	}
 
 	return NewIEnumerable[int32](result...)
-}
-
-func (src *enumerable[T]) UnboxUInt32() IEnumerable[uint32] {
-	size := len(src.data)
-	result := make([]uint32, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(uint32); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "uint32"))
-			}
-		}
-	}
-
-	return NewIEnumerable[uint32](result...)
 }
 
 func (src *enumerable[T]) UnboxInt64() IEnumerable[int64] {
@@ -103,31 +31,11 @@ func (src *enumerable[T]) UnboxInt64() IEnumerable[int64] {
 	result := make([]int64, size)
 	if size > 0 {
 		for i, v := range src.data {
-			if cast, ok := any(v).(int64); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "int64"))
-			}
+			result[i] = src.unboxAnyAsInt64(v)
 		}
 	}
 
 	return NewIEnumerable[int64](result...)
-}
-
-func (src *enumerable[T]) UnboxUInt64() IEnumerable[uint64] {
-	size := len(src.data)
-	result := make([]uint64, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(uint64); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "uint64"))
-			}
-		}
-	}
-
-	return NewIEnumerable[uint64](result...)
 }
 
 func (src *enumerable[T]) UnboxInt() IEnumerable[int] {
@@ -135,63 +43,11 @@ func (src *enumerable[T]) UnboxInt() IEnumerable[int] {
 	result := make([]int, size)
 	if size > 0 {
 		for i, v := range src.data {
-			if cast, ok := any(v).(int); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "int"))
-			}
+			result[i] = src.unboxAnyAsInt(v)
 		}
 	}
 
 	return NewIEnumerable[int](result...)
-}
-
-func (src *enumerable[T]) UnboxUInt() IEnumerable[uint] {
-	size := len(src.data)
-	result := make([]uint, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(uint); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "uint"))
-			}
-		}
-	}
-
-	return NewIEnumerable[uint](result...)
-}
-
-func (src *enumerable[T]) UnboxUIntptr() IEnumerable[uintptr] {
-	size := len(src.data)
-	result := make([]uintptr, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(uintptr); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "uintptr"))
-			}
-		}
-	}
-
-	return NewIEnumerable[uintptr](result...)
-}
-
-func (src *enumerable[T]) UnboxFloat32() IEnumerable[float32] {
-	size := len(src.data)
-	result := make([]float32, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(float32); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "float32"))
-			}
-		}
-	}
-
-	return NewIEnumerable[float32](result...)
 }
 
 func (src *enumerable[T]) UnboxFloat64() IEnumerable[float64] {
@@ -199,49 +55,17 @@ func (src *enumerable[T]) UnboxFloat64() IEnumerable[float64] {
 	result := make([]float64, size)
 	if size > 0 {
 		for i, v := range src.data {
-			if cast, ok := any(v).(float64); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "float64"))
+			vf, vi, dt := src.unboxAnyAsFloat64OrInt64(v)
+			if dt == UF64_TYPE_FLOAT64 {
+				result[i] = vf
+			} else if dt == UF64_TYPE_INT64 {
+				result[i] = float64(vi)
 			}
 		}
 	}
 
 	return NewIEnumerable[float64](result...)
 }
-
-func (src *enumerable[T]) UnboxComplex64() IEnumerable[complex64] {
-	size := len(src.data)
-	result := make([]complex64, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(complex64); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "complex64"))
-			}
-		}
-	}
-
-	return NewIEnumerable[complex64](result...)
-}
-
-func (src *enumerable[T]) UnboxComplex128() IEnumerable[complex128] {
-	size := len(src.data)
-	result := make([]complex128, size)
-	if size > 0 {
-		for i, v := range src.data {
-			if cast, ok := any(v).(complex128); ok {
-				result[i] = cast
-			} else {
-				panic(makeCastError(v, "complex128"))
-			}
-		}
-	}
-
-	return NewIEnumerable[complex128](result...)
-}
-
 func (src *enumerable[T]) UnboxString() IEnumerable[string] {
 	size := len(src.data)
 	result := make([]string, size)
