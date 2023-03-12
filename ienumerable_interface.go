@@ -225,6 +225,14 @@ type IEnumerable[T any] interface {
 	// This method is meaning-less in Go because the CountBy method returns an int already has max value of int64 in x64 machines
 	LongCountBy(predicate func(T) bool) int64
 
+	// Min returns the minimum value in a sequence.
+	//
+	// Require: less comparer provided via WithLessComparer
+	Min() T
+
+	// MinBy returns the minimum value in a sequence according to provided comparer.
+	MinBy(lessComparer func(left, right T) bool) T
+
 	// Order sorts the elements of a sequence in ascending order.
 	//
 	// Require: less comparer provided via WithLessComparer
