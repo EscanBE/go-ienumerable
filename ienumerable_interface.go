@@ -92,6 +92,18 @@ type IEnumerable[T any] interface {
 	// Concat concatenates two sequences.
 	Concat(second IEnumerable[T]) IEnumerable[T]
 
+	// Contains determines whether a sequence contains a specified element.
+	//
+	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
+	//
+	// Require: equality comparer provided via WithEqualsComparer
+	Contains(value T) bool
+
+	// ContainsBy determines whether a sequence contains a specified element by using the specified equality comparer.
+	//
+	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
+	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
+
 	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
 	CountBy(predicate func(T) bool) int
 
