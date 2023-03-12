@@ -137,9 +137,11 @@ type IEnumerable[T any] interface {
 
 	// SumInt32 computes the sum of a sequence of integer values.
 	//
-	// Notice 1: will panic if sum is overflow int32
+	// Notice 1: will panic if sum result is overflow int32
 	//
-	// Notice 2: will panic if element in array is not integer or is integer but overflow int32
+	// Notice 2: will panic if during sum, value is overflow int64
+	//
+	// Notice 3: will panic if element in array is not integer or is integer but overflow int32
 	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
 	SumInt32() int32
 

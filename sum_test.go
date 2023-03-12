@@ -62,6 +62,12 @@ func Test_enumerable_SumInt32(t *testing.T) {
 		assert.Equal(t, 0, int(NewIEnumerable[uint]().SumInt32()))
 	})
 
+	t.Run("empty of interface{} (aka any) returns 0", func(t *testing.T) {
+		defer deferWantPanicDepends(t, false)
+
+		assert.Equal(t, 0, int(NewIEnumerable[any]().SumInt32()))
+	})
+
 	t.Run("panic if result is overflow int32", func(t *testing.T) {
 		defer func() {
 			err := recover()
@@ -247,6 +253,12 @@ func Test_enumerable_SumInt64(t *testing.T) {
 		assert.Equal(t, 0, int(NewIEnumerable[uint]().SumInt64()))
 	})
 
+	t.Run("empty of interface{} (aka any) returns 0", func(t *testing.T) {
+		defer deferWantPanicDepends(t, false)
+
+		assert.Equal(t, 0, int(NewIEnumerable[any]().SumInt64()))
+	})
+
 	t.Run("panic if result is overflow int64 (positive)", func(t *testing.T) {
 		defer func() {
 			err := recover()
@@ -393,6 +405,12 @@ func Test_enumerable_SumFloat32(t *testing.T) {
 		assert.Equal(t, 0, int(NewIEnumerable[uint]().SumFloat32()))
 		assert.Equal(t, 0, int(NewIEnumerable[float32]().SumFloat32()))
 		assert.Equal(t, 0, int(NewIEnumerable[float64]().SumFloat32()))
+	})
+
+	t.Run("empty of interface{} (aka any) returns 0", func(t *testing.T) {
+		defer deferWantPanicDepends(t, false)
+
+		assert.Equal(t, 0, int(NewIEnumerable[any]().SumFloat32()))
 	})
 
 	t.Run("panic if result is overflow float32 (positive)", func(t *testing.T) {
@@ -552,6 +570,12 @@ func Test_enumerable_SumFloat64(t *testing.T) {
 		assert.Equal(t, 0, int(NewIEnumerable[uint]().SumFloat64()))
 		assert.Equal(t, 0, int(NewIEnumerable[float32]().SumFloat64()))
 		assert.Equal(t, 0, int(NewIEnumerable[float64]().SumFloat64()))
+	})
+
+	t.Run("empty of interface{} (aka any) returns 0", func(t *testing.T) {
+		defer deferWantPanicDepends(t, false)
+
+		assert.Equal(t, 0, int(NewIEnumerable[any]().SumFloat64()))
 	})
 
 	t.Run("panic if result is overflow float64 (positive)", func(t *testing.T) {

@@ -9,12 +9,13 @@ func (src *enumerable[T]) SumInt32() int32 {
 	src.assertSrcNonNil()
 
 	if len(src.data) < 1 {
-		typeName := fmt.Sprintf("%T", *new(T))
-		switch typeName {
+		switch src.dataType {
+		case "":
+			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint":
 			return 0
 		default:
-			panic(fmt.Errorf("type %s cannot be tried to cast to int32", typeName))
+			panic(fmt.Errorf("type %s cannot be tried to cast to int32", src.dataType))
 		}
 	}
 
@@ -36,12 +37,13 @@ func (src *enumerable[T]) SumInt64() int64 {
 	src.assertSrcNonNil()
 
 	if len(src.data) < 1 {
-		typeName := fmt.Sprintf("%T", *new(T))
-		switch typeName {
+		switch src.dataType {
+		case "":
+			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint":
 			return 0
 		default:
-			panic(fmt.Errorf("type %s cannot be tried to cast to int64", typeName))
+			panic(fmt.Errorf("type %s cannot be tried to cast to int64", src.dataType))
 		}
 	}
 
@@ -136,12 +138,13 @@ func (src *enumerable[T]) SumFloat32() float32 {
 	src.assertSrcNonNil()
 
 	if len(src.data) < 1 {
-		typeName := fmt.Sprintf("%T", *new(T))
-		switch typeName {
+		switch src.dataType {
+		case "":
+			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint", "float32", "float64":
 			return 0
 		default:
-			panic(fmt.Errorf("type %s cannot be tried to cast to float32", typeName))
+			panic(fmt.Errorf("type %s cannot be tried to cast to float32", src.dataType))
 		}
 	}
 
@@ -252,12 +255,13 @@ func (src *enumerable[T]) SumFloat64() float64 {
 	src.assertSrcNonNil()
 
 	if len(src.data) < 1 {
-		typeName := fmt.Sprintf("%T", *new(T))
-		switch typeName {
+		switch src.dataType {
+		case "":
+			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint", "float32", "float64":
 			return 0
 		default:
-			panic(fmt.Errorf("type %s cannot be tried to cast to float64", typeName))
+			panic(fmt.Errorf("type %s cannot be tried to cast to float64", src.dataType))
 		}
 	}
 
