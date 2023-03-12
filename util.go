@@ -380,3 +380,80 @@ func (src *enumerable[T]) unboxAnyAsInt64(v T) int64 {
 		panic(makeCastError(v, "int64"))
 	}
 }
+
+func (src *enumerable[T]) unboxAnyAsInt(v T) int {
+
+	if src.dataType == "" {
+		// fall through
+	} else if src.dataType == "int" {
+		return any(v).(int)
+	} else if src.dataType == "int64" {
+		if vi, oki := any(v).(int64); oki && math.MinInt <= vi && vi <= math.MaxInt {
+			return int(vi)
+		}
+		panic(makeCastError2(v, "int", src.dataType))
+	} else if src.dataType == "int8" {
+		return int(any(v).(int8))
+	} else if src.dataType == "int32" {
+		return int(any(v).(int32))
+	} else if src.dataType == "int16" {
+		return int(any(v).(int16))
+	} else if src.dataType == "uint" {
+		if vi, oki := any(v).(uint); oki && vi <= math.MaxInt {
+			return int(vi)
+		}
+		panic(makeCastError2(v, "int", src.dataType))
+	} else if src.dataType == "uint64" {
+		if vi, oki := any(v).(uint64); oki && vi <= math.MaxInt {
+			return int(vi)
+		}
+		panic(makeCastError2(v, "int", src.dataType))
+	} else if src.dataType == "uint32" {
+		if vi, oki := any(v).(uint32); oki && uint64(vi) <= uint64(math.MaxInt) {
+			return int(vi)
+		}
+		panic(makeCastError2(v, "int", src.dataType))
+	} else if src.dataType == "uint8" {
+		return int(any(v).(uint8))
+	} else if src.dataType == "uint16" {
+		return int(any(v).(uint16))
+	} else {
+		panic(makeCastError(v, "int"))
+	}
+
+	if vi, oki := any(v).(int); oki {
+		return vi
+	} else if v64, ok64 := any(v).(int64); ok64 {
+		if math.MinInt > v64 || v64 > math.MaxInt {
+			panic(makeCastError(v, "int"))
+		}
+		return int(v64)
+	} else if v8, ok8 := any(v).(int8); ok8 {
+		return int(v8)
+	} else if v32, ok32 := any(v).(int32); ok32 {
+		return int(v32)
+	} else if v16, ok16 := any(v).(int16); ok16 {
+		return int(v16)
+	} else if vui, okui := any(v).(uint); okui {
+		if vui > math.MaxInt {
+			panic(makeCastError(v, "int"))
+		}
+		return int(vui)
+	} else if vu64, oku64 := any(v).(uint64); oku64 {
+		if vu64 > math.MaxInt {
+			panic(makeCastError(v, "int"))
+		}
+		return int(vu64)
+	} else if vu32, oku32 := any(v).(uint32); oku32 {
+		if uint64(vu32) > uint64(math.MaxInt) {
+			panic(makeCastError(v, "int"))
+		}
+		return int(vu32)
+	} else if vu8, oku8 := any(v).(uint8); oku8 {
+		return int(vu8)
+	} else if vu16, oku16 := any(v).(uint16); oku16 {
+		return int(vu16)
+	} else {
+		panic(makeCastError(v, "int"))
+	}
+}

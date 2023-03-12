@@ -359,6 +359,10 @@ type IEnumerable[T any] interface {
 	// Panic if over range
 	unboxAnyAsInt32(v T) int32
 
+	// unboxAnyAsInt unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int.
+	// Panic if over range
+	unboxAnyAsInt(v T) int
+
 	// unboxAnyAsInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int64.
 	// Panic if over range
 	unboxAnyAsInt64(v T) int64
