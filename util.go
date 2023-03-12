@@ -129,8 +129,116 @@ func copySlice[T any](src []T) []T {
 	return dst
 }
 
+func (src *enumerable[T]) unboxAnyAsByte(v T) byte {
+	if src.dataType == "" {
+		// fall through
+	} else if src.dataType == "int" {
+		if vi, oki := any(v).(int); oki && 0 <= vi && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "int64" {
+		if vi, oki := any(v).(int64); oki && 0 <= vi && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "int8" {
+		if vi, oki := any(v).(int8); oki && 0 <= vi {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "int32" {
+		if vi, oki := any(v).(int32); oki && 0 <= vi && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "int16" {
+		if vi, oki := any(v).(int16); oki && 0 <= vi && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "uint" {
+		if vi, oki := any(v).(uint); oki && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "uint64" {
+		if vi, oki := any(v).(uint64); oki && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "uint32" {
+		if vi, oki := any(v).(uint32); oki && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else if src.dataType == "uint8" {
+		return any(v).(uint8)
+	} else if src.dataType == "uint16" {
+		if vi, oki := any(v).(uint16); oki && vi <= math.MaxUint8 {
+			return byte(vi)
+		}
+		panic(makeCastError2(v, "byte", src.dataType))
+	} else {
+		panic(makeCastError(v, "byte"))
+	}
+
+	if vi, oki := any(v).(int); oki {
+		if 0 > vi || vi > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(vi)
+	} else if v64, ok64 := any(v).(int64); ok64 {
+		if 0 > v64 || v64 > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(v64)
+	} else if v8, ok8 := any(v).(int8); ok8 {
+		if 0 > v8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(v8)
+	} else if v32, ok32 := any(v).(int32); ok32 {
+		if 0 > v32 || v32 > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(v32)
+	} else if v16, ok16 := any(v).(int16); ok16 {
+		if 0 > v16 || v16 > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(v16)
+	} else if vui, okui := any(v).(uint); okui {
+		if vui > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(vui)
+	} else if vu64, oku64 := any(v).(uint64); oku64 {
+		if vu64 > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(vu64)
+	} else if vu32, oku32 := any(v).(uint32); oku32 {
+		if vu32 > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(vu32)
+	} else if vu8, oku8 := any(v).(uint8); oku8 {
+		return vu8
+	} else if vu16, oku16 := any(v).(uint16); oku16 {
+		if vu16 > math.MaxUint8 {
+			panic(makeCastError(v, "byte"))
+		}
+		return byte(vu16)
+	} else {
+		panic(makeCastError(v, "byte"))
+	}
+}
+
 func (src *enumerable[T]) unboxAnyAsInt32(v T) int32 {
-	if src.dataType == "int" {
+	if src.dataType == "" {
+		// fall through
+	} else if src.dataType == "int" {
 		if vi, oki := any(v).(int); oki && math.MinInt32 <= vi && vi <= math.MaxInt32 {
 			return int32(vi)
 		}
@@ -165,7 +273,7 @@ func (src *enumerable[T]) unboxAnyAsInt32(v T) int32 {
 		return int32(any(v).(uint8))
 	} else if src.dataType == "uint16" {
 		return int32(any(v).(uint16))
-	} else if src.dataType != "" {
+	} else {
 		panic(makeCastError(v, "int32"))
 	}
 
@@ -210,7 +318,9 @@ func (src *enumerable[T]) unboxAnyAsInt32(v T) int32 {
 }
 
 func (src *enumerable[T]) unboxAnyAsInt64(v T) int64 {
-	if src.dataType == "int" {
+	if src.dataType == "" {
+		// fall through
+	} else if src.dataType == "int" {
 		return int64(any(v).(int))
 	} else if src.dataType == "int64" {
 		return any(v).(int64)
@@ -236,7 +346,7 @@ func (src *enumerable[T]) unboxAnyAsInt64(v T) int64 {
 		return int64(any(v).(uint8))
 	} else if src.dataType == "uint16" {
 		return int64(any(v).(uint16))
-	} else if src.dataType != "" {
+	} else {
 		panic(makeCastError(v, "int64"))
 	}
 

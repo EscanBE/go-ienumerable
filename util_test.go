@@ -250,6 +250,471 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 	})
 }
 
+func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
+	eany := NewIEnumerable[any]()
+	t.Run("in range", func(t *testing.T) {
+		eany.unboxAnyAsByte(int8(0))
+		eany.unboxAnyAsByte(int8(math.MaxInt8))
+		eany.unboxAnyAsByte(uint8(0))
+		eany.unboxAnyAsByte(uint8(math.MaxUint8))
+		eany.unboxAnyAsByte(int16(0))
+		eany.unboxAnyAsByte(int16(math.MaxUint8))
+		eany.unboxAnyAsByte(uint16(0))
+		eany.unboxAnyAsByte(uint16(math.MaxUint8))
+		eany.unboxAnyAsByte(int32(0))
+		eany.unboxAnyAsByte(int32(math.MaxUint8))
+		eany.unboxAnyAsByte(uint32(0))
+		eany.unboxAnyAsByte(uint32(math.MaxUint8))
+		eany.unboxAnyAsByte(int64(0))
+		eany.unboxAnyAsByte(int64(math.MaxUint8))
+		eany.unboxAnyAsByte(uint64(0))
+		eany.unboxAnyAsByte(uint64(math.MaxUint8))
+		//goland:noinspection GoRedundantConversion
+		eany.unboxAnyAsByte(int(0))
+		//goland:noinspection GoRedundantConversion
+		eany.unboxAnyAsByte(int(math.MaxUint8))
+		eany.unboxAnyAsByte(uint(0))
+		eany.unboxAnyAsByte(uint(math.MaxUint8))
+	})
+
+	t.Run("int8 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int8 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int8(-1))
+	})
+
+	t.Run("int16 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int16(math.MaxUint8 + 1))
+	})
+
+	t.Run("int16 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int16(-1))
+	})
+
+	t.Run("uint16 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint16 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
+	})
+
+	t.Run("int32 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int32(math.MaxUint8 + 1))
+	})
+
+	t.Run("int32 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int32(-1))
+	})
+
+	t.Run("uint32 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
+	})
+
+	t.Run("int64 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int64(math.MaxUint8 + 1))
+	})
+
+	t.Run("int64 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(int64(-1))
+	})
+
+	t.Run("uint64 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
+	})
+
+	t.Run("int over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int cannot be casted to byte")
+		}()
+
+		//goland:noinspection GoRedundantConversion
+		eany.unboxAnyAsByte(int(math.MaxUint8 + 1))
+	})
+
+	t.Run("int under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int cannot be casted to byte")
+		}()
+
+		//goland:noinspection GoRedundantConversion
+		eany.unboxAnyAsByte(int(-1))
+	})
+
+	t.Run("uint over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to byte")
+		}()
+
+		eany.unboxAnyAsByte(uint(math.MaxUint8 + 1))
+	})
+
+	t.Run("not integer", func(t *testing.T) {
+		str := "1"
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to byte", str))
+		}()
+
+		eany.unboxAnyAsByte(any(str))
+	})
+}
+
+func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
+	ei8 := NewIEnumerable[int8]()
+	eu8 := NewIEnumerable[uint8]()
+	ei16 := NewIEnumerable[int16]()
+	eu16 := NewIEnumerable[uint16]()
+	ei32 := NewIEnumerable[int32]()
+	eu32 := NewIEnumerable[uint32]()
+	ei64 := NewIEnumerable[int64]()
+	eu64 := NewIEnumerable[uint64]()
+	ei := NewIEnumerable[int]()
+	eu := NewIEnumerable[uint]()
+	t.Run("in range", func(t *testing.T) {
+		ei8.unboxAnyAsByte(int8(0))
+		ei8.unboxAnyAsByte(int8(math.MaxInt8))
+		eu8.unboxAnyAsByte(uint8(0))
+		eu8.unboxAnyAsByte(uint8(math.MaxUint8))
+		ei16.unboxAnyAsByte(int16(0))
+		ei16.unboxAnyAsByte(int16(math.MaxUint8))
+		eu16.unboxAnyAsByte(uint16(0))
+		eu16.unboxAnyAsByte(uint16(math.MaxUint8))
+		ei32.unboxAnyAsByte(int32(0))
+		ei32.unboxAnyAsByte(int32(math.MaxUint8))
+		eu32.unboxAnyAsByte(uint32(0))
+		eu32.unboxAnyAsByte(uint32(math.MaxUint8))
+		ei64.unboxAnyAsByte(int64(0))
+		ei64.unboxAnyAsByte(int64(math.MaxUint8))
+		eu64.unboxAnyAsByte(uint64(0))
+		eu64.unboxAnyAsByte(uint64(math.MaxUint8))
+		//goland:noinspection GoRedundantConversion
+		ei.unboxAnyAsByte(int(0))
+		//goland:noinspection GoRedundantConversion
+		ei.unboxAnyAsByte(int(math.MaxUint8))
+		eu.unboxAnyAsByte(uint(0))
+		eu.unboxAnyAsByte(uint(math.MaxUint8))
+	})
+
+	t.Run("int8 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int8 (expect: int8) cannot be casted to byte")
+		}()
+
+		ei8.unboxAnyAsByte(int8(-1))
+	})
+
+	t.Run("int16 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 (expect: int16) cannot be casted to byte")
+		}()
+
+		ei16.unboxAnyAsByte(int16(math.MaxUint8 + 1))
+	})
+
+	t.Run("int16 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 (expect: int16) cannot be casted to byte")
+		}()
+
+		ei16.unboxAnyAsByte(int16(-1))
+	})
+
+	t.Run("uint16 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint16 (expect: uint16) cannot be casted to byte")
+		}()
+
+		eu16.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
+	})
+
+	t.Run("int32 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 (expect: int32) cannot be casted to byte")
+		}()
+
+		ei32.unboxAnyAsByte(int32(math.MaxUint8 + 1))
+	})
+
+	t.Run("int32 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 (expect: int32) cannot be casted to byte")
+		}()
+
+		ei32.unboxAnyAsByte(int32(-1))
+	})
+
+	t.Run("uint32 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 (expect: uint32) cannot be casted to byte")
+		}()
+
+		eu32.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
+	})
+
+	t.Run("int64 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to byte")
+		}()
+
+		ei64.unboxAnyAsByte(int64(math.MaxUint8 + 1))
+	})
+
+	t.Run("int64 under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to byte")
+		}()
+
+		ei64.unboxAnyAsByte(int64(-1))
+	})
+
+	t.Run("uint64 over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to byte")
+		}()
+
+		eu64.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
+	})
+
+	t.Run("int over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int (expect: int) cannot be casted to byte")
+		}()
+
+		//goland:noinspection GoRedundantConversion
+		ei.unboxAnyAsByte(int(math.MaxUint8 + 1))
+	})
+
+	t.Run("int under range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int (expect: int) cannot be casted to byte")
+		}()
+
+		//goland:noinspection GoRedundantConversion
+		ei.unboxAnyAsByte(int(-1))
+	})
+
+	t.Run("uint over range", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to byte")
+		}()
+
+		eu.unboxAnyAsByte(uint(math.MaxUint8 + 1))
+	})
+
+	t.Run("not integer", func(t *testing.T) {
+		str := "1"
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to byte", str))
+		}()
+
+		NewIEnumerable[string]().unboxAnyAsByte(str)
+	})
+}
+
 func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 	eany := NewIEnumerable[any]()
 	t.Run("in range", func(t *testing.T) {
