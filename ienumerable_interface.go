@@ -233,6 +233,14 @@ type IEnumerable[T any] interface {
 	// MinBy returns the minimum value in a sequence according to provided comparer.
 	MinBy(lessComparer func(left, right T) bool) T
 
+	// Max returns the minimum value in a sequence.
+	//
+	// Require: less comparer provided via WithLessComparer
+	Max() T
+
+	// MaxBy returns the minimum value in a sequence according to provided LESS comparer.
+	MaxBy(lessComparer func(left, right T) bool) T
+
 	// Order sorts the elements of a sequence in ascending order.
 	//
 	// Require: less comparer provided via WithLessComparer
