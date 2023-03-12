@@ -76,14 +76,30 @@ type IEnumerable[T any] interface {
 	// Notice: no comparer from source will be brought along with new IEnumerable[bool]
 	CastBool() IEnumerable[bool]
 
+	// ChunkToHolder (Chunk) supposed to split the elements of a sequence into chunks of size at most size.
+	// Use method GetChunkedIEnumeratorFromHolder to convert from ChunkHolder[T] back to IEnumerable[[]T].
+	//
+	// Due to limitation of Golang that can not define a method signature like
+	//
+	// `func (src *enumerable[T]) Chunk(size int) IEnumerable[[]T]`
+	//
+	// so the method Chunk is temporary renamed to ChunkToHolder and ChunkToAny, the name Chunk is reserved for future
+	// for implementation when Go supports the above method signature.
+	//
+	// ChunkToHolder with result ChunkHolder designed as a stepping stone
+	// then can use it to convert it back to IEnumerable[[]T] via GetChunkedIEnumeratorFromHolder function
+	ChunkToHolder(size int) ChunkHolder[T]
+
 	// ChunkToAny (Chunk) splits the elements of a sequence into chunks of size at most size.
 	//
 	// Due to limitation of Golang that can not define a method signature like
 	//
-	// `func (src *enumerable[T]) ChunkToAny(size int) IEnumerable[[]T]`
+	// `func (src *enumerable[T]) Chunk(size int) IEnumerable[[]T]`
 	//
-	// so the method Chunk is temporary renamed to ChunkToAny and the name Chunk is reserved for future
-	// for implementation when Go supports the above method signature
+	// so the method Chunk is temporary renamed to ChunkToAny and ChunkToHolder, the name Chunk is reserved for future
+	// for implementation when Go supports the above method signature.
+	//
+	// ChunkToAny with result IEnumerable[[]any] is not really a nice way since we have to convert it back to original type of it.
 	ChunkToAny(size int) IEnumerable[[]any]
 
 	// Concat concatenates two sequences.

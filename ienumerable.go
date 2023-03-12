@@ -16,7 +16,7 @@ type enumerable[T any] struct {
 	lessComparer     func(d1, d2 T) bool
 }
 
-// NewIEnumerable returns an IEnumerable with the same time as data elements
+// NewIEnumerable returns an IEnumerable with the same type as data elements
 func NewIEnumerable[T any](data ...T) IEnumerable[T] {
 	dataType := fmt.Sprintf("%T", *new(T))
 	if dataType == "<nil>" {
