@@ -292,27 +292,7 @@ type IEnumerable[T any] interface {
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#
 
-	// Extra 1:
-
-	// FirstSafe returns the first element of a sequence, with error if sequence contains no element
-	FirstSafe() (T, error)
-
-	// FirstSafeBy returns the first element in a sequence that satisfies a specified condition, with error if sequence contains no element or predicate is nil
-	FirstSafeBy(predicate func(T) bool) (T, error)
-
-	// FirstOrDefaultSafeBy returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found, with error if predicate is nil
-	FirstOrDefaultSafeBy(predicate func(T) bool, defaultValue T) (T, error)
-
-	// LastOrDefaultSafeBy returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found, with error if predicate is nil
-	LastOrDefaultSafeBy(predicate func(T) bool, defaultValue T) (T, error)
-
-	// LastSafe returns the last element of a sequence, with error if sequence contains no element
-	LastSafe() (T, error)
-
-	// LastSafeBy returns the last element in a sequence that satisfies a specified condition, with error if sequence contains no element or predicate is nil
-	LastSafeBy(predicate func(T) bool) (T, error)
-
-	// Extra 2: the following methods are used to inject comparer into IEnumerable[T] instance
+	// Extra: the following methods are used to inject comparer into IEnumerable[T] instance
 	// and those comparers is going to be used for methods like: Distinct, Order, etc
 
 	// WithEqualsComparer the equality comparer, to indicate if 2 source values are equals, will be embedded

@@ -5,20 +5,20 @@ import (
 	"testing"
 )
 
-func Test_enumerable_LastOrDefaultSafeBy_LastOrDefaultBy(t *testing.T) {
+func Test_enumerable_LastOrDefaultBy(t *testing.T) {
 	tests := []struct {
 		name         string
 		src          IEnumerable[int]
 		predicate    func(int) bool
 		defaultValue int
 		wantResult   int
-		wantErr      bool
+		wantPanic    bool
 	}{
 		{
 			name:      "nil predicate",
 			src:       createRandomIntEnumerable(3),
 			predicate: nil,
-			wantErr:   true,
+			wantPanic: true,
 		},
 		{
 			name: "last",
@@ -28,7 +28,7 @@ func Test_enumerable_LastOrDefaultSafeBy_LastOrDefaultBy(t *testing.T) {
 			},
 			defaultValue: 999,
 			wantResult:   7,
-			wantErr:      false,
+			wantPanic:    false,
 		},
 		{
 			name: "not any match",
@@ -38,7 +38,7 @@ func Test_enumerable_LastOrDefaultSafeBy_LastOrDefaultBy(t *testing.T) {
 			},
 			defaultValue: 1,
 			wantResult:   1,
-			wantErr:      false,
+			wantPanic:    false,
 		},
 		{
 			name: "sequence contains no element",
@@ -48,7 +48,7 @@ func Test_enumerable_LastOrDefaultSafeBy_LastOrDefaultBy(t *testing.T) {
 			},
 			defaultValue: 9,
 			wantResult:   9,
-			wantErr:      false,
+			wantPanic:    false,
 		},
 	}
 	for _, tt := range tests {
@@ -59,21 +59,10 @@ func Test_enumerable_LastOrDefaultSafeBy_LastOrDefaultBy(t *testing.T) {
 				backSrc.assertUnchanged(t, tt.src)
 			}()
 
-			gotResult, err := tt.src.LastOrDefaultSafeBy(tt.predicate, tt.defaultValue)
-			assert.Equalf(t, tt.wantErr, err != nil, "error state is different, expect err %t, got %t", tt.wantErr, err != nil)
-			if err == nil && !tt.wantErr {
-				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-			}
+			defer deferWantPanicDepends(t, tt.wantPanic)
 
-			backSrc.assertUnchanged(t, tt.src)
-
-			if tt.wantErr {
-				defer deferWantPanicDepends(t, true)
-				_ = tt.src.LastOrDefaultBy(tt.predicate, tt.defaultValue)
-			} else if err == nil {
-				gotResult = tt.src.LastOrDefaultBy(tt.predicate, tt.defaultValue)
-				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-			}
+			gotResult := tt.src.LastOrDefaultBy(tt.predicate, tt.defaultValue)
+			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 		})
 	}
 }

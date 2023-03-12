@@ -5,19 +5,19 @@ import (
 	"testing"
 )
 
-func Test_enumerable_LastSafeBy_LastBy(t *testing.T) {
+func Test_enumerable_LastBy(t *testing.T) {
 	tests := []struct {
 		name       string
 		src        IEnumerable[int]
 		predicate  func(int) bool
 		wantResult int
-		wantErr    bool
+		wantPanic  bool
 	}{
 		{
 			name:      "nil predicate",
 			src:       createRandomIntEnumerable(3),
 			predicate: nil,
-			wantErr:   true,
+			wantPanic: true,
 		},
 		{
 			name: "last",
@@ -26,7 +26,7 @@ func Test_enumerable_LastSafeBy_LastBy(t *testing.T) {
 				return i >= 6
 			},
 			wantResult: 7,
-			wantErr:    false,
+			wantPanic:  false,
 		},
 		{
 			name: "not any match",
@@ -34,7 +34,7 @@ func Test_enumerable_LastSafeBy_LastBy(t *testing.T) {
 			predicate: func(i int) bool {
 				return i >= 8
 			},
-			wantErr: true,
+			wantPanic: true,
 		},
 		{
 			name: "sequence contains no element",
@@ -42,7 +42,7 @@ func Test_enumerable_LastSafeBy_LastBy(t *testing.T) {
 			predicate: func(i int) bool {
 				return i >= 8
 			},
-			wantErr: true,
+			wantPanic: true,
 		},
 	}
 	for _, tt := range tests {
@@ -53,42 +53,31 @@ func Test_enumerable_LastSafeBy_LastBy(t *testing.T) {
 				backSrc.assertUnchanged(t, tt.src)
 			}()
 
-			gotResult, err := tt.src.LastSafeBy(tt.predicate)
-			assert.Equalf(t, tt.wantErr, err != nil, "error state is different, expect err %t, got %t", tt.wantErr, err != nil)
-			if err == nil && !tt.wantErr {
-				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-			}
+			defer deferWantPanicDepends(t, tt.wantPanic)
 
-			backSrc.assertUnchanged(t, tt.src)
-
-			if tt.wantErr {
-				defer deferWantPanicDepends(t, true)
-				_ = tt.src.LastBy(tt.predicate)
-			} else if err == nil {
-				gotResult = tt.src.LastBy(tt.predicate)
-				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-			}
+			gotResult := tt.src.LastBy(tt.predicate)
+			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 		})
 	}
 }
 
-func Test_enumerable_LastSafe_Last(t *testing.T) {
+func Test_enumerable_Last(t *testing.T) {
 	tests := []struct {
 		name       string
 		src        IEnumerable[int]
 		wantResult int
-		wantErr    bool
+		wantPanic  bool
 	}{
 		{
 			name:       "last",
 			src:        createIntEnumerable(5, 7),
 			wantResult: 7,
-			wantErr:    false,
+			wantPanic:  false,
 		},
 		{
-			name:    "not any",
-			src:     createEmptyIntEnumerable(),
-			wantErr: true,
+			name:      "not any",
+			src:       createEmptyIntEnumerable(),
+			wantPanic: true,
 		},
 	}
 	for _, tt := range tests {
@@ -99,21 +88,10 @@ func Test_enumerable_LastSafe_Last(t *testing.T) {
 				backSrc.assertUnchanged(t, tt.src)
 			}()
 
-			gotResult, err := tt.src.LastSafe()
-			assert.Equalf(t, tt.wantErr, err != nil, "error state is different, expect err %t, got %t", tt.wantErr, err != nil)
-			if err == nil && !tt.wantErr {
-				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-			}
+			defer deferWantPanicDepends(t, tt.wantPanic)
 
-			backSrc.assertUnchanged(t, tt.src)
-
-			if tt.wantErr {
-				defer deferWantPanicDepends(t, true)
-				_ = tt.src.Last()
-			} else if err == nil {
-				gotResult = tt.src.Last()
-				assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-			}
+			gotResult := tt.src.Last()
+			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 		})
 	}
 }
