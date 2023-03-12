@@ -300,6 +300,27 @@ type IEnumerable[T any] interface {
 	// and panic if more than one such element exists.
 	SingleBy(predicate func(T) bool) T
 
+	// SingleOrDefault returns the only element of a sequence,
+	// or a default value of type if the sequence is empty;
+	// this panics if there is more than one element in the sequence.
+	SingleOrDefault() T
+
+	// SingleOrDefaultBy returns the only element of a sequence that satisfies a specified condition
+	// or a default value of type if no such element exists;
+	// this method panics if more than one element satisfies the condition.
+	SingleOrDefaultBy(predicate func(T) bool) T
+
+	// SingleOrDefaultUsing returns the only element of a sequence,
+	// or a specified default value if the sequence is empty;
+	// this method panics if there is more than one element in the sequence.
+	SingleOrDefaultUsing(defaultValue T) T
+
+	// SingleOrDefaultByUsing returns the only element of a sequence that satisfies a specified condition,
+	// or a specified default value of type if no such element exists
+	// or no element of the sequence that satisfies the specified condition;
+	// this method panics if more than one element satisfies the condition.
+	SingleOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
+
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
 

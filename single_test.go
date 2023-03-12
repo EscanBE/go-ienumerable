@@ -138,4 +138,24 @@ func Test_enumerable_SingleBy(t *testing.T) {
 			return v < 5
 		})
 	})
+
+	t.Run("nil predicate", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](6, 9)
+		bSrc := backupForAssetUnchanged(eSrc)
+
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), getErrorNilPredicate().Error())
+		}()
+
+		_ = eSrc.SingleBy(nil)
+	})
 }

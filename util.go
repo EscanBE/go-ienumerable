@@ -60,8 +60,12 @@ func (_ *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
 
 func (src *enumerable[T]) assertPredicateNonNil(predicate func(T) bool) {
 	if predicate == nil {
-		panic("predicate is nil")
+		panic(getErrorNilPredicate())
 	}
+}
+
+func getErrorNilPredicate() error {
+	return fmt.Errorf("predicate is nil")
 }
 
 func (src *enumerable[T]) assertComparerNonNil(comparer func(T, T) bool) {
