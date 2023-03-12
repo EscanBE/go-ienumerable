@@ -53,7 +53,9 @@ func Test_enumerable_Count_CountBy(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			assert.Equalf(t, tt.wantCount, tt.src.Count(), "Count()")
+			assert.Equalf(t, int64(tt.wantCount), tt.src.LongCount(), "LongCount()")
 			assert.Equalf(t, tt.wantCountBy, tt.src.CountBy(tt.countBy), "CountBy()")
+			assert.Equalf(t, int64(tt.wantCountBy), tt.src.LongCountBy(tt.countBy), "LongCountBy()")
 		})
 	}
 

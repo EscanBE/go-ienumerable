@@ -215,6 +215,16 @@ type IEnumerable[T any] interface {
 	// LastOrDefaultByUsing returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
 	LastOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
 
+	// LongCount returns an int64 that represents the number of elements in a sequence.
+	//
+	// This method is meaning-less in Go because the Count method returns an int already has max value of int64 in x64 machines
+	LongCount() int64
+
+	// LongCountBy returns an int64 that represents how many elements in the specified sequence satisfy a condition.
+	//
+	// This method is meaning-less in Go because the CountBy method returns an int already has max value of int64 in x64 machines
+	LongCountBy(predicate func(T) bool) int64
+
 	// Order sorts the elements of a sequence in ascending order.
 	//
 	// Require: less comparer provided via WithLessComparer
