@@ -20,13 +20,13 @@ func (src *enumerable[T]) len() int {
 
 func (src *enumerable[T]) assertSrcNonNil() {
 	if src == nil {
-		panic("src is nil")
+		panic("source is nil")
 	}
 }
 
 func (src *enumerable[T]) assertSrcNonEmpty() {
 	if len(src.data) < 1 {
-		panic("src contains no element")
+		panic("source contains no element")
 	}
 }
 

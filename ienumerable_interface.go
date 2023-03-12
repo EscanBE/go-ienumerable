@@ -31,6 +31,9 @@ type IEnumerable[T any] interface {
 
 	// AsEnumerable() IEnumerable[T] <= will not be implemented because no inheritance in Go thus never use
 
+	// Average computes the average of a sequence of integer/float values.
+	Average() float64
+
 	// Count returns the number of elements in a sequence.
 	Count() int
 
