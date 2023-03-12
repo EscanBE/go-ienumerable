@@ -348,4 +348,12 @@ type IEnumerable[T any] interface {
 	exposeData() []T
 	exposeDataType() string
 	len() int
+
+	// unboxAnyAsInt32 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int32.
+	// Panic if over range
+	unboxAnyAsInt32(v T) int32
+
+	// unboxAnyAsInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int64.
+	// Panic if over range
+	unboxAnyAsInt64(v T) int64
 }

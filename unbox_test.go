@@ -3,8 +3,45 @@ package go_ienumerable
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"math"
 	"testing"
 )
+
+func Test_unbox_alias(t *testing.T) {
+	t.Run("can not unbox custom alias not equals", func(t *testing.T) {
+		type MyInt64 int64
+		assert.Equal(t, "go_ienumerable.MyInt64", NewIEnumerable[MyInt64]().exposeDataType())
+		var mv MyInt64 = 1000
+		v, unboxOk := any(mv).(int64)
+		assert.False(t, unboxOk)
+		assert.Equal(t, int64(0), v)
+	})
+
+	t.Run("can unbox custom alias of equals", func(t *testing.T) {
+		type MyInt64 = int64
+		assert.Equal(t, "int64", NewIEnumerable[MyInt64]().exposeDataType())
+		var mv MyInt64 = 1000
+		v, unboxOk := any(mv).(int64)
+		assert.True(t, unboxOk)
+		assert.Equal(t, int64(1000), v)
+	})
+
+	t.Run("can unbox alias byte of uint8", func(t *testing.T) {
+		assert.Equal(t, "uint8", NewIEnumerable[byte]().exposeDataType())
+		var mv byte = 255
+		v, unboxOk := any(mv).(uint8)
+		assert.True(t, unboxOk)
+		assert.Equal(t, uint8(255), v)
+	})
+
+	t.Run("can unbox alias rune of int32", func(t *testing.T) {
+		assert.Equal(t, "int32", NewIEnumerable[rune]().exposeDataType())
+		var mv rune = math.MaxInt32
+		v, unboxOk := any(mv).(int32)
+		assert.True(t, unboxOk)
+		assert.Equal(t, int32(math.MaxInt32), v)
+	})
+}
 
 func Test_enumerable_Unbox(t *testing.T) {
 	t.Run("int8", func(t *testing.T) {
