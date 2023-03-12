@@ -388,10 +388,11 @@ func (src *enumerable[T]) unboxAnyAsInt(v T) int {
 	} else if src.dataType == "int" {
 		return any(v).(int)
 	} else if src.dataType == "int64" {
-		if vi, oki := any(v).(int64); oki && math.MinInt <= vi && vi <= math.MaxInt {
-			return int(vi)
-		}
-		panic(makeCastError2(v, "int", src.dataType))
+		//if vi, oki := any(v).(int64); oki && math.MinInt <= vi && vi <= math.MaxInt {
+		//	return int(vi)
+		//}
+		//panic(makeCastError2(v, "int", src.dataType))
+		return int(any(v).(int64))
 	} else if src.dataType == "int8" {
 		return int(any(v).(int8))
 	} else if src.dataType == "int32" {
@@ -409,10 +410,11 @@ func (src *enumerable[T]) unboxAnyAsInt(v T) int {
 		}
 		panic(makeCastError2(v, "int", src.dataType))
 	} else if src.dataType == "uint32" {
-		if vi, oki := any(v).(uint32); oki && uint64(vi) <= uint64(math.MaxInt) {
-			return int(vi)
-		}
-		panic(makeCastError2(v, "int", src.dataType))
+		//if vi, oki := any(v).(uint32); oki && uint64(vi) <= uint64(math.MaxInt) {
+		//	return int(vi)
+		//}
+		//panic(makeCastError2(v, "int", src.dataType))
+		return int(any(v).(uint32))
 	} else if src.dataType == "uint8" {
 		return int(any(v).(uint8))
 	} else if src.dataType == "uint16" {
@@ -424,9 +426,9 @@ func (src *enumerable[T]) unboxAnyAsInt(v T) int {
 	if vi, oki := any(v).(int); oki {
 		return vi
 	} else if v64, ok64 := any(v).(int64); ok64 {
-		if math.MinInt > v64 || v64 > math.MaxInt {
-			panic(makeCastError(v, "int"))
-		}
+		//if math.MinInt > v64 || v64 > math.MaxInt {
+		//	panic(makeCastError(v, "int"))
+		//}
 		return int(v64)
 	} else if v8, ok8 := any(v).(int8); ok8 {
 		return int(v8)
@@ -445,9 +447,9 @@ func (src *enumerable[T]) unboxAnyAsInt(v T) int {
 		}
 		return int(vu64)
 	} else if vu32, oku32 := any(v).(uint32); oku32 {
-		if uint64(vu32) > uint64(math.MaxInt) {
-			panic(makeCastError(v, "int"))
-		}
+		//if uint64(vu32) > uint64(math.MaxInt) {
+		//	panic(makeCastError(v, "int"))
+		//}
 		return int(vu32)
 	} else if vu8, oku8 := any(v).(uint8); oku8 {
 		return int(vu8)

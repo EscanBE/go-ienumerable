@@ -61,9 +61,9 @@ func (src *enumerable[T]) SumInt() int {
 
 	vSum := sum.Int64()
 
-	if math.MinInt > vSum || vSum > math.MaxInt {
-		panic("overflow")
-	}
+	//if math.MinInt > vSum || vSum > math.MaxInt {
+	//	panic("overflow")
+	//}
 
 	return int(vSum)
 }
