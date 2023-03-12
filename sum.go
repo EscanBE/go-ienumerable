@@ -2,7 +2,6 @@ package go_ienumerable
 
 import (
 	"fmt"
-	"github.com/johncgriffin/overflow"
 	"math"
 )
 
@@ -23,7 +22,7 @@ func (src *enumerable[T]) SumInt32() int32 {
 
 	for _, d := range src.data {
 		i32 := src.unboxAnyAsInt32(d)
-		sum = overflow.Add64p(sum, int64(i32))
+		sum = add64p(sum, int64(i32))
 	}
 
 	if math.MinInt32 > sum || sum > math.MaxInt32 {
