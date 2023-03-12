@@ -1,4 +1,4 @@
-module go-ienumerable
+module github.com/EscanBE/go-ienumerable
 
 go 1.18
 
