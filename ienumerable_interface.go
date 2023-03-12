@@ -37,7 +37,7 @@ type IEnumerable[T any] interface {
 	// CastByte casts the source IEnumerable[T] into IEnumerable[byte]
 	// if the source data type is byte (uint8), otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[byte]
+	// Notice: no comparer from source will be brought along with new IEnumerable[byte], even default
 	CastByte() IEnumerable[byte]
 
 	// CastInt32 casts the source IEnumerable[T] into IEnumerable[int32]
@@ -133,6 +133,18 @@ type IEnumerable[T any] interface {
 	//
 	// Panic if index is less than 0 or greater than or equal to the number of elements in source
 	ElementAtReverse(reverseIndex int) T
+
+	// ElementAtOrDefault returns the element at a specified index (0 based, from head) in a sequence.
+	// If index is out of range, return default value of type.
+	//
+	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
+	ElementAtOrDefault(index int) T
+
+	// ElementAtReverseOrDefault returns the element at a specified reverse index (0 based, from tail) in a sequence.
+	// If index is out of range, return default value of type.
+	//
+	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
+	ElementAtReverseOrDefault(reverseIndex int) T
 
 	// Except produces the set difference of two sequences.
 	//
