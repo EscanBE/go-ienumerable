@@ -89,6 +89,9 @@ type IEnumerable[T any] interface {
 	// for implementation when Go supports the above method signature
 	ChunkToAny(size int) IEnumerable[[]any]
 
+	// Concat concatenates two sequences.
+	Concat(second IEnumerable[T]) IEnumerable[T]
+
 	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
 	CountBy(predicate func(T) bool) int
 

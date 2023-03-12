@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math"
-	"math/big"
 	"math/rand"
 	"testing"
 )
@@ -1432,67 +1431,6 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 		}()
 
 		NewIEnumerable[string]().unboxAnyAsInt(str)
-	})
-}
-
-func Test_enumerable_unboxFloat(t *testing.T) {
-	t.Run("unbox float", func(t *testing.T) {
-		i1 := int64(math.MaxInt64)
-		rad := rand.Int63n(10000) + 100
-		i1 = i1 - rad
-		bf := big.NewFloat(float64(i1))
-		i64, a := bf.Int64()
-		assert.Equal(t, i1, i64)
-		f64, a := bf.Float64()
-		fmt.Printf("[1] %f (%d), %v, %t\n", f64, i64, a, bf.IsInf())
-
-		bf = big.NewFloat(math.MaxInt64)
-		bf = bf.Add(bf, big.NewFloat(99.99))
-		i64, a = bf.Int64()
-		assert.Equal(t, int64(math.MaxInt64), i64)
-		assert.True(t, a == big.Below || a == big.Exact)
-		f64, a = bf.Float64()
-		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
-
-		bf = big.NewFloat(float64(math.MaxInt64))
-		bf = bf.Sub(bf, big.NewFloat(99.99))
-		i64, a = bf.Int64()
-		assert.Equal(t, int64(math.MaxInt64), i64)
-		assert.True(t, a == big.Below || a == big.Exact)
-		f64, a = bf.Float64()
-		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
-
-		bf = big.NewFloat(float64(math.MinInt64))
-		bf = bf.Sub(bf, big.NewFloat(99.99))
-		i64, a = bf.Int64()
-		assert.Equal(t, int64(math.MinInt64), i64)
-		assert.True(t, a == big.Above || a == big.Exact)
-		f64, a = bf.Float64()
-		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
-
-		bf = big.NewFloat(float64(math.MinInt64))
-		bf = bf.Add(bf, big.NewFloat(99.99))
-		i64, a = bf.Int64()
-		assert.Equal(t, int64(math.MinInt64), i64)
-		assert.True(t, a == big.Above || a == big.Exact)
-		f64, a = bf.Float64()
-		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
-
-		bf = big.NewFloat(float64(math.MinInt64))
-		bf = bf.Add(bf, big.NewFloat(math.MinInt64))
-		i64, a = bf.Int64()
-		assert.Equal(t, int64(math.MinInt64), i64)
-		assert.True(t, a == big.Above || a == big.Exact)
-		f64, a = bf.Float64()
-		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
-
-		bf = bf.Sub(bf, big.NewFloat(1.23456789123456789))
-		bf = bf.Add(bf, big.NewFloat(math.MinInt64))
-		i64, a = bf.Int64()
-		assert.Equal(t, int64(math.MinInt64), i64)
-		assert.True(t, a == big.Above || a == big.Exact)
-		f64, a = bf.Float64()
-		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
 	})
 }
 
