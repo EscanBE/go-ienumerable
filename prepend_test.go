@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_enumerable_Append(t *testing.T) {
+func Test_enumerable_Prepend(t *testing.T) {
 	tests := []struct {
 		name    string
 		src     IEnumerable[int]
@@ -19,9 +19,9 @@ func Test_enumerable_Append(t *testing.T) {
 			want:    NewIEnumerable[int](1),
 		},
 		{
-			name:    "append",
-			src:     createIntEnumerable(90, 98),
-			element: 99,
+			name:    "prepend",
+			src:     createIntEnumerable(91, 99),
+			element: 90,
 			want:    createIntEnumerable(90, 99),
 		},
 	}
@@ -29,10 +29,10 @@ func Test_enumerable_Append(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.src)
 
-			eGot := tt.src.Append(tt.element)
+			eGot := tt.src.Prepend(tt.element)
 			gotData := eGot.exposeData()
 			assert.Len(t, gotData, tt.src.len()+1)
-			assert.Equal(t, tt.element, gotData[len(gotData)-1])
+			assert.Equal(t, tt.element, gotData[0])
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, eGot)
@@ -40,10 +40,10 @@ func Test_enumerable_Append(t *testing.T) {
 	}
 
 	t.Run("details", func(t *testing.T) {
-		eSrc := createIntEnumerable(60, 63)
+		eSrc := createIntEnumerable(61, 64)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		eGot := eSrc.Append(64)
+		eGot := eSrc.Prepend(60)
 		gotData := eGot.exposeData()
 		assert.Len(t, gotData, eSrc.len()+1)
 		assert.Equal(t, 60, gotData[0])

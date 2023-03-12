@@ -259,6 +259,9 @@ type IEnumerable[T any] interface {
 	// specified less comparer to compare values.
 	OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T]
 
+	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
+	Prepend(element T) IEnumerable[T]
+
 	// Reverse inverts the order of the elements in a sequence.
 	Reverse() IEnumerable[T]
 
