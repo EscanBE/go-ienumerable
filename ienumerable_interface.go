@@ -76,9 +76,6 @@ type IEnumerable[T any] interface {
 	// Notice: no comparer from source will be brought along with new IEnumerable[bool]
 	CastBool() IEnumerable[bool]
 
-	// Count returns the number of elements in a sequence.
-	Count() int
-
 	// ChunkToAny (Chunk) splits the elements of a sequence into chunks of size at most size.
 	//
 	// Due to limitation of Golang that can not define a method signature like
@@ -104,8 +101,19 @@ type IEnumerable[T any] interface {
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
 
+	// Count returns the number of elements in a sequence.
+	Count() int
+
 	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
 	CountBy(predicate func(T) bool) int
+
+	// DefaultIfEmpty returns the elements of the specified sequence
+	// or the type parameter's default value in a singleton collection if the sequence is empty.
+	DefaultIfEmpty() IEnumerable[T]
+
+	// DefaultIfEmptyUsing returns the elements of the specified sequence
+	// or the specified value in a singleton collection if the sequence is empty.
+	DefaultIfEmptyUsing(defaultValue T) IEnumerable[T]
 
 	// Distinct returns distinct elements from a sequence.
 	//
