@@ -6,6 +6,7 @@ import (
 	"math"
 	"strings"
 	"testing"
+	"time"
 )
 
 func Test_enumerable_SumInt32(t *testing.T) {
@@ -19,6 +20,16 @@ func Test_enumerable_SumInt32(t *testing.T) {
 			int(9), uint(10),
 		)
 		assert.Equal(t, int32(55), eSrc.SumInt32())
+	})
+
+	t.Run("sum correct", func(t *testing.T) {
+		halfMax := (math.MaxInt32 - 1) / 2
+		max := math.MaxInt32
+		min := math.MinInt32
+		eSrc := NewIEnumerable[any](
+			int32(max), int32(max), 2, int32(min), int32(min), int32(halfMax), int32(halfMax),
+		)
+		assert.Equal(t, int32(max-1), eSrc.SumInt32())
 	})
 
 	t.Run("empty returns 0 for only integer (string)", func(t *testing.T) {
@@ -209,7 +220,23 @@ func Test_enumerable_SumInt64(t *testing.T) {
 			int(9), uint(10),
 			int8(-1), int16(-1), int32(-1), int64(-1), int(-1),
 		)
-		assert.Equal(t, int64(50), eSrc.SumInt64())
+		start := time.Now().Nanosecond()
+		sum := eSrc.SumInt64()
+		fmt.Printf("Consumed: %d ns\n", time.Now().Nanosecond()-start)
+		assert.Equal(t, int64(50), sum)
+	})
+
+	t.Run("sum correct", func(t *testing.T) {
+		halfMax := (math.MaxInt64 - 1) / 2
+		max := math.MaxInt64
+		min := math.MinInt64
+		eSrc := NewIEnumerable[any](
+			int64(max), int64(max), 2, int64(min), int64(min), int64(halfMax), int64(halfMax),
+		)
+		start := time.Now().Nanosecond()
+		sum := eSrc.SumInt64()
+		fmt.Printf("Consumed: %d ns\n", time.Now().Nanosecond()-start)
+		assert.Equal(t, int64(max-1), sum)
 	})
 
 	t.Run("empty returns 0 for only integer (string)", func(t *testing.T) {
