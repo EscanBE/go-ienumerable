@@ -43,14 +43,14 @@ func Test_unbox_alias(t *testing.T) {
 	})
 }
 
-func Test_enumerable_Unbox(t *testing.T) {
+func Test_enumerable_Cast(t *testing.T) {
 	t.Run("byte", func(t *testing.T) {
 		eSrc := NewIEnumerable[byte](5, 3).WithDefaultComparers()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v byte) any {
 			return v
-		}).UnboxByte().(*enumerable[byte])
+		}).CastByte().(*enumerable[byte])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, byte(5), eGot.data[0])
 		assert.Equal(t, byte(3), eGot.data[1])
@@ -63,7 +63,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 		NewIEnumerable[int](999, 1).Select(func(v int) any {
 			return v
-		}).UnboxByte()
+		}).CastByte()
 	})
 
 	t.Run("int32", func(t *testing.T) {
@@ -72,7 +72,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v int32) any {
 			return v
-		}).UnboxInt32().(*enumerable[int32])
+		}).CastInt32().(*enumerable[int32])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, int32(5), eGot.data[0])
 		assert.Equal(t, int32(3), eGot.data[1])
@@ -85,7 +85,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 		NewIEnumerable[int64](math.MaxInt32+1, 3).Select(func(v int64) any {
 			return v
-		}).UnboxInt32()
+		}).CastInt32()
 	})
 
 	t.Run("int64", func(t *testing.T) {
@@ -94,7 +94,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v int64) any {
 			return v
-		}).UnboxInt64().(*enumerable[int64])
+		}).CastInt64().(*enumerable[int64])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, int64(5), eGot.data[0])
 		assert.Equal(t, int64(3), eGot.data[1])
@@ -107,7 +107,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 		NewIEnumerable[uint64](math.MaxUint64, 3).Select(func(v uint64) any {
 			return v
-		}).UnboxInt64()
+		}).CastInt64()
 	})
 
 	t.Run("int", func(t *testing.T) {
@@ -116,7 +116,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v int) any {
 			return v
-		}).UnboxInt().(*enumerable[int])
+		}).CastInt().(*enumerable[int])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, 5, eGot.data[0])
 		assert.Equal(t, 3, eGot.data[1])
@@ -129,7 +129,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 		NewIEnumerable[uint](math.MaxUint, 3).Select(func(v uint) any {
 			return v
-		}).UnboxInt()
+		}).CastInt()
 	})
 
 	t.Run("float64", func(t *testing.T) {
@@ -138,7 +138,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v float64) any {
 			return v
-		}).UnboxFloat64().(*enumerable[float64])
+		}).CastFloat64().(*enumerable[float64])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, float64(5.0), eGot.data[0])
 		assert.Equal(t, float64(3.0), eGot.data[1])
@@ -154,7 +154,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v any) any {
 			return v
-		}).UnboxFloat64().(*enumerable[float64])
+		}).CastFloat64().(*enumerable[float64])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, float64(math.MaxUint32), eGot.data[0])
 		assert.Equal(t, float64(3.0), eGot.data[1])
@@ -169,7 +169,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v string) any {
 			return v
-		}).UnboxString().(*enumerable[string])
+		}).CastString().(*enumerable[string])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, "5", eGot.data[0])
 		assert.Equal(t, "3", eGot.data[1])
@@ -182,7 +182,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 		NewIEnumerable[int64](5, 3).Select(func(v int64) any {
 			return v
-		}).UnboxString()
+		}).CastString()
 	})
 
 	t.Run("bool", func(t *testing.T) {
@@ -191,7 +191,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eGot := eSrc.Select(func(v bool) any {
 			return v
-		}).UnboxBool().(*enumerable[bool])
+		}).CastBool().(*enumerable[bool])
 		assert.Len(t, eGot.data, 2)
 		assert.Equal(t, true, eGot.data[0])
 		assert.Equal(t, false, eGot.data[1])
@@ -204,7 +204,7 @@ func Test_enumerable_Unbox(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 		NewIEnumerable[int64](5, 3).Select(func(v int64) any {
 			return v
-		}).UnboxBool()
+		}).CastBool()
 	})
 
 	t.Run("panic message when nil value", func(t *testing.T) {
@@ -223,6 +223,6 @@ func Test_enumerable_Unbox(t *testing.T) {
 
 		eSrc.Select(func(v int32) any {
 			return nil
-		}).UnboxInt64()
+		}).CastInt64()
 	})
 }

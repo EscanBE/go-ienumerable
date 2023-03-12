@@ -2,7 +2,7 @@ package go_ienumerable
 
 import "fmt"
 
-func (src *enumerable[T]) UnboxByte() IEnumerable[byte] {
+func (src *enumerable[T]) CastByte() IEnumerable[byte] {
 	size := len(src.data)
 	result := make([]byte, size)
 	if size > 0 {
@@ -14,7 +14,7 @@ func (src *enumerable[T]) UnboxByte() IEnumerable[byte] {
 	return NewIEnumerable[byte](result...)
 }
 
-func (src *enumerable[T]) UnboxInt32() IEnumerable[int32] {
+func (src *enumerable[T]) CastInt32() IEnumerable[int32] {
 	size := len(src.data)
 	result := make([]int32, size)
 	if size > 0 {
@@ -26,7 +26,7 @@ func (src *enumerable[T]) UnboxInt32() IEnumerable[int32] {
 	return NewIEnumerable[int32](result...)
 }
 
-func (src *enumerable[T]) UnboxInt64() IEnumerable[int64] {
+func (src *enumerable[T]) CastInt64() IEnumerable[int64] {
 	size := len(src.data)
 	result := make([]int64, size)
 	if size > 0 {
@@ -38,7 +38,7 @@ func (src *enumerable[T]) UnboxInt64() IEnumerable[int64] {
 	return NewIEnumerable[int64](result...)
 }
 
-func (src *enumerable[T]) UnboxInt() IEnumerable[int] {
+func (src *enumerable[T]) CastInt() IEnumerable[int] {
 	size := len(src.data)
 	result := make([]int, size)
 	if size > 0 {
@@ -50,7 +50,7 @@ func (src *enumerable[T]) UnboxInt() IEnumerable[int] {
 	return NewIEnumerable[int](result...)
 }
 
-func (src *enumerable[T]) UnboxFloat64() IEnumerable[float64] {
+func (src *enumerable[T]) CastFloat64() IEnumerable[float64] {
 	size := len(src.data)
 	result := make([]float64, size)
 	if size > 0 {
@@ -66,7 +66,7 @@ func (src *enumerable[T]) UnboxFloat64() IEnumerable[float64] {
 
 	return NewIEnumerable[float64](result...)
 }
-func (src *enumerable[T]) UnboxString() IEnumerable[string] {
+func (src *enumerable[T]) CastString() IEnumerable[string] {
 	size := len(src.data)
 	result := make([]string, size)
 	if size > 0 {
@@ -82,7 +82,7 @@ func (src *enumerable[T]) UnboxString() IEnumerable[string] {
 	return NewIEnumerable[string](result...)
 }
 
-func (src *enumerable[T]) UnboxBool() IEnumerable[bool] {
+func (src *enumerable[T]) CastBool() IEnumerable[bool] {
 	size := len(src.data)
 	result := make([]bool, size)
 	if size > 0 {

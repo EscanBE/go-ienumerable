@@ -34,6 +34,48 @@ type IEnumerable[T any] interface {
 	// Average computes the average of a sequence of integer/float values.
 	Average() float64
 
+	// CastByte casts the source IEnumerable[T] into IEnumerable[byte]
+	// if the source data type is byte (uint8), otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[byte]
+	CastByte() IEnumerable[byte]
+
+	// CastInt32 casts the source IEnumerable[T] into IEnumerable[int32]
+	// if the source data type is int32, otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[int32]
+	CastInt32() IEnumerable[int32]
+
+	// CastInt64 casts the source IEnumerable[T] into IEnumerable[int64]
+	// if the source data type is int64, otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[int64]
+	CastInt64() IEnumerable[int64]
+
+	// CastInt casts the source IEnumerable[T] into IEnumerable[int]
+	// if the source data type is int, otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[int]
+	CastInt() IEnumerable[int]
+
+	// CastFloat64 casts the source IEnumerable[T] into IEnumerable[float64]
+	// if the source data type is float64, otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[float64]
+	CastFloat64() IEnumerable[float64]
+
+	// CastString casts the source IEnumerable[T] into IEnumerable[string]
+	// if the source data type is string, otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[string]
+	CastString() IEnumerable[string]
+
+	// CastBool casts the source IEnumerable[T] into IEnumerable[bool]
+	// if the source data type is bool, otherwise panic.
+	//
+	// Notice: no comparer from source will be brought along with new IEnumerable[bool]
+	CastBool() IEnumerable[bool]
+
 	// Count returns the number of elements in a sequence.
 	Count() int
 
@@ -113,10 +155,10 @@ type IEnumerable[T any] interface {
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types is required.
 	//
-	// There are some Unbox* utility methods added into this Golang port like:
-	// UnboxInt8, UnboxString, UnboxBool, ... so can do combo like example:
+	// There are some Cast* methods
+	// CastByte, CastInt, CastString, ... so can do combo like example:
 	//
-	// IEnumerable[int](src).Select(x => x + 1).UnboxInt() and will result IEnumerable[int]
+	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
 	//
 	// Notice: no comparer from source will be brought along with new IEnumerable[any]
 	Select(selector func(v T) any) IEnumerable[any]
@@ -127,10 +169,10 @@ type IEnumerable[T any] interface {
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types is required.
 	//
-	// There are some Unbox* utility methods added into this Golang port like:
-	// UnboxInt8, UnboxString, UnboxBool, ... so can do combo like example:
+	// There are some Cast* methods
+	// CastByte, CastInt, CastString, ... so can do combo like example:
 	//
-	// IEnumerable[[]int](src).SelectMany([]int{x,y} => []any{x * 2, y * 2}).UnboxInt() and will result IEnumerable[int]
+	// IEnumerable[[]int](src).SelectMany([]int{x,y} => []any{x * 2, y * 2}).CastInt() and will result IEnumerable[int]
 	//
 	// Notice: no comparer from source will be brought along with new IEnumerable[any]
 	SelectMany(selector func(v T) []any) IEnumerable[any]
@@ -235,60 +277,6 @@ type IEnumerable[T any] interface {
 	//
 	// Supported types: int8/16/32/64, uint8/16/32/64, int, uint, uintptr, float32/64, complex64/128 (equality comparer only), string
 	WithDefaultComparers() IEnumerable[T]
-
-	// Extra 3: the following methods are used to unbox from IEnumerable[T]
-	// to IEnumerable of typed IEnumerable like: IEnumerable[int], IEnumerable[string],...
-	//
-	// Notice 1: the new IEnumerable[UnboxedType] does not bring any comparer
-	// from source IEnumerable[any] along with it,
-	// so you have to set again if needed
-	// (via WithEqualsComparer, WithLessComparer,.. or WithDefaultComparers)
-	//
-	// Notice 2: Methods will panic if inner type can not be unboxed to target type
-	// (eg: source IEnumerable[T] with data of type byte can not to unbox to IEnumerable[int64],
-	// but when unbox from int64 to byte will panic if over range of target type)
-
-	// UnboxByte unboxes the source IEnumerable[T] into IEnumerable[byte]
-	// if the source data type is uint8, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[byte]
-	UnboxByte() IEnumerable[byte]
-
-	// UnboxInt32 unboxes the source IEnumerable[T] into IEnumerable[int32]
-	// if the source data type is int32, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int32]
-	UnboxInt32() IEnumerable[int32]
-
-	// UnboxInt64 unboxes the source IEnumerable[T] into IEnumerable[int64]
-	// if the source data type is int64, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int64]
-	UnboxInt64() IEnumerable[int64]
-
-	// UnboxInt unboxes the source IEnumerable[T] into IEnumerable[int]
-	// if the source data type is int, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int]
-	UnboxInt() IEnumerable[int]
-
-	// UnboxFloat64 unboxes the source IEnumerable[T] into IEnumerable[float64]
-	// if the source data type is float64, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[float64]
-	UnboxFloat64() IEnumerable[float64]
-
-	// UnboxString unboxes the source IEnumerable[T] into IEnumerable[string]
-	// if the source data type is string, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[string]
-	UnboxString() IEnumerable[string]
-
-	// UnboxBool unboxes the source IEnumerable[T] into IEnumerable[bool]
-	// if the source data type is bool, otherwise panic.
-	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[bool]
-	UnboxBool() IEnumerable[bool]
 
 	// The following methods are internal APIs
 
