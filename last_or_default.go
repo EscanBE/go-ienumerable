@@ -1,6 +1,6 @@
 package go_ienumerable
 
-func (src *enumerable[T]) LastOrDefault(defaultValue T) T {
+func (src *enumerable[T]) LastOrDefaultUsing(defaultValue T) T {
 	src.assertSrcNonNil()
 
 	if len(src.data) < 1 {
@@ -10,7 +10,7 @@ func (src *enumerable[T]) LastOrDefault(defaultValue T) T {
 	return src.data[len(src.data)-1]
 }
 
-func (src *enumerable[T]) LastOrDefaultBy(predicate func(T) bool, defaultValue T) T {
+func (src *enumerable[T]) LastOrDefaultByUsing(predicate func(T) bool, defaultValue T) T {
 	src.assertSrcNonNil()
 	src.assertPredicateNonNil(predicate)
 

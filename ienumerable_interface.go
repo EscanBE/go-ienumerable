@@ -161,11 +161,11 @@ type IEnumerable[T any] interface {
 	// FirstBy returns the first element in a sequence that satisfies a specified condition
 	FirstBy(predicate func(T) bool) T
 
-	// FirstOrDefault returns the first element of a sequence, or a specified default value if the sequence contains no elements.
-	FirstOrDefault(defaultValue T) T
+	// FirstOrDefaultUsing returns the first element of a sequence, or a specified default value if the sequence contains no elements.
+	FirstOrDefaultUsing(defaultValue T) T
 
-	// FirstOrDefaultBy returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found
-	FirstOrDefaultBy(predicate func(T) bool, defaultValue T) T
+	// FirstOrDefaultByUsing returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found
+	FirstOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
 
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]
@@ -178,11 +178,11 @@ type IEnumerable[T any] interface {
 	// LastBy returns the last element in a sequence that satisfies a specified condition
 	LastBy(predicate func(T) bool) T
 
-	// LastOrDefault returns the last element of a sequence, or a specified default value if the sequence contains no elements.
-	LastOrDefault(defaultValue T) T
+	// LastOrDefaultUsing returns the last element of a sequence, or a specified default value if the sequence contains no elements.
+	LastOrDefaultUsing(defaultValue T) T
 
-	// LastOrDefaultBy returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
-	LastOrDefaultBy(predicate func(T) bool, defaultValue T) T
+	// LastOrDefaultByUsing returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
+	LastOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//

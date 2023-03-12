@@ -5,7 +5,46 @@ import (
 	"testing"
 )
 
-func Test_enumerable_FirstOrDefaultBy(t *testing.T) {
+func Test_enumerable_FirstOrDefaultUsing(t *testing.T) {
+	tests := []struct {
+		name         string
+		src          IEnumerable[int]
+		defaultValue int
+		wantResult   int
+		wantErr      bool
+	}{
+		{
+			name:         "first",
+			src:          createIntEnumerable(5, 7),
+			defaultValue: 99,
+			wantResult:   5,
+			wantErr:      false,
+		},
+		{
+			name:         "not any",
+			src:          createEmptyIntEnumerable(),
+			defaultValue: 99,
+			wantResult:   99,
+			wantErr:      false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			backSrc := backupForAssetUnchanged(tt.src)
+
+			defer func() {
+				backSrc.assertUnchanged(t, tt.src)
+			}()
+
+			gotResult := tt.src.FirstOrDefaultUsing(tt.defaultValue)
+			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
+
+			backSrc.assertUnchanged(t, tt.src)
+		})
+	}
+}
+
+func Test_enumerable_FirstOrDefaultByUsing(t *testing.T) {
 	tests := []struct {
 		name         string
 		src          IEnumerable[int]
@@ -61,47 +100,8 @@ func Test_enumerable_FirstOrDefaultBy(t *testing.T) {
 
 			defer deferWantPanicDepends(t, tt.wantPanic)
 
-			gotResult := tt.src.FirstOrDefaultBy(tt.predicate, tt.defaultValue)
+			gotResult := tt.src.FirstOrDefaultByUsing(tt.predicate, tt.defaultValue)
 			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-		})
-	}
-}
-
-func Test_enumerable_FirstOrDefault(t *testing.T) {
-	tests := []struct {
-		name         string
-		src          IEnumerable[int]
-		defaultValue int
-		wantResult   int
-		wantErr      bool
-	}{
-		{
-			name:         "first",
-			src:          createIntEnumerable(5, 7),
-			defaultValue: 99,
-			wantResult:   5,
-			wantErr:      false,
-		},
-		{
-			name:         "not any",
-			src:          createEmptyIntEnumerable(),
-			defaultValue: 99,
-			wantResult:   99,
-			wantErr:      false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			backSrc := backupForAssetUnchanged(tt.src)
-
-			defer func() {
-				backSrc.assertUnchanged(t, tt.src)
-			}()
-
-			gotResult := tt.src.FirstOrDefault(tt.defaultValue)
-			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-
-			backSrc.assertUnchanged(t, tt.src)
 		})
 	}
 }
