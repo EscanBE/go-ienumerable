@@ -347,10 +347,15 @@ func Test_enumerable_SumFloat32(t *testing.T) {
 			int(9), uint(10),
 			float32(11.0), float64(12.0),
 			int8(-1), int16(-1), int32(-1), int64(-1), int(-1),
-			float32(-1.0), float64(-1.0),
+			float32(-1.1), float64(-1.1),
 		)
 
-		assert.Equal(t, float32(71), eSrc.SumFloat32())
+		sum := eSrc.SumFloat32()
+		assert.Equal(t, float32(70.8), sum)
+		assert.NotEqual(t, float32(70.7), sum)
+		assert.NotEqual(t, float32(70.9), sum)
+		assert.NotEqual(t, float32(70), sum)
+		assert.NotEqual(t, float32(71), sum)
 		//goland:noinspection GoRedundantConversion
 		eSrc = NewIEnumerable[any](
 			float32(-1_000_000_000_000_000_000.333_333_333_333_333), float64(-1_000_000_000_000_000_000.333_333_333_333_333),
@@ -505,9 +510,18 @@ func Test_enumerable_SumFloat64(t *testing.T) {
 			int(9), uint(10),
 			float32(11.0), float64(12.0),
 			int8(-1), int16(-1), int32(-1), int64(-1), int(-1),
-			float32(-1.0), float64(-1.0),
+			float32(-1.1), float64(-1.1),
 		)
-		assert.Equal(t, float64(71), eSrc.SumFloat64())
+
+		sum := eSrc.SumFloat64()
+		//goland:noinspection GoRedundantConversion
+		assert.Greater(t, 0.001, math.Abs(sum-float64(70.8)))
+		//goland:noinspection GoRedundantConversion
+		assert.Less(t, float64(70.7), sum)
+		//goland:noinspection GoRedundantConversion
+		assert.Greater(t, float64(70.9), sum)
+		assert.Less(t, float64(70), sum)
+		assert.Greater(t, float64(71), sum)
 	})
 
 	t.Run("empty returns 0 for only integer/float (string)", func(t *testing.T) {
