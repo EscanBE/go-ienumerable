@@ -34,6 +34,40 @@ func (src *enumerable[T]) SumInt32() int32 {
 	return int32(sum)
 }
 
+func (src *enumerable[T]) SumInt() int {
+	src.assertSrcNonNil()
+
+	if len(src.data) < 1 {
+		switch src.dataType {
+		case "":
+			return 0
+		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint":
+			return 0
+		default:
+			panic(fmt.Errorf("type %s cannot be tried to cast to int", src.dataType))
+		}
+	}
+
+	sum := new(big.Int)
+
+	for _, d := range src.data {
+		i64 := int64(src.unboxAnyAsInt(d))
+		sum = sum.Add(sum, big.NewInt(i64))
+	}
+
+	if !sum.IsInt64() {
+		panic("overflow")
+	}
+
+	vSum := sum.Int64()
+
+	if math.MinInt > vSum || vSum > math.MaxInt {
+		panic("overflow")
+	}
+
+	return int(vSum)
+}
+
 func (src *enumerable[T]) SumInt64() int64 {
 	src.assertSrcNonNil()
 
