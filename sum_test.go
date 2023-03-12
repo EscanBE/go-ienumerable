@@ -349,7 +349,15 @@ func Test_enumerable_SumFloat32(t *testing.T) {
 			int8(-1), int16(-1), int32(-1), int64(-1), int(-1),
 			float32(-1.0), float64(-1.0),
 		)
+
 		assert.Equal(t, float32(71), eSrc.SumFloat32())
+		//goland:noinspection GoRedundantConversion
+		eSrc = NewIEnumerable[any](
+			float32(-1_000_000_000_000_000_000.333_333_333_333_333), float64(-1_000_000_000_000_000_000.333_333_333_333_333),
+		)
+
+		assert.Equal(t, float32(-2_000_000_000_000_000_000.0), eSrc.SumFloat32())
+		fmt.Println(eSrc.SumFloat32())
 	})
 
 	t.Run("empty returns 0 for only integer/float (string)", func(t *testing.T) {
@@ -414,7 +422,8 @@ func Test_enumerable_SumFloat32(t *testing.T) {
 
 	t.Run("ok if during computation not overflow float64", func(t *testing.T) {
 		result := NewIEnumerable[float32](math.MaxFloat32, math.MaxFloat32, -1*math.MaxFloat32, -1*math.MaxFloat32, 1).SumFloat32()
-
+		assert.Equal(t, float32(1), result)
+		result = NewIEnumerable[float32](math.MaxFloat32, math.MaxFloat32, -1*math.MaxFloat32-2, -1*math.MaxFloat32-2, 1).SumFloat32()
 		assert.Equal(t, float32(1), result)
 	})
 

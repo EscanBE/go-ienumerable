@@ -183,7 +183,7 @@ func (src *enumerable[T]) SumFloat32() float32 {
 	}
 
 	var sum float64 = 0
-	const minFloat32 = float64(-1 * math.MaxFloat32)
+	const minFloat32 = float64(-1*math.MaxFloat32) - 1
 
 	for _, d := range src.data {
 		previousSum := sum
