@@ -24,6 +24,7 @@ func Test_enumerable_Select(t *testing.T) {
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
 		assert.Equal(t, "int8", fmt.Sprintf("%T", gotE.data[0]))
+		assert.Equal(t, "", gotE.dataType)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
@@ -45,6 +46,7 @@ func Test_enumerable_Select(t *testing.T) {
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
 		assert.Equal(t, "string", fmt.Sprintf("%T", gotE.data[0]))
+		assert.Equal(t, "", gotE.dataType)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
@@ -63,6 +65,7 @@ func Test_enumerable_Select(t *testing.T) {
 		gotE := eGot.(*enumerable[any])
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
+		assert.Equal(t, "", gotE.dataType)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})

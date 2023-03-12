@@ -57,6 +57,7 @@ func injectIntComparers(e IEnumerable[int]) IEnumerable[int] {
 type copiedOriginal[T comparable] struct {
 	isNil             bool
 	data              []T
+	dataType          string
 	hasEqualsComparer bool
 	hasLessComparer   bool
 }
@@ -70,6 +71,7 @@ func backupForAssetUnchanged[T comparable](e IEnumerable[T]) copiedOriginal[T] {
 	cast := e.(*enumerable[T])
 	return copiedOriginal[T]{
 		data:              copySlice(cast.data),
+		dataType:          cast.dataType,
 		hasEqualsComparer: cast.equalityComparer != nil,
 		hasLessComparer:   cast.lessComparer != nil,
 	}
@@ -99,6 +101,8 @@ func (c copiedOriginal[T]) assertUnchanged(t *testing.T, e IEnumerable[T]) {
 func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, e IEnumerable[T]) {
 	cast := e.(*enumerable[T])
 
+	assert.Equalf(t, c.dataType, cast.dataType, "dataType has changed, expect %s but got %s", c.dataType, cast.dataType)
+
 	exists := func(b bool) string {
 		if b {
 			return "exists"
@@ -124,6 +128,7 @@ func Test_enumerable_copyExceptData(t *testing.T) {
 	t.Run("copy all except data", func(t *testing.T) {
 		e := new(enumerable[int])
 		e.data = []int{2, 3}
+		e.dataType = "int"
 		e.equalityComparer = func(v1, v2 int) bool {
 			return v1 == v2
 		}
@@ -133,6 +138,7 @@ func Test_enumerable_copyExceptData(t *testing.T) {
 
 		copied := e.copyExceptData()
 		assert.Len(t, copied.data, 0)
+		assert.Equal(t, "int", copied.dataType)
 		assert.NotNil(t, copied.equalityComparer)
 		assert.NotNil(t, copied.lessComparer)
 	})

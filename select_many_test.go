@@ -23,6 +23,7 @@ func Test_enumerable_SelectMany(t *testing.T) {
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
 		assert.Equal(t, "int8", fmt.Sprintf("%T", gotE.data[0]))
+		assert.Equal(t, "", gotE.dataType)
 	})
 
 	t.Run("string", func(t *testing.T) {
@@ -56,6 +57,7 @@ func Test_enumerable_SelectMany(t *testing.T) {
 		gotE := eGot.(*enumerable[any])
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
+		assert.Equal(t, "", gotE.dataType)
 	})
 
 	t.Run("nil selector", func(t *testing.T) {

@@ -6,6 +6,10 @@ func (src *enumerable[T]) exposeData() []T {
 	return src.data
 }
 
+func (src *enumerable[T]) exposeDataType() string {
+	return src.dataType
+}
+
 func (src *enumerable[T]) len() int {
 	return len(src.data)
 }
@@ -92,6 +96,7 @@ func (src *enumerable[T]) copyExceptData() *enumerable[T] {
 	}
 	return &enumerable[T]{
 		data:             nil,
+		dataType:         src.dataType,
 		equalityComparer: src.equalityComparer,
 		lessComparer:     src.lessComparer,
 	}
