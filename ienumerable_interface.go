@@ -362,18 +362,29 @@ type IEnumerable[T any] interface {
 	len() int
 
 	// unboxAnyAsByte unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into byte.
-	// Panic if over range
+	//
+	// Panic if value is over range or not integer
 	unboxAnyAsByte(v T) byte
 
 	// unboxAnyAsInt32 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int32.
-	// Panic if over range
+	//
+	// Panic if value is over range or not integer
 	unboxAnyAsInt32(v T) int32
 
 	// unboxAnyAsInt unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int.
-	// Panic if over range
+	//
+	// Panic if value is over range or not integer
 	unboxAnyAsInt(v T) int
 
 	// unboxAnyAsInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int64.
-	// Panic if over range
+	//
+	// Panic if value is over range or not integer
 	unboxAnyAsInt64(v T) int64
+
+	// unboxAnyAsFloat64OrInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) or float32/64
+	// into either int64 or float64 value (priority int64), data type specified in result.
+	// This design is for sum accuracy.
+	//
+	// Panic if neither integer nor float
+	unboxAnyAsFloat64OrInt64(v T) (rf float64, ri int64, dt unboxFloat64DataType)
 }

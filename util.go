@@ -3,6 +3,7 @@ package go_ienumerable
 import (
 	"fmt"
 	"math"
+	"math/big"
 )
 
 func (src *enumerable[T]) exposeData() []T {
@@ -382,7 +383,6 @@ func (src *enumerable[T]) unboxAnyAsInt64(v T) int64 {
 }
 
 func (src *enumerable[T]) unboxAnyAsInt(v T) int {
-
 	if src.dataType == "" {
 		// fall through
 	} else if src.dataType == "int" {
@@ -455,5 +455,149 @@ func (src *enumerable[T]) unboxAnyAsInt(v T) int {
 		return int(vu16)
 	} else {
 		panic(makeCastError(v, "int"))
+	}
+}
+
+type unboxFloat64DataType byte
+
+//goland:noinspection GoSnakeCaseUsage
+const (
+	UF64_TYPE_FLOAT64 unboxFloat64DataType = 1
+	UF64_TYPE_INT64   unboxFloat64DataType = 2
+)
+
+func (src *enumerable[T]) unboxAnyAsFloat64OrInt64(v T) (rf float64, ri int64, dt unboxFloat64DataType) {
+	if src.dataType == "" {
+		// fall through
+	} else if src.dataType == "int" {
+		ri = int64(any(v).(int))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "int64" {
+		ri = any(v).(int64)
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "int8" {
+		ri = int64(any(v).(int8))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "int32" {
+		ri = int64(any(v).(int32))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "int16" {
+		ri = int64(any(v).(int16))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "uint" {
+		vi := any(v).(uint)
+		if vi <= math.MaxInt64 {
+			ri = int64(vi)
+			dt = UF64_TYPE_INT64
+			return
+		} else {
+			rf = float64(vi)
+			dt = UF64_TYPE_FLOAT64
+			return
+		}
+	} else if src.dataType == "uint64" {
+		vi := any(v).(uint64)
+		if vi <= math.MaxInt64 {
+			ri = int64(vi)
+			dt = UF64_TYPE_INT64
+			return
+		} else {
+			rf = float64(vi)
+			dt = UF64_TYPE_FLOAT64
+			return
+		}
+	} else if src.dataType == "uint32" {
+		ri = int64(any(v).(uint32))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "uint8" {
+		ri = int64(any(v).(uint8))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "uint16" {
+		ri = int64(any(v).(uint16))
+		dt = UF64_TYPE_INT64
+		return
+	} else if src.dataType == "float32" {
+		rf = float64(any(v).(float32))
+		dt = UF64_TYPE_FLOAT64
+		return
+	} else if src.dataType == "float64" {
+		rf = any(v).(float64)
+		dt = UF64_TYPE_FLOAT64
+		return
+	} else {
+		panic(makeCastError(v, "float64"))
+	}
+
+	if vf64, okf64 := any(v).(float64); okf64 {
+		rf = vf64
+		dt = UF64_TYPE_FLOAT64
+		return
+	} else if vi, oki := any(v).(int); oki {
+		ri = int64(vi)
+		dt = UF64_TYPE_INT64
+		return
+	} else if v64, ok64 := any(v).(int64); ok64 {
+		ri = v64
+		dt = UF64_TYPE_INT64
+		return
+	} else if v8, ok8 := any(v).(int8); ok8 {
+		ri = int64(v8)
+		dt = UF64_TYPE_INT64
+		return
+	} else if v32, ok32 := any(v).(int32); ok32 {
+		ri = int64(v32)
+		dt = UF64_TYPE_INT64
+		return
+	} else if vf32, okf32 := any(v).(float32); okf32 {
+		rf = float64(vf32)
+		dt = UF64_TYPE_FLOAT64
+		return
+	} else if v16, ok16 := any(v).(int16); ok16 {
+		ri = int64(v16)
+		dt = UF64_TYPE_INT64
+		return
+	} else if vui, okui := any(v).(uint); okui {
+		if vui > math.MaxInt64 {
+			bf := new(big.Float)
+			bf = bf.SetUint64(uint64(vui))
+			rf, _ = bf.Float64()
+			dt = UF64_TYPE_FLOAT64
+			return
+		}
+		ri = int64(vui)
+		dt = UF64_TYPE_INT64
+		return
+	} else if vu64, oku64 := any(v).(uint64); oku64 {
+		if vu64 > math.MaxInt64 {
+			bf := new(big.Float)
+			bf = bf.SetUint64(vu64)
+			rf, _ = bf.Float64()
+			dt = UF64_TYPE_FLOAT64
+			return
+		}
+		ri = int64(vu64)
+		dt = UF64_TYPE_INT64
+		return
+	} else if vu32, oku32 := any(v).(uint32); oku32 {
+		ri = int64(vu32)
+		dt = UF64_TYPE_INT64
+		return
+	} else if vu8, oku8 := any(v).(uint8); oku8 {
+		ri = int64(vu8)
+		dt = UF64_TYPE_INT64
+		return
+	} else if vu16, oku16 := any(v).(uint16); oku16 {
+		ri = int64(vu16)
+		dt = UF64_TYPE_INT64
+		return
+	} else {
+		panic(makeCastError(v, "float64"))
 	}
 }

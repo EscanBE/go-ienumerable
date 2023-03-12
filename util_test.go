@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math"
+	"math/big"
 	"math/rand"
 	"testing"
 )
@@ -1431,5 +1432,324 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 		}()
 
 		NewIEnumerable[string]().unboxAnyAsInt(str)
+	})
+}
+
+func Test_enumerable_unboxFloat(t *testing.T) {
+	t.Run("unbox float", func(t *testing.T) {
+		i1 := int64(math.MaxInt64)
+		rad := rand.Int63n(10000) + 100
+		i1 = i1 - rad
+		bf := big.NewFloat(float64(i1))
+		i64, a := bf.Int64()
+		assert.Equal(t, i1, i64)
+		f64, a := bf.Float64()
+		fmt.Printf("[1] %f (%d), %v, %t\n", f64, i64, a, bf.IsInf())
+
+		bf = big.NewFloat(math.MaxInt64)
+		bf = bf.Add(bf, big.NewFloat(99.99))
+		i64, a = bf.Int64()
+		assert.Equal(t, int64(math.MaxInt64), i64)
+		assert.True(t, a == big.Below || a == big.Exact)
+		f64, a = bf.Float64()
+		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
+
+		bf = big.NewFloat(float64(math.MaxInt64))
+		bf = bf.Sub(bf, big.NewFloat(99.99))
+		i64, a = bf.Int64()
+		assert.Equal(t, int64(math.MaxInt64), i64)
+		assert.True(t, a == big.Below || a == big.Exact)
+		f64, a = bf.Float64()
+		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
+
+		bf = big.NewFloat(float64(math.MinInt64))
+		bf = bf.Sub(bf, big.NewFloat(99.99))
+		i64, a = bf.Int64()
+		assert.Equal(t, int64(math.MinInt64), i64)
+		assert.True(t, a == big.Above || a == big.Exact)
+		f64, a = bf.Float64()
+		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
+
+		bf = big.NewFloat(float64(math.MinInt64))
+		bf = bf.Add(bf, big.NewFloat(99.99))
+		i64, a = bf.Int64()
+		assert.Equal(t, int64(math.MinInt64), i64)
+		assert.True(t, a == big.Above || a == big.Exact)
+		f64, a = bf.Float64()
+		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
+
+		bf = big.NewFloat(float64(math.MinInt64))
+		bf = bf.Add(bf, big.NewFloat(math.MinInt64))
+		i64, a = bf.Int64()
+		assert.Equal(t, int64(math.MinInt64), i64)
+		assert.True(t, a == big.Above || a == big.Exact)
+		f64, a = bf.Float64()
+		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
+
+		bf = bf.Sub(bf, big.NewFloat(1.23456789123456789))
+		bf = bf.Add(bf, big.NewFloat(math.MinInt64))
+		i64, a = bf.Int64()
+		assert.Equal(t, int64(math.MinInt64), i64)
+		assert.True(t, a == big.Above || a == big.Exact)
+		f64, a = bf.Float64()
+		fmt.Printf("%f, %v, %t\n", f64, a, bf.IsInf())
+	})
+}
+
+func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_any(t *testing.T) {
+	x64 := math.MaxInt > math.MaxInt32
+	eany := NewIEnumerable[any]()
+	t.Run("int64 or float64 depends value", func(t *testing.T) {
+		var vf float64
+		var vi int64
+		var dt unboxFloat64DataType
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int8(math.MinInt8))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt8), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int8(math.MaxInt8))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt8), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint8(0))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint8(math.MaxUint8))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxUint8), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int16(math.MinInt16))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt16), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int16(math.MaxInt16))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt16), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint16(0))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint16(math.MaxUint16))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxUint16), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int32(math.MinInt32))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt32), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int32(math.MaxInt32))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt32), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint32(0))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint32(math.MaxUint32))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxUint32), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int64(math.MinInt64))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt64), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int64(math.MaxInt64))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt64), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint64(0))
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint64(math.MaxInt64))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt64), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint64(math.MaxUint64))
+		assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+		if x64 {
+			//goland:noinspection GoRedundantConversion
+			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int(math.MinInt64))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(math.MinInt64), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			//goland:noinspection GoRedundantConversion
+			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int(math.MaxInt64))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(math.MaxInt64), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint(0))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(0), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint(math.MaxInt64))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(math.MaxInt64), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint(math.MaxUint64))
+			assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
+			assert.Equal(t, int64(0), vi)
+			assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+		}
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(float32(3.3))
+		assert.Greater(t, 0.0001, math.Abs(float64(3.3)-vf))
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(float64(9.9))
+		assert.Greater(t, 0.0001, math.Abs(float64(9.9)-vf))
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+	})
+
+	t.Run("neither integer nor float", func(t *testing.T) {
+		str := "1"
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to float64", str))
+		}()
+
+		NewIEnumerable[string]().unboxAnyAsFloat64OrInt64(str)
+	})
+}
+
+func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_specific(t *testing.T) {
+	x64 := math.MaxInt > math.MaxInt32
+
+	ei8 := NewIEnumerable[int8]()
+	eu8 := NewIEnumerable[uint8]()
+	ei16 := NewIEnumerable[int16]()
+	eu16 := NewIEnumerable[uint16]()
+	ei32 := NewIEnumerable[int32]()
+	eu32 := NewIEnumerable[uint32]()
+	ei64 := NewIEnumerable[int64]()
+	eu64 := NewIEnumerable[uint64]()
+	ei := NewIEnumerable[int]()
+	eu := NewIEnumerable[uint]()
+	ef32 := NewIEnumerable[float32]()
+	ef64 := NewIEnumerable[float64]()
+	t.Run("int64 or float64 depends value", func(t *testing.T) {
+		var vf float64
+		var vi int64
+		var dt unboxFloat64DataType
+		vf, vi, dt = ei8.unboxAnyAsFloat64OrInt64(int8(math.MinInt8))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt8), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei8.unboxAnyAsFloat64OrInt64(int8(math.MaxInt8))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt8), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu8.unboxAnyAsFloat64OrInt64(uint8(0))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu8.unboxAnyAsFloat64OrInt64(uint8(math.MaxUint8))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxUint8), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei16.unboxAnyAsFloat64OrInt64(int16(math.MinInt16))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt16), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei16.unboxAnyAsFloat64OrInt64(int16(math.MaxInt16))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt16), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu16.unboxAnyAsFloat64OrInt64(uint16(0))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu16.unboxAnyAsFloat64OrInt64(uint16(math.MaxUint16))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxUint16), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei32.unboxAnyAsFloat64OrInt64(int32(math.MinInt32))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt32), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei32.unboxAnyAsFloat64OrInt64(int32(math.MaxInt32))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt32), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu32.unboxAnyAsFloat64OrInt64(uint32(0))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu32.unboxAnyAsFloat64OrInt64(uint32(math.MaxUint32))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxUint32), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei64.unboxAnyAsFloat64OrInt64(int64(math.MinInt64))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MinInt64), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = ei64.unboxAnyAsFloat64OrInt64(int64(math.MaxInt64))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt64), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu64.unboxAnyAsFloat64OrInt64(uint64(0))
+		vf, vi, dt = eu64.unboxAnyAsFloat64OrInt64(uint64(math.MaxInt64))
+		assert.Equal(t, float64(0.0), vf)
+		assert.Equal(t, int64(math.MaxInt64), vi)
+		assert.Equal(t, dt, UF64_TYPE_INT64)
+		vf, vi, dt = eu64.unboxAnyAsFloat64OrInt64(uint64(math.MaxUint64))
+		assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+		if x64 {
+			//goland:noinspection GoRedundantConversion
+			vf, vi, dt = ei.unboxAnyAsFloat64OrInt64(int(math.MinInt64))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(math.MinInt64), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			//goland:noinspection GoRedundantConversion
+			vf, vi, dt = ei.unboxAnyAsFloat64OrInt64(int(math.MaxInt64))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(math.MaxInt64), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			vf, vi, dt = eu.unboxAnyAsFloat64OrInt64(uint(0))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(0), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			vf, vi, dt = eu.unboxAnyAsFloat64OrInt64(uint(math.MaxInt64))
+			assert.Equal(t, float64(0.0), vf)
+			assert.Equal(t, int64(math.MaxInt64), vi)
+			assert.Equal(t, dt, UF64_TYPE_INT64)
+			vf, vi, dt = eu.unboxAnyAsFloat64OrInt64(uint(math.MaxUint64))
+			assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
+			assert.Equal(t, int64(0), vi)
+			assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+		}
+		vf, vi, dt = ef32.unboxAnyAsFloat64OrInt64(3.3)
+		assert.Greater(t, 0.0001, math.Abs(float64(3.3)-vf))
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+		vf, vi, dt = ef64.unboxAnyAsFloat64OrInt64(9.9)
+		assert.Greater(t, 0.0001, math.Abs(float64(9.9)-vf))
+		assert.Equal(t, int64(0), vi)
+		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
+	})
+
+	t.Run("neither integer nor float", func(t *testing.T) {
+		str := "1"
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to float64", str))
+		}()
+
+		NewIEnumerable[string]().unboxAnyAsFloat64OrInt64(str)
 	})
 }
