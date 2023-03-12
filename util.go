@@ -36,6 +36,12 @@ func (_ *enumerable[T]) assertSizeGt0(size int) {
 	}
 }
 
+func (src *enumerable[T]) assertIndex(index int) {
+	if 0 > index || index >= len(src.data) {
+		panic("index out of bound")
+	}
+}
+
 func (col *enumerator[T]) assertCollectionNonNil() {
 	if col == nil {
 		panic("collection is nil")

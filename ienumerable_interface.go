@@ -124,6 +124,16 @@ type IEnumerable[T any] interface {
 	// specified equality comparer to compare values.
 	DistinctBy(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
+	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
+	//
+	// Panic if index is less than 0 or greater than or equal to the number of elements in source
+	ElementAt(index int) T
+
+	// ElementAtReverse returns the element at a specified reverse index (0 based, from tail) in a sequence.
+	//
+	// Panic if index is less than 0 or greater than or equal to the number of elements in source
+	ElementAtReverse(reverseIndex int) T
+
 	// Except produces the set difference of two sequences.
 	//
 	// Require: equality comparer provided via WithEqualsComparer
