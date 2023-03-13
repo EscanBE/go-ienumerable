@@ -1,0 +1,21 @@
+package comparers
+
+var (
+	Int8Comparer       = NewInt8Comparer()
+	Uint8Comparer      = NewUint8Comparer()
+	Int16Comparer      = NewInt16Comparer()
+	Uint16Comparer     = NewUint16Comparer()
+	Int32Comparer      = NewInt32Comparer()
+	Uint32Comparer     = NewUint32Comparer()
+	Int64Comparer      = NewInt64Comparer()
+	Uint64Comparer     = NewUint64Comparer()
+	IntComparer        = NewIntComparer()
+	UintComparer       = NewUintComparer()
+	UintptrComparer    = NewUintptrComparer()
+	Float32Comparer    = NewFloat32Comparer()
+	Float64Comparer    = NewFloat64Comparer()
+	Complex64Comparer  = NewComplex64Comparer()
+	Complex128Comparer = NewComplex128Comparer()
+	StringComparer     = NewStringComparer()
+	BoolComparer       = NewBoolComparer()
+)

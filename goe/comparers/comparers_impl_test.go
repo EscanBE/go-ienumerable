@@ -41,8 +41,7 @@ func Test_int8Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewInt8Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Int8Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -78,8 +77,7 @@ func Test_uint8Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewUint8Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Uint8Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -120,8 +118,7 @@ func Test_int16Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewInt16Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Int16Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -157,8 +154,7 @@ func Test_uint16Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewUint16Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Uint16Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -199,8 +195,7 @@ func Test_int32Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewInt32Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Int32Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -236,8 +231,7 @@ func Test_uint32Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewUint32Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Uint32Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -278,8 +272,7 @@ func Test_int64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewInt64Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Int64Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -315,8 +308,7 @@ func Test_uint64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewUint64Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Uint64Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -357,8 +349,7 @@ func Test_intComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewIntComparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := IntComparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -394,8 +385,7 @@ func Test_uintComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewUintComparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := UintComparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -431,8 +421,7 @@ func Test_uintptrComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewUintptrComparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.wantptr {
+			if got := UintptrComparer.Compare(tt.x, tt.y); got != tt.wantptr {
 				t.Errorf("Compare() = %v, want %v", got, tt.wantptr)
 			}
 		})
@@ -473,8 +462,7 @@ func Test_float32Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewFloat32Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Float32Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -515,8 +503,7 @@ func Test_float64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewFloat64Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Float64Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -572,8 +559,7 @@ func Test_complex64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewComplex64Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Complex64Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -629,8 +615,7 @@ func Test_complex128Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewComplex128Comparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := Complex128Comparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -686,8 +671,7 @@ func Test_stringComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewStringComparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := StringComparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -723,8 +707,7 @@ func Test_boolComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			i := NewBoolComparer()
-			if got := i.Compare(tt.x, tt.y); got != tt.want {
+			if got := BoolComparer.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})

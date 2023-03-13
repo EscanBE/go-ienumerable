@@ -27,6 +27,9 @@ var (
 type int8Comparer struct {
 }
 
+// NewInt8Comparer returns IComparer for int8 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewInt8Comparer() IComparer[int8] {
 	return int8Comparer{}
 }
@@ -46,6 +49,9 @@ func (i int8Comparer) Compare(x, y int8) int {
 type uint8Comparer struct {
 }
 
+// NewUint8Comparer returns IComparer for uint8 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewUint8Comparer() IComparer[uint8] {
 	return uint8Comparer{}
 }
@@ -65,6 +71,9 @@ func (i uint8Comparer) Compare(x, y uint8) int {
 type int16Comparer struct {
 }
 
+// NewInt16Comparer returns IComparer for int16 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewInt16Comparer() IComparer[int16] {
 	return int16Comparer{}
 }
@@ -84,6 +93,9 @@ func (i int16Comparer) Compare(x, y int16) int {
 type uint16Comparer struct {
 }
 
+// NewUint16Comparer returns IComparer for uint16 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewUint16Comparer() IComparer[uint16] {
 	return uint16Comparer{}
 }
@@ -103,6 +115,9 @@ func (i uint16Comparer) Compare(x, y uint16) int {
 type int32Comparer struct {
 }
 
+// NewInt32Comparer returns IComparer for int32 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewInt32Comparer() IComparer[int32] {
 	return int32Comparer{}
 }
@@ -122,6 +137,9 @@ func (i int32Comparer) Compare(x, y int32) int {
 type uint32Comparer struct {
 }
 
+// NewUint32Comparer returns IComparer for uint32 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewUint32Comparer() IComparer[uint32] {
 	return uint32Comparer{}
 }
@@ -141,6 +159,9 @@ func (i uint32Comparer) Compare(x, y uint32) int {
 type int64Comparer struct {
 }
 
+// NewInt64Comparer returns IComparer for int64 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewInt64Comparer() IComparer[int64] {
 	return int64Comparer{}
 }
@@ -160,6 +181,9 @@ func (i int64Comparer) Compare(x, y int64) int {
 type uint64Comparer struct {
 }
 
+// NewUint64Comparer returns IComparer for uint64 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewUint64Comparer() IComparer[uint64] {
 	return uint64Comparer{}
 }
@@ -179,6 +203,9 @@ func (i uint64Comparer) Compare(x, y uint64) int {
 type intComparer struct {
 }
 
+// NewIntComparer returns IComparer for int with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewIntComparer() IComparer[int] {
 	return intComparer{}
 }
@@ -198,6 +225,9 @@ func (i intComparer) Compare(x, y int) int {
 type uintComparer struct {
 }
 
+// NewUintComparer returns IComparer for uint with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewUintComparer() IComparer[uint] {
 	return uintComparer{}
 }
@@ -217,6 +247,11 @@ func (i uintComparer) Compare(x, y uint) int {
 type uintptrComparer struct {
 }
 
+// NewUintptrComparer returns IComparer for uintptr with comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
+//
+// Ps: Don't know if this is comparison algorithm is correct
 func NewUintptrComparer() IComparer[uintptr] {
 	return uintptrComparer{}
 }
@@ -236,6 +271,9 @@ func (i uintptrComparer) Compare(x, y uintptr) int {
 type float32Comparer struct {
 }
 
+// NewFloat32Comparer returns IComparer for float32 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewFloat32Comparer() IComparer[float32] {
 	return float32Comparer{}
 }
@@ -255,6 +293,9 @@ func (i float32Comparer) Compare(x, y float32) int {
 type float64Comparer struct {
 }
 
+// NewFloat64Comparer returns IComparer for float64 with default comparison:
+//
+// x < y ? -1 (x == y ? 0 : 1)
 func NewFloat64Comparer() IComparer[float64] {
 	return float64Comparer{}
 }
@@ -274,6 +315,25 @@ func (i float64Comparer) Compare(x, y float64) int {
 type complex64Comparer struct {
 }
 
+/*
+NewComplex64Comparer returns IComparer for complex64 with comparison:
+
+real(x) < real(y)
+? -1
+: (
+
+	real(x) > real(y)
+	? 1
+	: (
+		imag(x) < imag(y)
+		? - 1
+		: imag(x) > imag(y) ? 1 : 0
+	)
+
+)
+
+Ps: Don't know if this is comparison algorithm is correct
+*/
 func NewComplex64Comparer() IComparer[complex64] {
 	return complex64Comparer{}
 }
@@ -307,6 +367,25 @@ func (i complex64Comparer) Compare(x, y complex64) int {
 type complex128Comparer struct {
 }
 
+/*
+NewComplex128Comparer returns IComparer for complex128 with comparison:
+
+real(x) < real(y)
+? -1
+: (
+
+	real(x) > real(y)
+	? 1
+	: (
+		imag(x) < imag(y)
+		? - 1
+		: imag(x) > imag(y) ? 1 : 0
+	)
+
+)
+
+Ps: Don't know if this is comparison algorithm is correct
+*/
 func NewComplex128Comparer() IComparer[complex128] {
 	return complex128Comparer{}
 }
@@ -340,6 +419,7 @@ func (i complex128Comparer) Compare(x, y complex128) int {
 type stringComparer struct {
 }
 
+// NewStringComparer returns IComparer for string with default comparison.
 func NewStringComparer() IComparer[string] {
 	return stringComparer{}
 }
@@ -351,6 +431,8 @@ func (i stringComparer) Compare(x, y string) int {
 type boolComparer struct {
 }
 
+// NewBoolComparer returns IComparer for string with comparison:
+// x == y ? 0 : (!x ? -1 : 1)
 func NewBoolComparer() IComparer[bool] {
 	return boolComparer{}
 }
