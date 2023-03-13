@@ -15,6 +15,17 @@ func (src *enumerable[T]) WithLessComparer(lessComparer func(left T, right T) bo
 	return src
 }
 
+func (src *enumerable[T]) WithComparersFrom(copyFrom IEnumerable[T]) IEnumerable[T] {
+	cast := copyFrom.(*enumerable[T])
+	if cast.equalityComparer != nil {
+		src.equalityComparer = cast.equalityComparer
+	}
+	if cast.lessComparer != nil {
+		src.lessComparer = cast.lessComparer
+	}
+	return src
+}
+
 func (src *enumerable[T]) WithDefaultComparers() IEnumerable[T] {
 	switch src.dataType {
 	case "int8":

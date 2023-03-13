@@ -398,12 +398,12 @@ type IEnumerable[T any] interface {
 
 	// WithEqualsComparer the equality comparer, to indicate if 2 source values are equals, will be embedded
 	// into this IEnumerable which automatically be used for the following methods:
-	// Except, Distinct, Union
+	// Contains, Except, Distinct, Union
 	WithEqualsComparer(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
 
 	// WithLessComparer the less comparer, to indicate if left source is lower than right source, will be embedded
 	// into this IEnumerable which automatically be used for the following methods:
-	// Order, OrderByDescending
+	// Min, Max, Order, OrderByDescending
 	WithLessComparer(lessComparer func(left, right T) bool) IEnumerable[T]
 
 	// WithDefaultComparers automatically detect type of T and inject comparers of the corresponding type,
@@ -413,6 +413,9 @@ type IEnumerable[T any] interface {
 	//
 	// Supported types: int8/16/32/64, uint8/16/32/64, int, uint, uintptr, float32/64, complex64/128 (equality comparer only), string
 	WithDefaultComparers() IEnumerable[T]
+
+	// WithComparersFrom copies all existing comparers from the other IEnumerable[T] specified as parameter
+	WithComparersFrom(copyFrom IEnumerable[T]) IEnumerable[T]
 
 	// The following methods are internal APIs
 
