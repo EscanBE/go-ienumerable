@@ -1,68 +1,69 @@
 package goe
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"reflect"
 	"testing"
 )
 
-func Test_enumerable_Take(t *testing.T) {
+func Test_enumerable_Take_TakeLast(t *testing.T) {
 	tests := []struct {
-		name  string
-		src   IEnumerable[int]
-		count int
-		want  IEnumerable[int]
+		name         string
+		src          IEnumerable[int]
+		count        int
+		wantTake     IEnumerable[int]
+		wantTakeLast IEnumerable[int]
 	}{
 		{
-			name:  "partial",
-			src:   createIntEnumerable(2, 11),
-			count: 5,
-			want:  createIntEnumerable(2, 6),
+			name:         "partial",
+			src:          createIntEnumerable(2, 11),
+			count:        5,
+			wantTake:     createIntEnumerable(2, 6),
+			wantTakeLast: createIntEnumerable(7, 11),
 		},
 		{
-			name:  "negative",
-			src:   createIntEnumerable(2, 11),
-			count: -1 * (rand.Intn(100) + 1),
-			want:  injectIntComparers(createEmptyIntEnumerable()),
+			name:         "negative",
+			src:          createIntEnumerable(2, 11),
+			count:        -1 * (rand.Intn(100) + 1),
+			wantTake:     injectIntComparers(createEmptyIntEnumerable()),
+			wantTakeLast: injectIntComparers(createEmptyIntEnumerable()),
 		},
 		{
-			name:  "all",
-			src:   createIntEnumerable(1, 5),
-			count: 5,
-			want:  createIntEnumerable(1, 5),
+			name:         "all",
+			src:          createIntEnumerable(1, 5),
+			count:        5,
+			wantTake:     createIntEnumerable(1, 5),
+			wantTakeLast: createIntEnumerable(1, 5),
 		},
 		{
-			name:  "all",
-			src:   createIntEnumerable(1, 5),
-			count: 6,
-			want:  createIntEnumerable(1, 5),
+			name:         "all",
+			src:          createIntEnumerable(1, 5),
+			count:        6,
+			wantTake:     createIntEnumerable(1, 5),
+			wantTakeLast: createIntEnumerable(1, 5),
 		},
 		{
-			name:  "empty",
-			src:   createEmptyIntEnumerable(),
-			count: 10,
-			want:  createEmptyIntEnumerable(),
+			name:         "empty",
+			src:          createEmptyIntEnumerable(),
+			count:        10,
+			wantTake:     createEmptyIntEnumerable(),
+			wantTakeLast: createEmptyIntEnumerable(),
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.src)
-			got := tt.src.Take(tt.count)
+			gotTake := tt.src.Take(tt.count)
+			gotTakeLast := tt.src.TakeLast(tt.count)
 
-			wantS := tt.want.exposeData()
-			gotS := got.exposeData()
-
-			if len(wantS) == 0 && len(wantS) == len(gotS) {
-
-			} else if !assert.True(t, reflect.DeepEqual(wantS, gotS)) {
-				fmt.Printf("Expect: %v\nActual: %v\n", tt.want.exposeData(), got.exposeData())
-			}
+			assert.True(t, reflect.DeepEqual(tt.wantTake.exposeData(), gotTake.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.wantTakeLast.exposeData(), gotTakeLast.exposeData()))
 
 			bSrc.assertUnchanged(t, tt.src)
-			bSrc.assertUnchangedIgnoreData(t, got)
+			bSrc.assertUnchangedIgnoreData(t, gotTake)
+			bSrc.assertUnchangedIgnoreData(t, gotTakeLast)
 		})
 	}
 }

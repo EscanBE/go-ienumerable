@@ -343,6 +343,10 @@ type IEnumerable[T any] interface {
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
 
+	// SkipLast returns a new enumerable collection that contains the elements from source
+	// with the last count elements of the source collection omitted.
+	SkipLast(count int) IEnumerable[T]
+
 	// SumInt32 computes the sum of a sequence of integer values.
 	//
 	// Notice 1: will panic if sum result is overflow int32
@@ -381,6 +385,9 @@ type IEnumerable[T any] interface {
 
 	// Take returns a specified number of contiguous elements from the start of a sequence.
 	Take(count int) IEnumerable[T]
+
+	// TakeLast returns a new enumerable collection that contains the last count elements from source.
+	TakeLast(count int) IEnumerable[T]
 
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
