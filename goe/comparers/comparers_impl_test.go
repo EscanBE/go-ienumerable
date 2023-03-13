@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
+	"time"
 )
 
 func Test_int8Comparer_Compare(t *testing.T) {
@@ -714,6 +715,43 @@ func Test_boolComparer_Compare(t *testing.T) {
 	}
 }
 
+func Test_timeComparer_durationComparer_Compare(t *testing.T) {
+	tests := []struct {
+		x    time.Duration
+		y    time.Duration
+		want int
+	}{
+		{
+			x:    time.Minute,
+			y:    time.Minute,
+			want: 0,
+		},
+		{
+			x:    time.Second,
+			y:    time.Minute,
+			want: -1,
+		},
+		{
+			x:    time.Minute,
+			y:    time.Second,
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("Duration %v-%v", tt.x, tt.y), func(t *testing.T) {
+			if got := DurationComparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+		})
+		t.Run(fmt.Sprintf("Time %v-%v", tt.x, tt.y), func(t *testing.T) {
+			now := time.Now()
+			if got := TimeComparer.Compare(now.Add(tt.x), now.Add(tt.y)); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_partitionedComparer_fromEL(t *testing.T) {
 	equals := func(x, y int8) bool {
 		return x == y
@@ -855,4 +893,50 @@ func Test_partitionedComparer_fromComparer(t *testing.T) {
 			assert.Equal(t, tt.want, i.Compare(tt.x, tt.y))
 		})
 	}
+}
+
+func Test_wrappedComparer(t *testing.T) {
+	t.Run("provide params of correct type", func(t *testing.T) {
+		assert.Equal(t, 1, HideTypedComparer[int8](Int8Comparer).Compare(int8(3), int8(1)))
+		assert.Equal(t, 1, HideTypedComparer[int](IntComparer).Compare(3, 1))
+		assert.Equal(t, 1, HideTypedComparer[string](StringComparer).Compare("3", "1"))
+		assert.Equal(t, 1, HideTypedComparer[bool](BoolComparer).Compare(true, false))
+	})
+
+	t.Run("provide params of correct type but wrapped to any", func(t *testing.T) {
+		assert.Equal(t, 1, HideTypedComparer[int8](Int8Comparer).Compare(any(int8(3)), any(int8(1))))
+		assert.Equal(t, 1, HideTypedComparer[int](IntComparer).Compare(any(3), any(1)))
+		assert.Equal(t, 1, HideTypedComparer[string](StringComparer).Compare(any("3"), any("1")))
+		assert.Equal(t, 1, HideTypedComparer[bool](BoolComparer).Compare(any(true), any(false)))
+	})
+
+	t.Run("provide params of wrong type", func(t *testing.T) {
+		hiddenInt8Comparer := HideTypedComparer[int8](Int8Comparer)
+		params1 := int32(3)
+		params2 := int32(1)
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+			}
+		}()
+
+		_ = hiddenInt8Comparer.Compare(params1, params2)
+	})
+
+	t.Run("provide params of wrong type (any)", func(t *testing.T) {
+		hiddenInt8Comparer := HideTypedComparer[int8](Int8Comparer)
+		params1 := int32(3)
+		params2 := int32(1)
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect panic")
+			}
+		}()
+
+		_ = hiddenInt8Comparer.Compare(any(params1), any(params2))
+	})
 }

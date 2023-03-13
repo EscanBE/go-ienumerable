@@ -1,6 +1,9 @@
 package comparers
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 // ensure implementation
 var (
@@ -431,7 +434,7 @@ func (i stringComparer) Compare(x, y string) int {
 type boolComparer struct {
 }
 
-// NewBoolComparer returns IComparer for string with comparison:
+// NewBoolComparer returns IComparer for bool with comparison:
 // x == y ? 0 : (!x ? -1 : 1)
 func NewBoolComparer() IComparer[bool] {
 	return boolComparer{}
@@ -443,6 +446,46 @@ func (i boolComparer) Compare(x, y bool) int {
 	}
 
 	if !x {
+		return -1
+	}
+
+	return 1
+}
+
+type timeComparer struct {
+}
+
+// NewTimeComparer returns IComparer for time.Time with default comparison.
+func NewTimeComparer() IComparer[time.Time] {
+	return timeComparer{}
+}
+
+func (i timeComparer) Compare(x, y time.Time) int {
+	if x == y {
+		return 0
+	}
+
+	if x.Before(y) {
+		return -1
+	}
+
+	return 1
+}
+
+type durationComparer struct {
+}
+
+// NewDurationComparer returns IComparer for time.Duration with default comparison.
+func NewDurationComparer() IComparer[time.Duration] {
+	return durationComparer{}
+}
+
+func (i durationComparer) Compare(x, y time.Duration) int {
+	if x == y {
+		return 0
+	}
+
+	if x < y {
 		return -1
 	}
 
@@ -496,4 +539,27 @@ func (i partitionedComparer[T]) Compare(x, y T) int {
 	}
 
 	return 1
+}
+
+type wrappedComparer struct {
+	compareFunc func(v1, v2 any) int
+}
+
+// HideTypedComparer wraps the typed comparer IComparer[T] into IComparer[any].
+// This is used for auto-resolve comparer technique.
+//
+// Beware: input parameter still have to have correct type.
+// For example when wraps a IComparer[int8],
+// parameter passed to the Compare function still have to be int8,
+// otherwise panic
+func HideTypedComparer[T any](comparer IComparer[T]) IComparer[any] {
+	return &wrappedComparer{
+		compareFunc: func(v1, v2 any) int {
+			return comparer.Compare(v1.(T), v2.(T))
+		},
+	}
+}
+
+func (i *wrappedComparer) Compare(x, y any) int {
+	return i.compareFunc(x, y)
 }
