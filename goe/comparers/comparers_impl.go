@@ -49,6 +49,22 @@ func (i int8Comparer) Compare(x, y int8) int {
 	return 0
 }
 
+func (i int8Comparer) ComparePointerMode(x, y *int8) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type uint8Comparer struct {
 }
 
@@ -69,6 +85,22 @@ func (i uint8Comparer) Compare(x, y uint8) int {
 	}
 
 	return 0
+}
+
+func (i uint8Comparer) ComparePointerMode(x, y *uint8) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type int16Comparer struct {
@@ -93,6 +125,22 @@ func (i int16Comparer) Compare(x, y int16) int {
 	return 0
 }
 
+func (i int16Comparer) ComparePointerMode(x, y *int16) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type uint16Comparer struct {
 }
 
@@ -113,6 +161,22 @@ func (i uint16Comparer) Compare(x, y uint16) int {
 	}
 
 	return 0
+}
+
+func (i uint16Comparer) ComparePointerMode(x, y *uint16) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type int32Comparer struct {
@@ -137,6 +201,22 @@ func (i int32Comparer) Compare(x, y int32) int {
 	return 0
 }
 
+func (i int32Comparer) ComparePointerMode(x, y *int32) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type uint32Comparer struct {
 }
 
@@ -157,6 +237,22 @@ func (i uint32Comparer) Compare(x, y uint32) int {
 	}
 
 	return 0
+}
+
+func (i uint32Comparer) ComparePointerMode(x, y *uint32) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type int64Comparer struct {
@@ -181,6 +277,22 @@ func (i int64Comparer) Compare(x, y int64) int {
 	return 0
 }
 
+func (i int64Comparer) ComparePointerMode(x, y *int64) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type uint64Comparer struct {
 }
 
@@ -201,6 +313,22 @@ func (i uint64Comparer) Compare(x, y uint64) int {
 	}
 
 	return 0
+}
+
+func (i uint64Comparer) ComparePointerMode(x, y *uint64) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type intComparer struct {
@@ -225,6 +353,22 @@ func (i intComparer) Compare(x, y int) int {
 	return 0
 }
 
+func (i intComparer) ComparePointerMode(x, y *int) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type uintComparer struct {
 }
 
@@ -245,6 +389,22 @@ func (i uintComparer) Compare(x, y uint) int {
 	}
 
 	return 0
+}
+
+func (i uintComparer) ComparePointerMode(x, y *uint) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type uintptrComparer struct {
@@ -271,6 +431,22 @@ func (i uintptrComparer) Compare(x, y uintptr) int {
 	return 0
 }
 
+func (i uintptrComparer) ComparePointerMode(x, y *uintptr) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type float32Comparer struct {
 }
 
@@ -293,6 +469,22 @@ func (i float32Comparer) Compare(x, y float32) int {
 	return 0
 }
 
+func (i float32Comparer) ComparePointerMode(x, y *float32) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type float64Comparer struct {
 }
 
@@ -313,6 +505,22 @@ func (i float64Comparer) Compare(x, y float64) int {
 	}
 
 	return 0
+}
+
+func (i float64Comparer) ComparePointerMode(x, y *float64) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type complex64Comparer struct {
@@ -367,6 +575,22 @@ func (i complex64Comparer) Compare(x, y complex64) int {
 	return 0
 }
 
+func (i complex64Comparer) ComparePointerMode(x, y *complex64) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type complex128Comparer struct {
 }
 
@@ -419,6 +643,22 @@ func (i complex128Comparer) Compare(x, y complex128) int {
 	return 0
 }
 
+func (i complex128Comparer) ComparePointerMode(x, y *complex128) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type stringComparer struct {
 }
 
@@ -429,6 +669,22 @@ func NewStringComparer() IComparer[string] {
 
 func (i stringComparer) Compare(x, y string) int {
 	return strings.Compare(x, y)
+}
+
+func (i stringComparer) ComparePointerMode(x, y *string) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 type boolComparer struct {
@@ -452,6 +708,22 @@ func (i boolComparer) Compare(x, y bool) int {
 	return 1
 }
 
+func (i boolComparer) ComparePointerMode(x, y *bool) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type timeComparer struct {
 }
 
@@ -472,6 +744,22 @@ func (i timeComparer) Compare(x, y time.Time) int {
 	return 1
 }
 
+func (i timeComparer) ComparePointerMode(x, y *time.Time) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type durationComparer struct {
 }
 
@@ -490,6 +778,22 @@ func (i durationComparer) Compare(x, y time.Duration) int {
 	}
 
 	return 1
+}
+
+func (i durationComparer) ComparePointerMode(x, y *time.Duration) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
 }
 
 // partitionedComparer can run in 2 options, if comparer is provided, use it, otherwise use the pair equals and less
@@ -541,8 +845,29 @@ func (i partitionedComparer[T]) Compare(x, y T) int {
 	return 1
 }
 
+func (i partitionedComparer[T]) ComparePointerMode(x, y *T) int {
+	if i.comparer != nil {
+		return i.comparer.ComparePointerMode(x, y)
+	}
+
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return i.Compare(*x, *y)
+}
+
 type wrappedComparer struct {
-	compareFunc func(v1, v2 any) int
+	compareFunc            func(v1, v2 any) int
+	comparePointerModeFunc func(v1, v2 *any) int
 }
 
 // HideTypedComparer wraps the typed comparer IComparer[T] into IComparer[any].
@@ -557,9 +882,33 @@ func HideTypedComparer[T any](comparer IComparer[T]) IComparer[any] {
 		compareFunc: func(v1, v2 any) int {
 			return comparer.Compare(v1.(T), v2.(T))
 		},
+		comparePointerModeFunc: func(v1, v2 *any) int {
+			if v1 == nil && v2 == nil {
+				return comparer.ComparePointerMode(nil, nil)
+			}
+			if v1 == nil {
+				a2 := *v2
+				t2 := a2.(T)
+				return comparer.ComparePointerMode(nil, &t2)
+			}
+			if v2 == nil {
+				a1 := *v1
+				t1 := a1.(T)
+				return comparer.ComparePointerMode(&t1, nil)
+			}
+			a1 := *v1
+			t1 := a1.(T)
+			a2 := *v2
+			t2 := a2.(T)
+			return comparer.ComparePointerMode(&t1, &t2)
+		},
 	}
 }
 
 func (i *wrappedComparer) Compare(x, y any) int {
 	return i.compareFunc(x, y)
+}
+
+func (i wrappedComparer) ComparePointerMode(x, y *any) int {
+	return i.comparePointerModeFunc(x, y)
 }

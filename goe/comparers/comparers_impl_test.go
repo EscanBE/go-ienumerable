@@ -42,7 +42,13 @@ func Test_int8Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Int8Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Int8Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -78,7 +84,13 @@ func Test_uint8Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Uint8Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Uint8Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -119,7 +131,13 @@ func Test_int16Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Int16Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Int16Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -144,18 +162,24 @@ func Test_uint16Comparer_Compare(t *testing.T) {
 		},
 		{
 			x:    0,
-			y:    math.MaxInt16,
+			y:    math.MaxUint16,
 			want: -1,
 		},
 		{
-			x:    math.MaxInt16,
+			x:    math.MaxUint16,
 			y:    0,
 			want: 1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Uint16Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Uint16Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -196,7 +220,13 @@ func Test_int32Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Int32Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Int32Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -221,18 +251,24 @@ func Test_uint32Comparer_Compare(t *testing.T) {
 		},
 		{
 			x:    0,
-			y:    math.MaxInt32,
+			y:    math.MaxUint32,
 			want: -1,
 		},
 		{
-			x:    math.MaxInt32,
+			x:    math.MaxUint32,
 			y:    0,
 			want: 1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Uint32Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Uint32Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -273,7 +309,13 @@ func Test_int64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Int64Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Int64Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -298,18 +340,24 @@ func Test_uint64Comparer_Compare(t *testing.T) {
 		},
 		{
 			x:    0,
-			y:    math.MaxInt64,
+			y:    math.MaxUint64,
 			want: -1,
 		},
 		{
-			x:    math.MaxInt64,
+			x:    math.MaxUint64,
 			y:    0,
 			want: 1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Uint64Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Uint64Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -350,7 +398,13 @@ func Test_intComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := IntComparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := IntComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -375,18 +429,24 @@ func Test_uintComparer_Compare(t *testing.T) {
 		},
 		{
 			x:    0,
-			y:    math.MaxInt,
+			y:    math.MaxUint,
 			want: -1,
 		},
 		{
-			x:    math.MaxInt,
+			x:    math.MaxUint,
 			y:    0,
 			want: 1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := UintComparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := UintComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -395,35 +455,41 @@ func Test_uintComparer_Compare(t *testing.T) {
 
 func Test_uintptrComparer_Compare(t *testing.T) {
 	tests := []struct {
-		x       uintptr
-		y       uintptr
-		wantptr int
+		x    uintptr
+		y    uintptr
+		want int
 	}{
 		{
-			x:       0,
-			y:       0,
-			wantptr: 0,
+			x:    0,
+			y:    0,
+			want: 0,
 		},
 		{
-			x:       1_000_000,
-			y:       1_000_000,
-			wantptr: 0,
+			x:    1_000_000,
+			y:    1_000_000,
+			want: 0,
 		},
 		{
-			x:       0,
-			y:       1_000_000,
-			wantptr: -1,
+			x:    0,
+			y:    1_000_000,
+			want: -1,
 		},
 		{
-			x:       1_000_000,
-			y:       0,
-			wantptr: 1,
+			x:    1_000_000,
+			y:    0,
+			want: 1,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := UintptrComparer.Compare(tt.x, tt.y); got != tt.wantptr {
-				t.Errorf("Compare() = %v, want %v", got, tt.wantptr)
+			comparer := UintptrComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -463,7 +529,13 @@ func Test_float32Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Float32Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Float32Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -504,7 +576,13 @@ func Test_float64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Float64Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Float64Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -560,7 +638,13 @@ func Test_complex64Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Complex64Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Complex64Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -616,7 +700,13 @@ func Test_complex128Comparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := Complex128Comparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := Complex128Comparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -672,7 +762,13 @@ func Test_stringComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := StringComparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := StringComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -708,7 +804,13 @@ func Test_boolComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := BoolComparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := BoolComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -739,13 +841,28 @@ func Test_timeComparer_durationComparer_Compare(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("Duration %v-%v", tt.x, tt.y), func(t *testing.T) {
-			if got := DurationComparer.Compare(tt.x, tt.y); got != tt.want {
+			comparer := DurationComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
 		t.Run(fmt.Sprintf("Time %v-%v", tt.x, tt.y), func(t *testing.T) {
+			comparer := TimeComparer
+
 			now := time.Now()
-			if got := TimeComparer.Compare(now.Add(tt.x), now.Add(tt.y)); got != tt.want {
+			tX := now.Add(tt.x)
+			tY := now.Add(tt.y)
+
+			if got := comparer.Compare(tX, tY); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tX, &tY); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
 		})
@@ -832,6 +949,7 @@ func Test_partitionedComparer_fromEL(t *testing.T) {
 			i := NewPartitionedComparerFromEL(tt.equals, tt.less)
 
 			assert.Equal(t, tt.want, i.Compare(tt.x, tt.y))
+			assert.Equal(t, tt.want, i.ComparePointerMode(&tt.x, &tt.y))
 		})
 	}
 }
@@ -891,8 +1009,24 @@ func Test_partitionedComparer_fromComparer(t *testing.T) {
 			i := NewPartitionedComparerFromComparer[int8](tt.comparer)
 
 			assert.Equal(t, tt.want, i.Compare(tt.x, tt.y))
+			assert.Equal(t, tt.want, i.ComparePointerMode(&tt.x, &tt.y))
 		})
 	}
+
+	t.Run("pointer mode", func(t *testing.T) {
+		comparer := NewPartitionedComparerFromEL[int](func(v1, v2 int) bool {
+			return v1 == v2
+		}, func(v1, v2 int) bool {
+			return v1 < v2
+		})
+
+		i := 2
+		assert.Equal(t, 0, comparer.Compare(i, i))
+		assert.Equal(t, 0, comparer.ComparePointerMode(&i, &i))
+		assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
+		assert.Equal(t, 1, comparer.ComparePointerMode(&i, nil))
+		assert.Equal(t, -1, comparer.ComparePointerMode(nil, &i))
+	})
 }
 
 func Test_wrappedComparer(t *testing.T) {
@@ -908,6 +1042,16 @@ func Test_wrappedComparer(t *testing.T) {
 		assert.Equal(t, 1, HideTypedComparer[int](IntComparer).Compare(any(3), any(1)))
 		assert.Equal(t, 1, HideTypedComparer[string](StringComparer).Compare(any("3"), any("1")))
 		assert.Equal(t, 1, HideTypedComparer[bool](BoolComparer).Compare(any(true), any(false)))
+	})
+
+	t.Run("resolve for both type or pointer value", func(t *testing.T) {
+		hiddenComparer := HideTypedComparer[int8](Int8Comparer)
+		x := any(int8(3))
+		y := any(int8(1))
+		px := &x
+		py := &y
+		assert.Equal(t, 1, hiddenComparer.Compare(x, y))
+		assert.Equal(t, 1, hiddenComparer.ComparePointerMode(px, py))
 	})
 
 	t.Run("provide params of wrong type", func(t *testing.T) {
@@ -939,4 +1083,41 @@ func Test_wrappedComparer(t *testing.T) {
 
 		_ = hiddenInt8Comparer.Compare(any(params1), any(params2))
 	})
+}
+
+func Test_compareBothMode(t *testing.T) {
+	testCompareBothModeFor[int8](t, 1, 3)
+	testCompareBothModeFor[uint8](t, 1, 3)
+	testCompareBothModeFor[int16](t, 1, 3)
+	testCompareBothModeFor[uint16](t, 1, 3)
+	testCompareBothModeFor[int32](t, 1, 3)
+	testCompareBothModeFor[uint32](t, 1, 3)
+	testCompareBothModeFor[int64](t, 1, 3)
+	testCompareBothModeFor[uint64](t, 1, 3)
+	testCompareBothModeFor[int](t, 1, 3)
+	testCompareBothModeFor[uint](t, 1, 3)
+	testCompareBothModeFor[uintptr](t, 1, 3)
+	testCompareBothModeFor[float32](t, 1, 3)
+	testCompareBothModeFor[float64](t, 1, 3)
+	testCompareBothModeFor[string](t, "1", "3")
+	testCompareBothModeFor[bool](t, false, true)
+	testCompareBothModeFor[complex64](t, 1, 3)
+	testCompareBothModeFor[complex128](t, 1, 3)
+	testCompareBothModeFor[time.Time](t, time.Now(), time.Now().Add(time.Second))
+	testCompareBothModeFor[time.Duration](t, time.Second, time.Minute)
+}
+
+func testCompareBothModeFor[T any](t *testing.T, small, big T) {
+	comparer := GetDefaultComparer[T]()
+	assert.Equal(t, 0, comparer.Compare(big, big))
+	assert.Equal(t, 0, comparer.Compare(small, small))
+	assert.Equal(t, -1, comparer.Compare(small, big))
+	assert.Equal(t, 1, comparer.Compare(big, small))
+	aSmall := any(small)
+	aBig := any(big)
+	assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
+	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &aBig))
+	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &aSmall))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&aBig, nil))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&aSmall, nil))
 }

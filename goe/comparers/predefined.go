@@ -31,25 +31,25 @@ var (
 )
 
 var mappedWrappedComparers = map[string]IComparer[any]{
-	"int8":                              HideTypedComparer[int8](Int8Comparer),
-	"uint8":                             HideTypedComparer[uint8](Uint8Comparer),
-	"int16":                             HideTypedComparer[int16](Int16Comparer),
-	"uint16":                            HideTypedComparer[uint16](Uint16Comparer),
-	"int32":                             HideTypedComparer[int32](Int32Comparer),
-	"uint32":                            HideTypedComparer[uint32](Uint32Comparer),
-	"int64":                             HideTypedComparer[int64](Int64Comparer),
-	"uint64":                            HideTypedComparer[uint64](Uint64Comparer),
-	"int":                               HideTypedComparer[int](IntComparer),
-	"uint":                              HideTypedComparer[uint](UintComparer),
-	"uintptr":                           HideTypedComparer[uintptr](UintptrComparer),
-	"float32":                           HideTypedComparer[float32](Float32Comparer),
-	"float64":                           HideTypedComparer[float64](Float64Comparer),
-	"complex64":                         HideTypedComparer[complex64](Complex64Comparer),
-	"complex128":                        HideTypedComparer[complex128](Complex128Comparer),
-	"string":                            HideTypedComparer[string](StringComparer),
-	"bool":                              HideTypedComparer[bool](BoolComparer),
-	fmt.Sprintf("%T", time.Time{}):      HideTypedComparer[time.Time](TimeComparer),
-	fmt.Sprintf("%T", time.Duration(0)): HideTypedComparer[time.Duration](DurationComparer),
+	"int8":                             HideTypedComparer[int8](Int8Comparer),
+	"uint8":                            HideTypedComparer[uint8](Uint8Comparer),
+	"int16":                            HideTypedComparer[int16](Int16Comparer),
+	"uint16":                           HideTypedComparer[uint16](Uint16Comparer),
+	"int32":                            HideTypedComparer[int32](Int32Comparer),
+	"uint32":                           HideTypedComparer[uint32](Uint32Comparer),
+	"int64":                            HideTypedComparer[int64](Int64Comparer),
+	"uint64":                           HideTypedComparer[uint64](Uint64Comparer),
+	"int":                              HideTypedComparer[int](IntComparer),
+	"uint":                             HideTypedComparer[uint](UintComparer),
+	"uintptr":                          HideTypedComparer[uintptr](UintptrComparer),
+	"float32":                          HideTypedComparer[float32](Float32Comparer),
+	"float64":                          HideTypedComparer[float64](Float64Comparer),
+	"complex64":                        HideTypedComparer[complex64](Complex64Comparer),
+	"complex128":                       HideTypedComparer[complex128](Complex128Comparer),
+	"string":                           HideTypedComparer[string](StringComparer),
+	"bool":                             HideTypedComparer[bool](BoolComparer),
+	normalizeTypeName("time.Time"):     HideTypedComparer[time.Time](TimeComparer),
+	normalizeTypeName("time.Duration"): HideTypedComparer[time.Duration](DurationComparer),
 }
 
 // GetDefaultComparer attempts to get IComparer for corresponding type and returns as IComparer[any].
@@ -57,6 +57,7 @@ var mappedWrappedComparers = map[string]IComparer[any]{
 // can specify via GetDefaultComparerByTypeName or TryGetDefaultComparerByTypeName
 func GetDefaultComparer[T any]() IComparer[any] {
 	typeName := fmt.Sprintf("%T", *new(T))
+
 	if len(typeName) < 1 || typeName == "<nil>" {
 		panic(fmt.Sprintf("unable to detect type for provided type"))
 	}
@@ -90,7 +91,8 @@ func GetDefaultComparerByTypeName(typeName string) IComparer[any] {
 
 // TryGetDefaultComparerByTypeName attempts to get IComparer for specified type and returns as IComparer[any].
 func TryGetDefaultComparerByTypeName(typeName string) (comparer IComparer[any], found bool) {
-	comparer, found = mappedWrappedComparers[normalizeTypeName(typeName)]
+	typeName = normalizeTypeName(typeName)
+	comparer, found = mappedWrappedComparers[typeName]
 	return
 }
 
@@ -98,8 +100,12 @@ func TryGetDefaultComparerByTypeName(typeName string) (comparer IComparer[any], 
 //
 // Panic if duplicated for a type or comparer is nil or type name is empty/<nil>
 func RegisterDefaultComparerForType[T any](typeName string, comparer IComparer[T], allowOverride bool) {
+	if strings.HasPrefix(typeName, "*") {
+		panic("can not register for pointer. Pointer is automatically registered when register for normal")
+	}
+
 	typeName = normalizeTypeName(typeName)
-	if len(typeName) < 1 || typeName == "<nil>" {
+	if len(typeName) < 1 || typeName == "<nil>" || typeName == "*" {
 		panic("empty or <nil> type name")
 	}
 
@@ -126,5 +132,5 @@ func RegisterDefaultTypedComparer[T any](comparer IComparer[T], allowOverride bo
 }
 
 func normalizeTypeName(typeName string) string {
-	return strings.ToLower(strings.TrimSpace(typeName))
+	return strings.TrimPrefix(strings.ToLower(strings.TrimSpace(typeName)), "*")
 }
