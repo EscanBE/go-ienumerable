@@ -25,6 +25,8 @@ type IComparer[T any] interface {
 	//
 	// If x is not nil and y is nil, return 1.
 	//
-	// If both x and y are not nil, do like Compare does
-	ComparePointerMode(x, y *T) int
+	// If both x and y are not nil, do like Compare does.
+	//
+	// Implementation must support both type of input param *T or *any (*interface{}) of T.
+	ComparePointerMode(x, y any) int
 }

@@ -20,7 +20,7 @@ func (p testStructComparerImpl) Compare(x, y testStruct) int {
 	return 0
 }
 
-func (p testStructComparerImpl) ComparePointerMode(x, y *testStruct) int {
+func (p testStructComparerImpl) ComparePointerMode(x, y any) int {
 	return 0
 }
 

@@ -50,7 +50,7 @@ func (i wrappedInt32Comparer) Compare(x, y wrappedInt32) int {
 	return 0
 }
 
-func (i wrappedInt32Comparer) ComparePointerMode(x, y *wrappedInt32) int {
+func (i wrappedInt32Comparer) ComparePointerMode(x, y any) int {
 	if x == nil && y == nil {
 		return 0
 	}
@@ -63,7 +63,7 @@ func (i wrappedInt32Comparer) ComparePointerMode(x, y *wrappedInt32) int {
 		return 1
 	}
 
-	return i.Compare(*x, *y)
+	return i.Compare(comparers.AnyPointerToType[wrappedInt32](x), comparers.AnyPointerToType[wrappedInt32](y))
 }
 
 // ensure implementation
