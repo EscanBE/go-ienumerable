@@ -201,6 +201,14 @@ type IEnumerable[T any] interface {
 
 	//GroupBy(fieldName string) enumerable
 
+	// Intersect produces the set intersection of two sequences using provided comparer.
+	//
+	// Require: equality comparer provided via WithEqualsComparer
+	Intersect(second IEnumerable[T]) IEnumerable[T]
+
+	// IntersectBy produces the set intersection of two sequences according to provided comparer.
+	IntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T]
+
 	// Last returns the last element of a sequence
 	Last() T
 
