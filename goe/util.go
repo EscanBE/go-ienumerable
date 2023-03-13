@@ -20,8 +20,12 @@ func (src *enumerable[T]) len() int {
 
 func (src *enumerable[T]) assertSrcNonNil() {
 	if src == nil {
-		panic("source is nil")
+		panic(getErrorSourceIsNil())
 	}
+}
+
+func getErrorSourceIsNil() error {
+	return fmt.Errorf("source is nil")
 }
 
 func (src *enumerable[T]) assertSrcNonEmpty() {
