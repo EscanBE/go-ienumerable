@@ -31,25 +31,25 @@ var (
 )
 
 var mappedWrappedComparers = map[string]IComparer[any]{
-	"int8":                             HideTypedComparer[int8](Int8Comparer),
-	"uint8":                            HideTypedComparer[uint8](Uint8Comparer),
-	"int16":                            HideTypedComparer[int16](Int16Comparer),
-	"uint16":                           HideTypedComparer[uint16](Uint16Comparer),
-	"int32":                            HideTypedComparer[int32](Int32Comparer),
-	"uint32":                           HideTypedComparer[uint32](Uint32Comparer),
-	"int64":                            HideTypedComparer[int64](Int64Comparer),
-	"uint64":                           HideTypedComparer[uint64](Uint64Comparer),
-	"int":                              HideTypedComparer[int](IntComparer),
-	"uint":                             HideTypedComparer[uint](UintComparer),
-	"uintptr":                          HideTypedComparer[uintptr](UintptrComparer),
-	"float32":                          HideTypedComparer[float32](Float32Comparer),
-	"float64":                          HideTypedComparer[float64](Float64Comparer),
-	"complex64":                        HideTypedComparer[complex64](Complex64Comparer),
-	"complex128":                       HideTypedComparer[complex128](Complex128Comparer),
-	"string":                           HideTypedComparer[string](StringComparer),
-	"bool":                             HideTypedComparer[bool](BoolComparer),
-	normalizeTypeName("time.Time"):     HideTypedComparer[time.Time](TimeComparer),
-	normalizeTypeName("time.Duration"): HideTypedComparer[time.Duration](DurationComparer),
+	getNormalizeTypeName[int8]():          HideTypedComparer[int8](Int8Comparer),
+	getNormalizeTypeName[uint8]():         HideTypedComparer[uint8](Uint8Comparer),
+	getNormalizeTypeName[int16]():         HideTypedComparer[int16](Int16Comparer),
+	getNormalizeTypeName[uint16]():        HideTypedComparer[uint16](Uint16Comparer),
+	getNormalizeTypeName[int32]():         HideTypedComparer[int32](Int32Comparer),
+	getNormalizeTypeName[uint32]():        HideTypedComparer[uint32](Uint32Comparer),
+	getNormalizeTypeName[int64]():         HideTypedComparer[int64](Int64Comparer),
+	getNormalizeTypeName[uint64]():        HideTypedComparer[uint64](Uint64Comparer),
+	getNormalizeTypeName[int]():           HideTypedComparer[int](IntComparer),
+	getNormalizeTypeName[uint]():          HideTypedComparer[uint](UintComparer),
+	getNormalizeTypeName[uintptr]():       HideTypedComparer[uintptr](UintptrComparer),
+	getNormalizeTypeName[float32]():       HideTypedComparer[float32](Float32Comparer),
+	getNormalizeTypeName[float64]():       HideTypedComparer[float64](Float64Comparer),
+	getNormalizeTypeName[complex64]():     HideTypedComparer[complex64](Complex64Comparer),
+	getNormalizeTypeName[complex128]():    HideTypedComparer[complex128](Complex128Comparer),
+	getNormalizeTypeName[string]():        HideTypedComparer[string](StringComparer),
+	getNormalizeTypeName[bool]():          HideTypedComparer[bool](BoolComparer),
+	getNormalizeTypeName[time.Time]():     HideTypedComparer[time.Time](TimeComparer),
+	getNormalizeTypeName[time.Duration](): HideTypedComparer[time.Duration](DurationComparer),
 }
 
 // GetDefaultComparer attempts to get IComparer for corresponding type and returns as IComparer[any].
@@ -133,4 +133,8 @@ func RegisterDefaultTypedComparer[T any](comparer IComparer[T], allowOverride bo
 
 func normalizeTypeName(typeName string) string {
 	return strings.TrimPrefix(strings.ToLower(strings.TrimSpace(typeName)), "*")
+}
+
+func getNormalizeTypeName[T any]() string {
+	return normalizeTypeName(fmt.Sprintf("%T", *new(T)))
 }

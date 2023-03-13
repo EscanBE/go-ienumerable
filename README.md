@@ -60,9 +60,9 @@ type IComparer[T any] interface {
     ComparePointerMode(x, y *T) int
 }
 ```
-See implementation sample in `example`
+See implementation sample in `example`.
 
 `go-ienumerable` will attempts to resolve a default comparer using predefined comparers for some type. You can register a comparer for `YourType` by implement your own `IComparer[YourType]`.
-See sample of implement and default comparer registration in `example`
+See sample of implement and default comparer registration for custom types and other types in `example`.
 
 Predefined `IComparer[T]`: `string`, `bool`, `int`, `int8/16/32/64`, `uint`, `uint8/16/32/64`, `float32/64`, `complex64/128`, `time.Time`, `time.Duration`
