@@ -30,3 +30,37 @@ got := goe.NewIEnumerable[byte](array...).
 fmt.Println(got)
 // "Hello World"
 ```
+
+## Notices about value comparison:
+Some `IEnumerable[T]` methods like `Order`, `Distinct`, `Except`, `Union`, `Intersect`,... need value comparator to compare between each element in the sequence and the `IComparer[T]` is needed.
+
+This is definition of `IComparer[T]` in `comparers` package:
+```go
+type IComparer[T any] interface {
+    // Compare compares value from params.
+    //
+    // If x is less than y, returns -1.
+    //
+    // If x is equals to y, returns 0.
+    //
+    // If x is greater than y, returns 1.
+    Compare(x, y T) int
+
+    // ComparePointerMode compares two params but in pointer presentation (like *int vs *int).
+    //
+    // If both x and y are nil, return 0.
+    //
+    // If x is nil and y is not nil, return -1.
+    //
+    // If x is not nil and y is nil, return 1.
+    //
+    // If both x and y are not nil, do like Compare does
+    ComparePointerMode(x, y *T) int
+}
+```
+See implementation sample in `example`
+
+`go-ienumerable` will attempts to resolve a default comparer using predefined comparers for some type. You can register a comparer for `YourType` by implement your own `IComparer[YourType]`.
+See sample of implement and default comparer registration in `example`
+
+Predefined `IComparer[T]`: `string`, `bool`, `int`, `int8/16/32/64`, `uint`, `uint8/16/32/64`, `float32/64`, `complex64/128`, `time.Time`, `time.Duration`

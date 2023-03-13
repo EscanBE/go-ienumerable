@@ -25,10 +25,6 @@ type IComparer[T any] interface {
 	//
 	// If x is not nil and y is nil, return 1.
 	//
-	// If x is less than y, returns -1.
-	//
-	// If x is equals to y, returns 0.
-	//
-	// If x is greater than y, returns 1.
+	// If both x and y are not nil, do like Compare does
 	ComparePointerMode(x, y *T) int
 }

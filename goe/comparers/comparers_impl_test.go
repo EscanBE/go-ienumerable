@@ -1088,9 +1088,11 @@ func Test_wrappedComparer(t *testing.T) {
 func Test_compareBothMode(t *testing.T) {
 	testCompareBothModeFor[int8](t, 1, 3)
 	testCompareBothModeFor[uint8](t, 1, 3)
+	testCompareBothModeFor[byte](t, 1, 3) // uint8 alias
 	testCompareBothModeFor[int16](t, 1, 3)
 	testCompareBothModeFor[uint16](t, 1, 3)
 	testCompareBothModeFor[int32](t, 1, 3)
+	testCompareBothModeFor[rune](t, 1, 3) // int32 alias
 	testCompareBothModeFor[uint32](t, 1, 3)
 	testCompareBothModeFor[int64](t, 1, 3)
 	testCompareBothModeFor[uint64](t, 1, 3)
