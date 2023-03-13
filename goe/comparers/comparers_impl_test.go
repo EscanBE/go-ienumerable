@@ -2,6 +2,7 @@ package comparers
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"math"
 	"testing"
 )
@@ -726,6 +727,149 @@ func Test_boolComparer_Compare(t *testing.T) {
 			if got := i.Compare(tt.x, tt.y); got != tt.want {
 				t.Errorf("Compare() = %v, want %v", got, tt.want)
 			}
+		})
+	}
+}
+
+func Test_partitionedComparer_fromEL(t *testing.T) {
+	equals := func(x, y int8) bool {
+		return x == y
+	}
+
+	less := func(x, y int8) bool {
+		return x < y
+	}
+
+	tests := []struct {
+		equals    func(x, y int8) bool
+		less      func(x, y int8) bool
+		x         int8
+		y         int8
+		want      int
+		wantPanic bool
+	}{
+		{
+			equals: equals,
+			less:   less,
+			x:      9,
+			y:      9,
+			want:   0,
+		},
+		{
+			equals: equals,
+			less:   less,
+			x:      -9,
+			y:      9,
+			want:   -1,
+		},
+		{
+			equals: equals,
+			less:   less,
+			x:      9,
+			y:      -1,
+			want:   1,
+		},
+		{
+			equals:    equals,
+			less:      nil,
+			x:         99,
+			y:         9,
+			wantPanic: true,
+		},
+		{
+			equals:    nil,
+			less:      less,
+			x:         99,
+			y:         8,
+			wantPanic: true,
+		},
+		{
+			equals:    nil,
+			less:      nil,
+			x:         99,
+			y:         7,
+			wantPanic: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
+			defer func() {
+				err := recover()
+				if tt.wantPanic {
+					if err == nil {
+						t.Errorf("expect error")
+						return
+					}
+					assert.Contains(t, fmt.Sprintf("%v", err), "comparer is nil")
+				} else {
+					if err != nil {
+						t.Errorf("not want error but got %v", err)
+					}
+				}
+			}()
+
+			i := NewPartitionedComparerFromEL(tt.equals, tt.less)
+
+			assert.Equal(t, tt.want, i.Compare(tt.x, tt.y))
+		})
+	}
+}
+
+func Test_partitionedComparer_fromComparer(t *testing.T) {
+	defaultComparer := NewInt8Comparer()
+
+	tests := []struct {
+		comparer  IComparer[int8]
+		x         int8
+		y         int8
+		want      int
+		wantPanic bool
+	}{
+		{
+			comparer: defaultComparer,
+			x:        9,
+			y:        9,
+			want:     0,
+		},
+		{
+			comparer: defaultComparer,
+			x:        -9,
+			y:        9,
+			want:     -1,
+		},
+		{
+			comparer: defaultComparer,
+			x:        9,
+			y:        -1,
+			want:     1,
+		},
+		{
+			comparer:  nil,
+			x:         99,
+			y:         9,
+			wantPanic: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
+			defer func() {
+				err := recover()
+				if tt.wantPanic {
+					if err == nil {
+						t.Errorf("expect error")
+						return
+					}
+					assert.Contains(t, fmt.Sprintf("%v", err), "comparer is nil")
+				} else {
+					if err != nil {
+						t.Errorf("not want error but got %v", err)
+					}
+				}
+			}()
+
+			i := NewPartitionedComparerFromComparer[int8](tt.comparer)
+
+			assert.Equal(t, tt.want, i.Compare(tt.x, tt.y))
 		})
 	}
 }

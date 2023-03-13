@@ -2,23 +2,27 @@ package comparers
 
 import "strings"
 
-var _ IComparer[int8] = int8Comparer{}
-var _ IComparer[uint8] = uint8Comparer{}
-var _ IComparer[int16] = int16Comparer{}
-var _ IComparer[uint16] = uint16Comparer{}
-var _ IComparer[int32] = int32Comparer{}
-var _ IComparer[uint32] = uint32Comparer{}
-var _ IComparer[int64] = int64Comparer{}
-var _ IComparer[uint64] = uint64Comparer{}
-var _ IComparer[int] = intComparer{}
-var _ IComparer[uint] = uintComparer{}
-var _ IComparer[uintptr] = uintptrComparer{}
-var _ IComparer[float32] = float32Comparer{}
-var _ IComparer[float64] = float64Comparer{}
-var _ IComparer[complex64] = complex64Comparer{}
-var _ IComparer[complex128] = complex128Comparer{}
-var _ IComparer[string] = stringComparer{}
-var _ IComparer[bool] = boolComparer{}
+// ensure implementation
+var (
+	_ IComparer[int8]       = int8Comparer{}
+	_ IComparer[uint8]      = uint8Comparer{}
+	_ IComparer[int16]      = int16Comparer{}
+	_ IComparer[uint16]     = uint16Comparer{}
+	_ IComparer[int32]      = int32Comparer{}
+	_ IComparer[uint32]     = uint32Comparer{}
+	_ IComparer[int64]      = int64Comparer{}
+	_ IComparer[uint64]     = uint64Comparer{}
+	_ IComparer[int]        = intComparer{}
+	_ IComparer[uint]       = uintComparer{}
+	_ IComparer[uintptr]    = uintptrComparer{}
+	_ IComparer[float32]    = float32Comparer{}
+	_ IComparer[float64]    = float64Comparer{}
+	_ IComparer[complex64]  = complex64Comparer{}
+	_ IComparer[complex128] = complex128Comparer{}
+	_ IComparer[string]     = stringComparer{}
+	_ IComparer[bool]       = boolComparer{}
+	_ IComparer[any]        = partitionedComparer[any]{}
+)
 
 type int8Comparer struct {
 }
@@ -357,6 +361,55 @@ func (i boolComparer) Compare(x, y bool) int {
 	}
 
 	if !x {
+		return -1
+	}
+
+	return 1
+}
+
+// partitionedComparer can run in 2 options, if comparer is provided, use it, otherwise use the pair equals and less
+type partitionedComparer[T any] struct {
+	equals   func(v1, v2 T) bool
+	less     func(v1, v2 T) bool
+	comparer IComparer[T]
+}
+
+// NewPartitionedComparerFromEL creates an IComparer that uses
+// both of the 'equals' and 'less' methods for underlying comparison.
+func NewPartitionedComparerFromEL[T any](equals func(v1, v2 T) bool, less func(v1, v2 T) bool) IComparer[T] {
+	if equals == nil {
+		panic("equals comparer is nil")
+	}
+	if less == nil {
+		panic("less comparer is nil")
+	}
+	return partitionedComparer[T]{
+		equals: equals,
+		less:   less,
+	}
+}
+
+// NewPartitionedComparerFromComparer creates an IComparer that uses
+// another IComparer for underlying comparison.
+func NewPartitionedComparerFromComparer[T any](comparer IComparer[T]) IComparer[T] {
+	if comparer == nil {
+		panic("comparer is nil")
+	}
+	return partitionedComparer[T]{
+		comparer: comparer,
+	}
+}
+
+func (i partitionedComparer[T]) Compare(x, y T) int {
+	if i.comparer != nil {
+		return i.comparer.Compare(x, y)
+	}
+
+	if i.equals(x, y) {
+		return 0
+	}
+
+	if i.less(x, y) {
 		return -1
 	}
 
