@@ -141,6 +141,7 @@ func (src *enumerable[T]) copyExceptData() *enumerable[T] {
 		dataType:         src.dataType,
 		equalityComparer: src.equalityComparer,
 		lessComparer:     src.lessComparer,
+		comparer:         src.comparer,
 	}
 }
 

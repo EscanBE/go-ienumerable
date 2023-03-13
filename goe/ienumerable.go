@@ -1,6 +1,9 @@
 package goe
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
+)
 
 // ensure implementation
 var _ IEnumerable[any] = &enumerable[any]{}
@@ -14,6 +17,7 @@ type enumerable[T any] struct {
 
 	equalityComparer func(d1, d2 T) bool
 	lessComparer     func(d1, d2 T) bool
+	comparer         comparers.IComparer[T]
 }
 
 // NewIEnumerable returns an IEnumerable with the same type as data elements

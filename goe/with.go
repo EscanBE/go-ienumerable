@@ -35,6 +35,7 @@ func (src *enumerable[T]) WithDefaultComparers() IEnumerable[T] {
 		src.lessComparer = func(v1, v2 T) bool {
 			return any(v1).(int8) < any(v2).(int8)
 		}
+		// src.comparer = comparers.IComparer[T](comparers.NewInt8Comparer())
 		break
 	case "uint8":
 		src.equalityComparer = func(v1, v2 T) bool {

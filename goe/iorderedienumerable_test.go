@@ -1,6 +1,7 @@
 package goe
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strings"
@@ -154,7 +155,6 @@ func Test_IOrderedIEnumerable(t *testing.T) {
 }
 
 func Test_IOrderedIEnumerable2(t *testing.T) {
-
 	eSrc := NewIEnumerable[string]("v2430", "v1530", "v3530", "v4530", "v2420", "v2160", "v3990")
 	bSrc := backupForAssetUnchanged(eSrc)
 
@@ -216,4 +216,116 @@ func Test_IOrderedIEnumerable2(t *testing.T) {
 			bSrc.assertUnchangedIgnoreData(t, eGot)
 		})
 	}
+}
+
+func Test_IOrderedIEnumerable3(t *testing.T) {
+	t.Run("previous IOrderedComparer not changes when chaining more", func(t *testing.T) {
+		eSrc := createRandomIntEnumerable(3)
+		bSrc := backupForAssetUnchanged(eSrc)
+
+		oe0 := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+			return 0
+		}, CLC_ASC)
+
+		_oe0 := oe0.(*orderedEnumerable[int])
+		_oe1 := _oe0.ThenByDescending(func(v1, v2 int) int {
+			return 0
+		}).(*orderedEnumerable[int])
+		_oe2 := _oe1.ThenBy(func(v1, v2 int) int {
+			return 0
+		}).(*orderedEnumerable[int])
+
+		assert.Len(t, _oe0.chainableComparers, 1)
+		assert.Len(t, _oe1.chainableComparers, 2)
+		assert.Len(t, _oe2.chainableComparers, 3)
+
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("previous IOrderedComparer not changes when chaining more and comparers copied to new", func(t *testing.T) {
+		eSrc := createRandomIntEnumerable(3)
+		bSrc := backupForAssetUnchanged(eSrc)
+
+		oe0 := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+			return 0
+		}, CLC_ASC)
+
+		_oe0 := oe0.(*orderedEnumerable[int])
+		_oe1 := _oe0.ThenByDescending(func(v1, v2 int) int {
+			return 0
+		}).(*orderedEnumerable[int])
+		_oe2 := _oe1.ThenBy(func(v1, v2 int) int {
+			return 0
+		}).(*orderedEnumerable[int])
+
+		assert.Len(t, _oe2.chainableComparers, 3)
+
+		assert.Equal(t, CLC_ASC, _oe0.chainableComparers[0].orderType)
+		assert.Equal(t, CLC_ASC, _oe1.chainableComparers[0].orderType)
+		assert.Equal(t, CLC_DESC, _oe1.chainableComparers[1].orderType)
+		assert.Equal(t, CLC_ASC, _oe2.chainableComparers[0].orderType)
+		assert.Equal(t, CLC_DESC, _oe2.chainableComparers[1].orderType)
+		assert.Equal(t, CLC_ASC, _oe2.chainableComparers[2].orderType)
+
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("when all same", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+		_ = newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+			return 0
+		}, CLC_ASC).GetEnumerable()
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("when src nil", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		oe := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+			return 0
+		}, CLC_ASC).(*orderedEnumerable[int])
+
+		oe = nil
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), "source is nil")
+		}()
+
+		_ = oe.GetEnumerable()
+	})
+
+	t.Run("when comparer nil", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		oe := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+			return 0
+		}, CLC_ASC).(*orderedEnumerable[int])
+
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+			assert.Contains(t, fmt.Sprintf("%v", err), "comparer is nil")
+		}()
+
+		_ = oe.ThenBy(nil)
+	})
 }
