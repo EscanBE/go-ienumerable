@@ -3,6 +3,7 @@ package goe
 import (
 	"github.com/stretchr/testify/assert"
 	"reflect"
+	"strings"
 	"testing"
 )
 
@@ -138,6 +139,71 @@ func Test_IOrderedIEnumerable(t *testing.T) {
 			name:    "desc-asc-desc",
 			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_DESC).ThenBy(comparatorLevel2).ThenByDescending(comparatorLevel3),
 			want:    NewIEnumerable[s1](v4530, v3530, v3990, v2160, v2430, v2420, v1530),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			eGot := tt.ordered.GetEnumerable()
+
+			assert.Truef(t, reflect.DeepEqual(tt.want.exposeData(), eGot.exposeData()), "got %v, want %v", eGot.exposeData(), tt.want.exposeData())
+
+			bSrc.assertUnchanged(t, eSrc)
+			bSrc.assertUnchangedIgnoreData(t, eGot)
+		})
+	}
+}
+
+func Test_IOrderedIEnumerable2(t *testing.T) {
+
+	eSrc := NewIEnumerable[string]("v2430", "v1530", "v3530", "v4530", "v2420", "v2160", "v3990")
+	bSrc := backupForAssetUnchanged(eSrc)
+
+	comparatorLevel1 := func(l, r string) int {
+		return strings.Compare(string(l[1]), string(r[1]))
+	}
+
+	comparatorLevel2 := func(l, r string) int {
+		return strings.Compare(string(l[2]), string(r[2]))
+	}
+
+	comparatorLevel3 := func(l, r string) int {
+		return strings.Compare(string(l[3]), string(r[3]))
+	}
+
+	tests := []struct {
+		name    string
+		ordered IOrderedEnumerable[string]
+		want    IEnumerable[string]
+	}{
+		{
+			name:    "asc-asc-asc",
+			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_ASC).ThenBy(comparatorLevel2).ThenBy(comparatorLevel3),
+			want:    NewIEnumerable[string]("v1530", "v2160", "v2420", "v2430", "v3530", "v3990", "v4530"),
+		},
+		{
+			name:    "asc-asc-desc",
+			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_ASC).ThenBy(comparatorLevel2).ThenByDescending(comparatorLevel3),
+			want:    NewIEnumerable[string]("v1530", "v2160", "v2430", "v2420", "v3530", "v3990", "v4530"),
+		},
+		{
+			name:    "asc-desc-desc",
+			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_ASC).ThenByDescending(comparatorLevel2).ThenByDescending(comparatorLevel3),
+			want:    NewIEnumerable[string]("v1530", "v2430", "v2420", "v2160", "v3990", "v3530", "v4530"),
+		},
+		{
+			name:    "desc-desc-desc",
+			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_DESC).ThenByDescending(comparatorLevel2).ThenByDescending(comparatorLevel3),
+			want:    NewIEnumerable[string]("v4530", "v3990", "v3530", "v2430", "v2420", "v2160", "v1530"),
+		},
+		{
+			name:    "desc-asc-asc",
+			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_DESC).ThenBy(comparatorLevel2).ThenBy(comparatorLevel3),
+			want:    NewIEnumerable[string]("v4530", "v3530", "v3990", "v2160", "v2420", "v2430", "v1530"),
+		},
+		{
+			name:    "desc-asc-desc",
+			ordered: newIOrderedEnumerable(eSrc, comparatorLevel1, CLC_DESC).ThenBy(comparatorLevel2).ThenByDescending(comparatorLevel3),
+			want:    NewIEnumerable[string]("v4530", "v3530", "v3990", "v2160", "v2430", "v2420", "v1530"),
 		},
 	}
 	for _, tt := range tests {
