@@ -1,5 +1,7 @@
 package goe
 
+import "fmt"
+
 func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 	src.assertSrcNonNil()
 	src.assertSelectorNonNil(selector)
@@ -8,11 +10,23 @@ func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 		return NewIEnumerable[any]()
 	}
 
-	result := make([]any, len(src.data))
+	newData := make([]any, len(src.data))
+
+	trackerTypes := make(map[string]bool)
 
 	for i, v := range src.data {
-		result[i] = selector(v)
+		d := selector(v)
+		newData[i] = d
+		trackerTypes[fmt.Sprintf("%T", d)] = true
 	}
 
-	return NewIEnumerable[any](result...)
+	uniqueTypes := getMapKeys(trackerTypes)
+
+	result := NewIEnumerable[any](newData...)
+
+	if len(uniqueTypes) == 1 {
+		result.(*enumerable[any]).dataType = uniqueTypes[0]
+	}
+
+	return result
 }

@@ -2,6 +2,7 @@ package goe
 
 import (
 	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"math"
 	"math/big"
 )
@@ -167,6 +168,34 @@ func copySlice[T any](src []T) []T {
 		copy(dst, src)
 	}
 	return dst
+}
+
+func getMapKeys[T comparable](m map[T]bool) []T {
+	keys := make([]T, 0)
+	for k, _ := range m {
+		keys = append(keys, k)
+	}
+	return keys
+}
+
+func (src *enumerable[T]) getDefaultComparer() comparers.IComparer[any] {
+	if src.comparer != nil {
+		return src.comparer
+	}
+
+	if len(src.dataType) > 0 {
+		comparer, found := comparers.TryGetDefaultComparerByTypeName(src.dataType)
+		if found {
+			return comparer
+		}
+	}
+
+	comparer, found := comparers.TryGetDefaultComparer[T]()
+	if found {
+		return comparer
+	}
+
+	panic(fmt.Errorf("no default comparer registerd for [%s]", src.dataType))
 }
 
 func (src *enumerable[T]) unboxAnyAsByte(v T) byte {

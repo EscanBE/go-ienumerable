@@ -1,6 +1,7 @@
 package comparers
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -879,6 +880,7 @@ type wrappedComparer struct {
 }
 
 // HideTypedComparer wraps the typed comparer IComparer[T] into IComparer[any].
+// With ability to receive both *T and T to compare, but both params must have the same representation: (T & T) or (*T & *T)
 // This is used for auto-resolve comparer technique.
 //
 // Beware: input parameter still have to have correct type.
@@ -887,11 +889,25 @@ type wrappedComparer struct {
 // otherwise panic
 func HideTypedComparer[T any](comparer IComparer[T]) IComparer[any] {
 	return &wrappedComparer{
-		compareFunc: func(v1, v2 any) int {
-			return comparer.Compare(v1.(T), v2.(T))
-		},
-		comparePointerModeFunc: func(v1, v2 any) int {
-			return comparer.ComparePointerMode(v1, v2)
+		compareFunc: func(u1, u2 any) int {
+			v1, okv1 := u1.(T)
+			v2, okv2 := u2.(T)
+			if okv1 && okv2 {
+				return comparer.Compare(v1, v2)
+			}
+
+			p1, okp1 := u1.(*T)
+			p2, okp2 := u2.(*T)
+
+			if okp1 && okp2 {
+				return comparer.ComparePointerMode(p1, p2)
+			}
+
+			if (!okv1 && !okp1) || (!okv2 && !okp2) {
+				panic(fmt.Sprintf("first or second params neither value or pointer of type [%T]. Found [%T] and [%T]", *new(T), u1, u2))
+			}
+
+			panic(fmt.Sprintf("both params must have the same type: value or pointer. Found [%T] and [%T]", u1, u2))
 		},
 	}
 }
@@ -901,5 +917,5 @@ func (i *wrappedComparer) Compare(x, y any) int {
 }
 
 func (i wrappedComparer) ComparePointerMode(x, y any) int {
-	return i.comparePointerModeFunc(x, y)
+	return i.compareFunc(x, y)
 }

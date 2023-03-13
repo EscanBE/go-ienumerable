@@ -26,3 +26,21 @@ func (src *enumerable[T]) ContainsBy(value T, equalityComparer func(v1, v2 T) bo
 
 	return false
 }
+
+func (src *enumerable[T]) Contains2(value T) bool {
+	src.assertSrcNonNil()
+
+	comparer := src.getDefaultComparer()
+
+	if len(src.data) < 1 {
+		return false
+	}
+
+	for _, d := range src.data {
+		if comparer.Compare(any(value), any(d)) == 0 {
+			return true
+		}
+	}
+
+	return false
+}

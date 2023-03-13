@@ -2,6 +2,7 @@ package goe
 
 import (
 	"github.com/stretchr/testify/assert"
+	"math/rand"
 	"testing"
 )
 
@@ -83,4 +84,22 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 	t.Run("equality comparer set", func(t *testing.T) {
 		assert.True(t, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).WithDefaultComparers().Contains(5))
 	})
+}
+
+func Test_enumerable_Contains2(t *testing.T) {
+	cap := rand.Intn(10) + 10
+	eSrc := createIntEnumerable(0, cap)
+
+	c1 := rand.Intn(cap)
+	c2 := rand.Intn(cap) + cap
+
+	assert.True(t, eSrc.Contains2(c1))
+	assert.False(t, eSrc.Contains2(c2))
+
+	eSrcP := eSrc.Select(func(v int) any {
+		return &v
+	})
+
+	assert.True(t, eSrcP.Contains2(&c1))
+	assert.False(t, eSrcP.Contains2(&c2))
 }

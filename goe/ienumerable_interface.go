@@ -116,6 +116,8 @@ type IEnumerable[T any] interface {
 	// Require: equality comparer provided via WithEqualsComparer
 	Contains(value T) bool
 
+	Contains2(value T) bool
+
 	// ContainsBy determines whether a sequence contains a specified element by using the specified equality comparer.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
