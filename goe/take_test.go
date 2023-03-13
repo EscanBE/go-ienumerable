@@ -1,6 +1,7 @@
 package goe
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"reflect"
@@ -66,4 +67,98 @@ func Test_enumerable_Take_TakeLast(t *testing.T) {
 			bSrc.assertUnchangedIgnoreData(t, gotTakeLast)
 		})
 	}
+}
+
+func Test_enumerable_TakeWhile(t *testing.T) {
+	tests := []struct {
+		name          string
+		src           IEnumerable[int]
+		predicate     func(value int) bool
+		predicateWidx func(value int, index int) bool
+		want          IEnumerable[int]
+	}{
+		{
+			name: "normal",
+			src:  NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 1),
+			predicate: func(v int) bool {
+				return v <= 5
+			},
+			predicateWidx: func(v, i int) bool {
+				return v <= 5
+			},
+			want: createIntEnumerable(1, 5),
+		},
+		{
+			name: "false from beginning",
+			src:  createIntEnumerable(1, 10),
+			predicate: func(v int) bool {
+				return v >= 5
+			},
+			predicateWidx: func(v, i int) bool {
+				return v >= 5
+			},
+			want: createEmptyIntEnumerable(),
+		},
+		{
+			name: "empty",
+			src:  createEmptyIntEnumerable(),
+			predicate: func(v int) bool {
+				return v >= 0
+			},
+			predicateWidx: func(v, i int) bool {
+				return v >= 0
+			},
+			want: createEmptyIntEnumerable(),
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bSrc := backupForAssetUnchanged(tt.src)
+
+			// TakeWhile
+			got := tt.src.TakeWhile(tt.predicate)
+
+			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+
+			bSrc.assertUnchanged(t, tt.src)
+			bSrc.assertUnchangedIgnoreData(t, got)
+
+			// TakeWhileWidx
+			got = tt.src.TakeWhileWidx(tt.predicateWidx)
+
+			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+
+			bSrc.assertUnchanged(t, tt.src)
+			bSrc.assertUnchangedIgnoreData(t, got)
+		})
+	}
+
+	t.Run("nil predicate", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "predicate is nil")
+		}()
+
+		createRandomIntEnumerable(2).TakeWhile(nil)
+	})
+
+	t.Run("nil predicate", func(t *testing.T) {
+		defer func() {
+			err := recover()
+			if err == nil {
+				t.Errorf("expect error")
+				return
+			}
+
+			assert.Contains(t, fmt.Sprintf("%v", err), "predicate is nil")
+		}()
+
+		createRandomIntEnumerable(2).TakeWhileWidx(nil)
+	})
 }

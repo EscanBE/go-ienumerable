@@ -64,6 +64,12 @@ func (src *enumerable[T]) assertPredicateNonNil(predicate func(T) bool) {
 	}
 }
 
+func (src *enumerable[T]) assertPredicate2NonNil(predicate func(T, int) bool) {
+	if predicate == nil {
+		panic(getErrorNilPredicate())
+	}
+}
+
 func getErrorNilPredicate() error {
 	return fmt.Errorf("predicate is nil")
 }

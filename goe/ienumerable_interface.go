@@ -347,6 +347,15 @@ type IEnumerable[T any] interface {
 	// with the last count elements of the source collection omitted.
 	SkipLast(count int) IEnumerable[T]
 
+	// SkipWhile bypasses elements in a sequence as long as a specified condition is true
+	// and then returns the remaining elements.
+	SkipWhile(predicate func(value T) bool) IEnumerable[T]
+
+	// SkipWhileWidx bypasses elements in a sequence as long as a specified condition is true
+	// and then returns the remaining elements.
+	// The element's index is used in the logic of the predicate function.
+	SkipWhileWidx(predicate func(value T, index int) bool) IEnumerable[T]
+
 	// SumInt32 computes the sum of a sequence of integer values.
 	//
 	// Notice 1: will panic if sum result is overflow int32
@@ -388,6 +397,13 @@ type IEnumerable[T any] interface {
 
 	// TakeLast returns a new enumerable collection that contains the last count elements from source.
 	TakeLast(count int) IEnumerable[T]
+
+	// TakeWhile returns elements from a sequence as long as a specified condition is true.
+	TakeWhile(predicate func(value T) bool) IEnumerable[T]
+
+	// TakeWhileWidx returns elements from a sequence as long as a specified condition is true.
+	// The element's index is used in the logic of the predicate function.
+	TakeWhileWidx(predicate func(value T, index int) bool) IEnumerable[T]
 
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
