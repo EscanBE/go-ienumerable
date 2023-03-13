@@ -8,9 +8,11 @@ import (
 func Test_enumerable_Empty(t *testing.T) {
 	srcS := NewIEnumerable[string]("hello", "world").WithDefaultComparers()
 	bSrc := backupForAssetUnchanged(srcS)
+	
 	gotS := srcS.Empty()
 	assert.Zero(t, gotS.len())
 	assert.Equal(t, "string", gotS.exposeDataType())
+
 	bSrc.assertUnchanged(t, srcS)
 	bSrc.assertUnchangedIgnoreData(t, gotS)
 

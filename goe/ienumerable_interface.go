@@ -166,7 +166,8 @@ type IEnumerable[T any] interface {
 	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
 	ElementAtReverseOrDefault(reverseIndex int) T
 
-	// Empty returns an empty IEnumerable[T] that has the specified type argument.
+	// Empty returns a new empty IEnumerable[T] that has the specified type argument.
+	// Comparers will be copied into the new IEnumerable[T].
 	Empty() IEnumerable[T]
 
 	// Except produces the set difference of two sequences.
@@ -273,6 +274,12 @@ type IEnumerable[T any] interface {
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
+
+	// Repeat generates a new sequence that contains one repeated value.
+	// Comparers will be copied into the new IEnumerable[T].
+	//
+	// Panic if count is less than 0
+	Repeat(element T, count int) IEnumerable[T]
 
 	// Reverse inverts the order of the elements in a sequence.
 	Reverse() IEnumerable[T]
