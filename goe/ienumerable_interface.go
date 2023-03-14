@@ -124,14 +124,24 @@ type IEnumerable[T any] interface {
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	//
-	// Require: type must be registered for default comparer or already set, otherwise panic
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Contains(value T) bool
 
-	// ContainsBy determines whether a sequence contains a specified element by using the specified equality comparer.
-	// If passing nil as comparer, the default comparer will be used or if no default comparer found.
+	// ContainsBy determines whether a sequence contains a specified element
+	// by using the specified equality comparer.
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
+
+	// ContainsByComparer determines whether a sequence contains a specified element
+	// by using the specified comparers.IComparer[T].
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	//
+	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
+	ContainsByComparer(value T, comparer comparers.IComparer[T]) bool
 
 	// Count returns the number of elements in a sequence.
 	Count() int
@@ -149,7 +159,9 @@ type IEnumerable[T any] interface {
 
 	// Distinct returns distinct elements from a sequence.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Distinct() IEnumerable[T]
 
 	// DistinctBy returns distinct elements from a sequence by using the

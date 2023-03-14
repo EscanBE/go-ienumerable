@@ -1,5 +1,7 @@
 package goe
 
+import "github.com/EscanBE/go-ienumerable/goe/comparers"
+
 func (src *enumerable[T]) Contains(value T) bool {
 	src.assertSrcNonNil()
 
@@ -45,4 +47,23 @@ func (src *enumerable[T]) ContainsBy(value T, equalityComparer func(v1, v2 T) bo
 	}
 
 	return false
+}
+
+func (src *enumerable[T]) ContainsByComparer(value T, comparer comparers.IComparer[T]) bool {
+	src.assertSrcNonNil()
+
+	if comparer != nil {
+		return src.ContainsBy(value, func(v1, v2 T) bool {
+			return comparer.Compare(v1, v2) == 0
+		})
+	}
+
+	defaultComparer := src.defaultComparer
+	if defaultComparer == nil {
+		defaultComparer = src.findDefaultComparer()
+	}
+
+	return src.ContainsBy(value, func(v1, v2 T) bool {
+		return defaultComparer.Compare(v1, v2) == 0
+	})
 }

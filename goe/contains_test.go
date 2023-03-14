@@ -1,6 +1,7 @@
 package goe
 
 import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
 	"testing"
@@ -116,5 +117,94 @@ func Test_enumerable_ContainsBy(t *testing.T) {
 		eSrc.defaultComparer = nil
 
 		assert.True(t, ieSrc.ContainsBy(3, nil))
+	})
+
+	t.Run("panic if no default resolver", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
+
+		defer deferExpectPanicContains(t, "no default comparer registered")
+
+		ieSrc.ContainsBy(MyInt64{}, nil)
+	})
+}
+
+func Test_enumerable_ContainsByComparer(t *testing.T) {
+	var tests = []struct {
+		name     string
+		source   IEnumerable[int]
+		check    int
+		comparer comparers.IComparer[int]
+		want     bool
+	}{
+		{
+			name:     "empty source",
+			source:   createEmptyIntEnumerable(),
+			comparer: comparers.IntComparer,
+			want:     false,
+		},
+		{
+			name:     "single",
+			source:   NewIEnumerable[int](2),
+			check:    1,
+			comparer: comparers.IntComparer,
+			want:     false,
+		},
+		{
+			name:     "single",
+			source:   NewIEnumerable[int](2),
+			check:    2,
+			comparer: comparers.IntComparer,
+			want:     true,
+		},
+		{
+			name:     "no equality comparer still ok since int has default comparer",
+			source:   NewIEnumerable[int](2),
+			check:    2,
+			comparer: nil,
+			want:     true,
+		},
+		{
+			name:     "many",
+			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
+			check:    3,
+			comparer: nil,
+			want:     true,
+		},
+		{
+			name:     "many",
+			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
+			check:    99,
+			comparer: comparers.IntComparer,
+			want:     false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			bSrc := backupForAssetUnchanged(tt.source)
+
+			got := tt.source.ContainsByComparer(tt.check, tt.comparer)
+
+			assert.Equal(t, tt.want, got)
+
+			bSrc.assertUnchanged(t, tt.source)
+		})
+	}
+
+	t.Run("auto-resolve comparer if default comparer not set", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4)
+		eSrc := e[int](ieSrc)
+		eSrc.defaultComparer = nil
+
+		assert.True(t, ieSrc.ContainsByComparer(3, nil))
+	})
+
+	t.Run("panic if no default resolver", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
+
+		defer deferExpectPanicContains(t, "no default comparer registered")
+
+		ieSrc.ContainsByComparer(MyInt64{}, nil)
 	})
 }
