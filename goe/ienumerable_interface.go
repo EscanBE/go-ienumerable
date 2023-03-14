@@ -310,13 +310,24 @@ type IEnumerable[T any] interface {
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	MinByComparer(comparer comparers.IComparer[T]) T
 
-	// Max returns the maximum value in a sequence.
+	// Max returns the greatest value in a sequence.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Max() T
 
-	// MaxBy returns the maximum value in a sequence according to provided greater-than-comparer.
-	MaxBy(lessComparer func(left, right T) bool) T
+	// MaxBy returns the greatest value in a sequence
+	// according to provided greater-than-comparer to compare values.
+	//
+	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
+	MaxBy(greaterComparer func(left, right T) bool) T
+
+	// MaxByComparer returns the greatest value in a sequence
+	// according to provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	MaxByComparer(comparer comparers.IComparer[T]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//

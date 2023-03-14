@@ -1,83 +1,112 @@
 package goe
 
 import (
-	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
-func Test_enumerable_Max(t *testing.T) {
-	lessComparer := func(l, r int) bool {
-		return l < r
+func Test_enumerable_Max_MaxBy_MaxByComparer(t *testing.T) {
+	greaterComparer := func(l, r int) bool {
+		return l > r
 	}
 
-	t.Run("Max", func(t *testing.T) {
-		src := injectIntComparers(NewIEnumerable[int](4, 7, 5, 6, 3, 2))
+	t.Run("Max* as normal", func(t *testing.T) {
+		src := NewIEnumerable[int](4, 7, 5, 6, 3, 2)
 		bSrc := backupForAssetUnchanged(src)
 
 		got := src.Max()
 		assert.Equal(t, 7, got)
 
 		bSrc.assertUnchanged(t, src)
-	})
 
-	t.Run("Max panic empty", func(t *testing.T) {
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Equal(t, "source contains no element", fmt.Sprintf("%v", err))
-		}()
-		_ = NewIEnumerable[int]().Max()
-	})
+		got = src.MaxBy(greaterComparer)
+		assert.Equal(t, 7, got)
 
-	t.Run("Max panic no comparer", func(t *testing.T) {
+		bSrc.assertUnchanged(t, src)
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "the following comparer must be set")
-		}()
-		_ = NewIEnumerable[int](1, 2, 3).Max()
-	})
-
-	t.Run("MaxBy", func(t *testing.T) {
-		src := NewIEnumerable[int](4, 7, 5, 6, 3, 2)
-		bSrc := backupForAssetUnchanged(src)
-
-		got := src.MaxBy(lessComparer)
+		got = src.MaxByComparer(comparers.IntComparer)
 		assert.Equal(t, 7, got)
 
 		bSrc.assertUnchanged(t, src)
 	})
 
+	t.Run("Max* without comparer, using default", func(t *testing.T) {
+		src := NewIEnumerable[int](4, 7, 5, 6, 3, 2)
+		bSrc := backupForAssetUnchanged(src)
+
+		got := src.MaxBy(nil)
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+
+		got = src.MaxByComparer(nil)
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+	})
+
+	t.Run("Max* as without default comparer", func(t *testing.T) {
+		src := NewIEnumerable[int](4, 7, 5, 6, 3, 2)
+		src.WithDefaultComparer(nil)
+		bSrc := backupForAssetUnchanged(src)
+
+		got := src.Max()
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+
+		got = src.MaxBy(nil)
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+
+		got = src.MaxBy(greaterComparer)
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+
+		got = src.MaxByComparer(nil)
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+
+		got = src.MaxByComparer(comparers.IntComparer)
+		assert.Equal(t, 7, got)
+
+		bSrc.assertUnchanged(t, src)
+	})
+
+	t.Run("Max panic empty", func(t *testing.T) {
+		defer deferExpectPanicContains(t, "source contains no element", true)
+		_ = NewIEnumerable[int]().Max()
+	})
+
 	t.Run("MaxBy panic empty", func(t *testing.T) {
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Equal(t, "source contains no element", fmt.Sprintf("%v", err))
-		}()
-		_ = NewIEnumerable[int]().MaxBy(lessComparer)
+		defer deferExpectPanicContains(t, "source contains no element", true)
+		_ = NewIEnumerable[int]().MaxBy(nil)
+	})
+
+	t.Run("MaxByComparer panic empty", func(t *testing.T) {
+		defer deferExpectPanicContains(t, "source contains no element", true)
+		_ = NewIEnumerable[int]().MaxByComparer(nil)
+	})
+
+	t.Run("Max panic no comparer", func(t *testing.T) {
+		type MyInt64 struct{}
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
+		_ = NewIEnumerable[MyInt64](MyInt64{}).Max()
 	})
 
 	t.Run("MaxBy panic no comparer", func(t *testing.T) {
+		type MyInt64 struct{}
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
+		_ = NewIEnumerable[MyInt64](MyInt64{}).MaxBy(nil)
+	})
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Equal(t, "comparer is nil", fmt.Sprintf("%v", err))
-		}()
-		_ = NewIEnumerable[int](1, 2, 3).MaxBy(nil)
+	t.Run("MaxByComparer panic no comparer", func(t *testing.T) {
+		type MyInt64 struct{}
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
+		_ = NewIEnumerable[MyInt64](MyInt64{}).MaxByComparer(nil)
 	})
 }
