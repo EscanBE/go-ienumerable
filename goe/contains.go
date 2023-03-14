@@ -23,7 +23,16 @@ func (src *enumerable[T]) Contains(value T) bool {
 
 func (src *enumerable[T]) ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool {
 	src.assertSrcNonNil()
-	src.assertComparerNonNil(equalityComparer)
+
+	if equalityComparer == nil {
+		comparer := src.defaultComparer
+		if comparer == nil {
+			comparer = src.findDefaultComparer()
+		}
+		equalityComparer = func(v1, v2 T) bool {
+			return comparer.Compare(v1, v2) == 0
+		}
+	}
 
 	if len(src.data) < 1 {
 		return false

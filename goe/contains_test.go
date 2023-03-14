@@ -8,11 +8,11 @@ import (
 
 func Test_enumerable_Contains(t *testing.T) {
 	t.Run("returns correctly", func(t *testing.T) {
-		cap := rand.Intn(10) + 10
-		eSrc := createIntEnumerable(0, cap)
+		radCap := rand.Intn(10) + 10
+		eSrc := createIntEnumerable(0, radCap)
 
-		nContains := rand.Intn(cap)
-		nNotContains := rand.Intn(cap) + cap + 1
+		nContains := rand.Intn(radCap)
+		nNotContains := rand.Intn(radCap) + radCap + 1
 
 		assert.True(t, eSrc.Contains(nContains))
 		assert.False(t, eSrc.Contains(nNotContains))
@@ -44,17 +44,16 @@ func Test_enumerable_Contains(t *testing.T) {
 	})
 }
 
-func Test_enumerable_Contains_ContainsBy(t *testing.T) {
+func Test_enumerable_ContainsBy(t *testing.T) {
 	fEquals := func(t1, t2 int) bool {
 		return t1 == t2
 	}
 	var tests = []struct {
-		name      string
-		source    IEnumerable[int]
-		check     int
-		fEquals   func(t1, t2 int) bool
-		want      bool
-		wantPanic bool
+		name    string
+		source  IEnumerable[int]
+		check   int
+		fEquals func(t1, t2 int) bool
+		want    bool
 	}{
 		{
 			name:    "empty source",
@@ -77,17 +76,17 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 			want:    true,
 		},
 		{
-			name:      "panic due to no equality comparer",
-			source:    NewIEnumerable[int](2),
-			check:     2,
-			fEquals:   nil,
-			wantPanic: true,
+			name:    "no equality comparer still ok since int has default comparer",
+			source:  NewIEnumerable[int](2),
+			check:   2,
+			fEquals: nil,
+			want:    true,
 		},
 		{
 			name:    "many",
 			source:  NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
 			check:   3,
-			fEquals: fEquals,
+			fEquals: nil,
 			want:    true,
 		},
 		{
@@ -102,8 +101,6 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			defer deferWantPanicDepends(t, tt.wantPanic)
-
 			got := tt.source.ContainsBy(tt.check, tt.fEquals)
 
 			assert.Equal(t, tt.want, got)
@@ -113,7 +110,11 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 		})
 	}
 
-	t.Run("use default comparer", func(t *testing.T) {
-		assert.True(t, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).Contains(5))
+	t.Run("auto-resolve comparer if default comparer not set", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4)
+		eSrc := e[int](ieSrc)
+		eSrc.defaultComparer = nil
+
+		assert.True(t, ieSrc.ContainsBy(3, nil))
 	})
 }
