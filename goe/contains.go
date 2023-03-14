@@ -30,7 +30,10 @@ func (src *enumerable[T]) ContainsBy(value T, equalityComparer func(v1, v2 T) bo
 func (src *enumerable[T]) Contains2(value T) bool {
 	src.assertSrcNonNil()
 
-	comparer := src.getDefaultComparer()
+	comparer := src.defaultComparer
+	if comparer == nil {
+		comparer = src.findDefaultComparer()
+	}
 
 	if len(src.data) < 1 {
 		return false

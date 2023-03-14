@@ -87,19 +87,25 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 }
 
 func Test_enumerable_Contains2(t *testing.T) {
-	cap := rand.Intn(10) + 10
-	eSrc := createIntEnumerable(0, cap)
+	t.Run("returns correctly", func(t *testing.T) {
+		cap := rand.Intn(10) + 10
+		eSrc := createIntEnumerable(0, cap)
 
-	nContains := rand.Intn(cap)
-	nNotContains := rand.Intn(cap) + cap + 1
+		nContains := rand.Intn(cap)
+		nNotContains := rand.Intn(cap) + cap + 1
 
-	assert.True(t, eSrc.Contains2(nContains))
-	assert.False(t, eSrc.Contains2(nNotContains))
+		assert.True(t, eSrc.Contains2(nContains))
+		assert.False(t, eSrc.Contains2(nNotContains))
 
-	eSrcP := eSrc.Select(func(v int) any {
-		return &v
+		eSrcP := eSrc.Select(func(v int) any {
+			return &v
+		})
+
+		assert.True(t, eSrcP.Contains2(&nContains))
+		assert.False(t, eSrcP.Contains2(&nNotContains))
 	})
 
-	assert.True(t, eSrcP.Contains2(&nContains))
-	assert.False(t, eSrcP.Contains2(&nNotContains))
+	t.Run("empty returns false", func(t *testing.T) {
+		assert.False(t, createEmptyIntEnumerable().Contains2(1))
+	})
 }

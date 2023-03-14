@@ -457,8 +457,4 @@ type IEnumerable[T any] interface {
 	//
 	// Setting to nil will remove existing if any.
 	WithDefaultComparer(comparer comparers.IComparer[T]) IEnumerable[T]
-
-	// The following methods are internal APIs
-
-	exposeDataType() string
 }

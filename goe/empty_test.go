@@ -10,17 +10,20 @@ func Test_enumerable_Empty(t *testing.T) {
 	bSrc := backupForAssetUnchanged(srcS)
 
 	gotS := srcS.Empty()
+	eGot := e[string](gotS)
 	assert.Zero(t, gotS.Count())
-	assert.Equal(t, "string", gotS.exposeDataType())
+	assert.Equal(t, "string", eGot.dataType)
 
 	bSrc.assertUnchanged(t, srcS)
 	bSrc.assertUnchangedIgnoreData(t, gotS)
 
 	gotI := NewIEnumerable[int](99, 999).Empty()
+	eGotI := e[int](gotI)
 	assert.Zero(t, gotI.Count())
-	assert.Equal(t, "int", gotI.exposeDataType())
+	assert.Equal(t, "int", eGotI.dataType)
 
 	gotA := NewIEnumerable[any](99, 999, "string", 0.0).Empty()
+	eGotA := e[any](gotA)
 	assert.Zero(t, gotA.Count())
-	assert.Equal(t, "", gotA.exposeDataType())
+	assert.Equal(t, "", eGotA.dataType)
 }

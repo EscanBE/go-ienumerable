@@ -10,7 +10,7 @@ import (
 func Test_unbox_alias(t *testing.T) {
 	t.Run("can not unbox custom alias not equals", func(t *testing.T) {
 		type MyInt64 int64
-		assert.Equal(t, "goe.MyInt64", NewIEnumerable[MyInt64]().exposeDataType())
+		assert.Equal(t, "goe.MyInt64", e[MyInt64](NewIEnumerable[MyInt64]()).dataType)
 		var mv MyInt64 = 1000
 		v, unboxOk := any(mv).(int64)
 		assert.False(t, unboxOk)
@@ -19,7 +19,7 @@ func Test_unbox_alias(t *testing.T) {
 
 	t.Run("can unbox custom alias of equals", func(t *testing.T) {
 		type MyInt64 = int64
-		assert.Equal(t, "int64", NewIEnumerable[MyInt64]().exposeDataType())
+		assert.Equal(t, "int64", e[MyInt64](NewIEnumerable[MyInt64]()).dataType)
 		var mv MyInt64 = 1000
 		v, unboxOk := any(mv).(int64)
 		assert.True(t, unboxOk)
@@ -27,7 +27,7 @@ func Test_unbox_alias(t *testing.T) {
 	})
 
 	t.Run("can unbox alias byte of uint8", func(t *testing.T) {
-		assert.Equal(t, "uint8", NewIEnumerable[byte]().exposeDataType())
+		assert.Equal(t, "uint8", e[byte](NewIEnumerable[byte]()).dataType)
 		var mv byte = 255
 		v, unboxOk := any(mv).(uint8)
 		assert.True(t, unboxOk)
@@ -35,7 +35,7 @@ func Test_unbox_alias(t *testing.T) {
 	})
 
 	t.Run("can unbox alias rune of int32", func(t *testing.T) {
-		assert.Equal(t, "int32", NewIEnumerable[rune]().exposeDataType())
+		assert.Equal(t, "int32", e[rune](NewIEnumerable[rune]()).dataType)
 		var mv rune = math.MaxInt32
 		v, unboxOk := any(mv).(int32)
 		assert.True(t, unboxOk)

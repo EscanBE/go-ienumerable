@@ -76,7 +76,7 @@ func Test_enumerable_Chunk(t *testing.T) {
 			chunkHolder := tt.src.ChunkToHolder(tt.size)
 			got := GetChunkedIEnumeratorFromHolder[int](chunkHolder)
 
-			assert.Equal(t, "[]int", got.exposeDataType())
+			assert.Equal(t, "[]int", e[[]int](got).dataType)
 
 			if got.Count() != tt.want.Count() {
 				t.Errorf("length expected %d got %d", tt.want.Count(), got.Count())
@@ -219,7 +219,7 @@ func Test_enumerable_ChunkToAny(t *testing.T) {
 
 			got := tt.src.ChunkToAny(tt.size)
 
-			assert.Equal(t, "[]interface {}", got.exposeDataType())
+			assert.Equal(t, "[]interface {}", e[[]any](got).dataType)
 
 			if got.Count() != tt.want.Count() {
 				t.Errorf("length expected %d got %d", tt.want.Count(), got.Count())

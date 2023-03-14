@@ -5,10 +5,6 @@ import (
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
 )
 
-func (src *enumerable[T]) exposeDataType() string {
-	return src.dataType
-}
-
 func (src *enumerable[T]) assertSrcNonNil() {
 	if src == nil {
 		panic(getErrorSourceIsNil())
@@ -168,22 +164,25 @@ func getMapKeys[T comparable](m map[T]bool) []T {
 	return keys
 }
 
-func (src *enumerable[T]) getDefaultComparer() comparers.IComparer[any] {
-	if src.defaultComparer != nil {
-		return src.defaultComparer
-	}
-
-	if len(src.dataType) > 0 {
-		comparer, found := comparers.TryGetDefaultComparerByTypeName(src.dataType)
-		if found {
-			return comparer
-		}
-	}
-
-	comparer, found := comparers.TryGetDefaultComparer[T]()
+func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
+	comparer, found := src.tryFindDefaultComparer()
 	if found {
 		return comparer
 	}
 
 	panic(fmt.Errorf("no default comparer registerd for [%s]", src.dataType))
+}
+
+func (src *enumerable[T]) tryFindDefaultComparer() (comparers.IComparer[any], bool) {
+	if len(src.dataType) > 0 {
+		if comparer, found := comparers.TryGetDefaultComparerByTypeName(src.dataType); found {
+			return comparer, true
+		}
+	}
+
+	if comparer, found := comparers.TryGetDefaultComparer[T](); found {
+		return comparer, true
+	}
+
+	return nil, false
 }
