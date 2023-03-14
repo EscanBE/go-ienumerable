@@ -130,14 +130,14 @@ type IEnumerable[T any] interface {
 	Contains(value T) bool
 
 	// ContainsBy determines whether a sequence contains a specified element
-	// by using the specified equality comparer.
+	// by using the specified equality comparer to compare values.
 	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
 
 	// ContainsByComparer determines whether a sequence contains a specified element
-	// by using the specified comparers.IComparer[T].
+	// by using the specified comparers.IComparer[T] to compare values.
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
@@ -166,7 +166,15 @@ type IEnumerable[T any] interface {
 
 	// DistinctBy returns distinct elements from a sequence by using the
 	// specified equality comparer to compare values.
-	DistinctBy(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
+	DistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// DistinctByComparer returns distinct elements from a sequence by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	DistinctByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
