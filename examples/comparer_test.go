@@ -120,17 +120,14 @@ func Test_comparer_3(t *testing.T) {
 	assert.Equal(t, 1, comparer.Compare(big, small))
 	assert.Equal(t, -1, comparer.Compare(small, big))
 
-	anySmall := any(small)
-	anyBig := any(big)
-
-	assert.Equal(t, 0, comparer.ComparePointerMode(&anySmall, &anySmall))
-	assert.Equal(t, 0, comparer.ComparePointerMode(&anyBig, &anyBig))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&anyBig, &anySmall))
-	assert.Equal(t, -1, comparer.ComparePointerMode(&anySmall, &anyBig))
+	assert.Equal(t, 0, comparer.ComparePointerMode(&small, &small))
+	assert.Equal(t, 0, comparer.ComparePointerMode(&big, &big))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&big, &small))
+	assert.Equal(t, -1, comparer.ComparePointerMode(&small, &big))
 
 	assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&anyBig, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&anySmall, nil))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &anyBig))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &anySmall))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&big, nil))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&small, nil))
+	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &big))
+	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &small))
 }

@@ -30,7 +30,7 @@ func TestRegisterDefaultTypedComparer(t *testing.T) {
 	t.Run("unable to detect type", func(t *testing.T) {
 		defer deferExpectPanicContains(t, "empty or <nil> type name")
 		//goland:noinspection GoVarAndConstTypeMayBeOmitted
-		var comparerAny IComparer[any] = HideTypedComparer[testStruct](testStructComparer)
+		var comparerAny IComparer[any] = ConvertToDefaultComparer[testStruct](testStructComparer)
 		RegisterDefaultTypedComparer[any](comparerAny, false)
 	})
 
@@ -44,7 +44,7 @@ func TestRegisterDefaultComparerForType(t *testing.T) {
 	t.Run("empty type name", func(t *testing.T) {
 		defer deferExpectPanicContains(t, "empty or <nil> type name")
 		//goland:noinspection GoVarAndConstTypeMayBeOmitted
-		var comparerAny IComparer[any] = HideTypedComparer[testStruct](testStructComparer)
+		var comparerAny IComparer[any] = ConvertToDefaultComparer[testStruct](testStructComparer)
 		RegisterDefaultComparerForType[any]("", comparerAny, false)
 	})
 
@@ -52,7 +52,7 @@ func TestRegisterDefaultComparerForType(t *testing.T) {
 		typeName := fmt.Sprintf("%T", *new(any))
 		defer deferExpectPanicContains(t, "empty or <nil> type name")
 		//goland:noinspection GoVarAndConstTypeMayBeOmitted
-		var comparerAny IComparer[any] = HideTypedComparer[testStruct](testStructComparer)
+		var comparerAny IComparer[any] = ConvertToDefaultComparer[testStruct](testStructComparer)
 		RegisterDefaultComparerForType[any](typeName, comparerAny, false)
 	})
 

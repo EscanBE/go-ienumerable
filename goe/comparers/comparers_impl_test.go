@@ -8,6 +8,28 @@ import (
 	"time"
 )
 
+func Test_comparePointerMode(t *testing.T) {
+	t.Run("compare pointer mode", func(t *testing.T) {
+		comparer := Int8Comparer
+
+		x := int8(3)
+		y := int8(1)
+		assert.Equal(t, 1, comparer.ComparePointerMode(&x, &y))
+		assert.Equal(t, -1, comparer.ComparePointerMode(nil, &x))
+		assert.Equal(t, -1, comparer.ComparePointerMode(nil, &y))
+		assert.Equal(t, 1, comparer.ComparePointerMode(&x, nil))
+		assert.Equal(t, 1, comparer.ComparePointerMode(&y, nil))
+
+		ax := any(int8(3))
+		ay := any(int8(1))
+		assert.Equal(t, 1, comparer.ComparePointerMode(&ax, &ay))
+		assert.Equal(t, -1, comparer.ComparePointerMode(nil, &ax))
+		assert.Equal(t, -1, comparer.ComparePointerMode(nil, &ay))
+		assert.Equal(t, 1, comparer.ComparePointerMode(&ax, nil))
+		assert.Equal(t, 1, comparer.ComparePointerMode(&ay, nil))
+	})
+}
+
 func Test_int8Comparer_Compare(t *testing.T) {
 	tests := []struct {
 		x    int8
@@ -1029,33 +1051,45 @@ func Test_partitionedComparer_fromComparer(t *testing.T) {
 	})
 }
 
-func Test_wrappedComparer(t *testing.T) {
+func Test_defaultComparer(t *testing.T) {
 	t.Run("provide params of correct type", func(t *testing.T) {
-		assert.Equal(t, 1, HideTypedComparer[int8](Int8Comparer).Compare(int8(3), int8(1)))
-		assert.Equal(t, 1, HideTypedComparer[int](IntComparer).Compare(3, 1))
-		assert.Equal(t, 1, HideTypedComparer[string](StringComparer).Compare("3", "1"))
-		assert.Equal(t, 1, HideTypedComparer[bool](BoolComparer).Compare(true, false))
+		assert.Equal(t, 1, ConvertToDefaultComparer[int8](Int8Comparer).Compare(int8(3), int8(1)))
+		assert.Equal(t, -1, ConvertToDefaultComparer[int8](Int8Comparer).Compare(int8(1), int8(3)))
+		assert.Equal(t, 1, ConvertToDefaultComparer[int](IntComparer).Compare(3, 1))
+		assert.Equal(t, 1, ConvertToDefaultComparer[string](StringComparer).Compare("3", "1"))
+		assert.Equal(t, 1, ConvertToDefaultComparer[bool](BoolComparer).Compare(true, false))
 	})
 
 	t.Run("provide params of correct type but wrapped to any", func(t *testing.T) {
-		assert.Equal(t, 1, HideTypedComparer[int8](Int8Comparer).Compare(any(int8(3)), any(int8(1))))
-		assert.Equal(t, 1, HideTypedComparer[int](IntComparer).Compare(any(3), any(1)))
-		assert.Equal(t, 1, HideTypedComparer[string](StringComparer).Compare(any("3"), any("1")))
-		assert.Equal(t, 1, HideTypedComparer[bool](BoolComparer).Compare(any(true), any(false)))
+		assert.Equal(t, 1, ConvertToDefaultComparer[int8](Int8Comparer).Compare(any(int8(3)), any(int8(1))))
+		assert.Equal(t, -1, ConvertToDefaultComparer[int8](Int8Comparer).Compare(any(int8(1)), any(int8(3))))
+		assert.Equal(t, 1, ConvertToDefaultComparer[int](IntComparer).Compare(any(3), any(1)))
+		assert.Equal(t, 1, ConvertToDefaultComparer[string](StringComparer).Compare(any("3"), any("1")))
+		assert.Equal(t, 1, ConvertToDefaultComparer[bool](BoolComparer).Compare(any(true), any(false)))
 	})
 
 	t.Run("resolve for both type or pointer value", func(t *testing.T) {
-		hiddenComparer := HideTypedComparer[int8](Int8Comparer)
-		x := any(int8(3))
-		y := any(int8(1))
-		px := &x
-		py := &y
-		assert.Equal(t, 1, hiddenComparer.Compare(x, y))
-		assert.Equal(t, 1, hiddenComparer.ComparePointerMode(px, py))
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
+		x := int8(3)
+		y := int8(1)
+		assert.Equal(t, 1, dcInt8.Compare(x, y))
+		assert.Equal(t, 1, dcInt8.ComparePointerMode(&x, &y))
+	})
+
+	t.Run("resolve for both type or pointer value, but wrapped to any", func(t *testing.T) {
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
+		ax := any(int8(3))
+		ay := any(int8(1))
+		assert.Equal(t, 1, dcInt8.Compare(ax, ay))
+		assert.Equal(t, 1, dcInt8.ComparePointerMode(&ax, &ay))
+		assert.Equal(t, -1, dcInt8.ComparePointerMode(nil, &ax))
+		assert.Equal(t, -1, dcInt8.ComparePointerMode(nil, &ay))
+		assert.Equal(t, 1, dcInt8.ComparePointerMode(&ax, nil))
+		assert.Equal(t, 1, dcInt8.ComparePointerMode(&ay, nil))
 	})
 
 	t.Run("provide params of wrong type", func(t *testing.T) {
-		hiddenInt8Comparer := HideTypedComparer[int8](Int8Comparer)
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
 		params1 := int32(3)
 		params2 := int32(1)
 
@@ -1066,11 +1100,39 @@ func Test_wrappedComparer(t *testing.T) {
 			}
 		}()
 
-		_ = hiddenInt8Comparer.Compare(params1, params2)
+		_ = dcInt8.Compare(params1, params2)
+	})
+
+	t.Run("provide 1st param of wrong type", func(t *testing.T) {
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
+		param1 := int32(1)
+
+		defer deferExpectPanicContains(t, "second param is nil but first param neither value or pointer")
+
+		_ = dcInt8.Compare(param1, nil)
+	})
+
+	t.Run("provide 2nd param of wrong type", func(t *testing.T) {
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
+		param2 := int32(1)
+
+		defer deferExpectPanicContains(t, "first param is nil but second param neither value or pointer")
+
+		_ = dcInt8.Compare(nil, param2)
+	})
+
+	t.Run("provide params not same type", func(t *testing.T) {
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
+		param1 := int8(1)
+		param2 := int8(3)
+
+		defer deferExpectPanicContains(t, "both params must have the same presentation, value or pointer")
+
+		_ = dcInt8.Compare(param1, &param2)
 	})
 
 	t.Run("provide params of wrong type (any)", func(t *testing.T) {
-		hiddenInt8Comparer := HideTypedComparer[int8](Int8Comparer)
+		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
 		params1 := int32(3)
 		params2 := int32(1)
 
@@ -1081,7 +1143,7 @@ func Test_wrappedComparer(t *testing.T) {
 			}
 		}()
 
-		_ = hiddenInt8Comparer.Compare(any(params1), any(params2))
+		_ = dcInt8.Compare(any(params1), any(params2))
 	})
 }
 
@@ -1115,11 +1177,11 @@ func testCompareBothModeFor[T any](t *testing.T, small, big T) {
 	assert.Equal(t, 0, comparer.Compare(small, small))
 	assert.Equal(t, -1, comparer.Compare(small, big))
 	assert.Equal(t, 1, comparer.Compare(big, small))
-	aSmall := any(small)
-	aBig := any(big)
 	assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &aBig))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &aSmall))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&aBig, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&aSmall, nil))
+	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &big))
+	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &small))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&big, nil))
+	assert.Equal(t, 1, comparer.ComparePointerMode(&small, nil))
+	assert.Equal(t, 0, comparer.ComparePointerMode(&small, &small))
+	assert.Equal(t, 0, comparer.ComparePointerMode(&big, &big))
 }

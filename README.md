@@ -3,7 +3,7 @@
 
 # go-ienumerable [![GoDoc](https://godoc.org/github.com/EscanBE/go-ienumerable?status.svg)](https://godoc.org/github.com/EscanBE/go-ienumerable) [![Go Report Card](https://goreportcard.com/badge/github.com/EscanBE/go-ienumerable)](https://goreportcard.com/report/github.com/EscanBE/go-ienumerable)
 
-> Code coverage: 100% files, 100% statements
+> Code coverage: 100% files, 99.6% statements
 
 Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) IEnumerable[T] [here in the enumerable interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerable_interface.go) definition
 
@@ -65,4 +65,4 @@ See implementation sample in `example`.
 `go-ienumerable` will attempts to resolve a default comparer using predefined comparers for some type. You can register a comparer for `YourType` by implement your own `IComparer[YourType]`.
 See sample of implement and default comparer registration for custom types and other types in `example`.
 
-Predefined `IComparer[T]`: `string`, `bool`, `int`, `int8/16/32/64`, `uint`, `uint8/16/32/64`, `float32/64`, `complex64/128`, `time.Time`, `time.Duration`
+Predefined `IComparer[T]`: `string`, `bool`, `int`, `int8/16/32/64`, `uint`, `uint8/16/32/64`, `float32/64`, `complex64/128`, `time.Time`, `time.Duration` with corresponding initialized comparer instance, eg: `compares.StringComparer` is a string comparer, `compares.Uint32Comparer` is uint32 comparer and so on.

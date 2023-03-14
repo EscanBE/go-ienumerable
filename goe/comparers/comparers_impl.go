@@ -874,22 +874,80 @@ func (i partitionedComparer[T]) ComparePointerMode(x, y any) int {
 	return i.Compare(AnyPointerToType[T](x), AnyPointerToType[T](y))
 }
 
-type wrappedComparer struct {
-	compareFunc            func(v1, v2 any) int
-	comparePointerModeFunc func(v1, v2 any) int
+// defaultComparer will be used as default comparer instance for types.
+// It shall wrap an IComparer[T] inside and present as IComparer[any],
+// and its functions Compare and ComparePointerMode can accept
+// interface{} as parameter and auto-forward to corresponding compare method.
+//
+// Eg: a default comparer that wraps a IComparer[int]:
+//
+// - pass int & int to any Compare* method will forward to Compare,
+//
+// - pass *int & *int to any Compare* method will forward to ComparePointerMode,
+//
+// - pass *int & int to any Compare* will panic (not same representation),
+//
+// - pass int & int32 to any Compare* also panic (int32 is not int),
+type defaultComparer struct {
+	compareFunc func(v1, v2 any) int
 }
 
-// HideTypedComparer wraps the typed comparer IComparer[T] into IComparer[any].
+// ConvertToDefaultComparer wraps the typed comparer IComparer[T] into IComparer[any].
 // With ability to receive both *T and T to compare, but both params must have the same representation: (T & T) or (*T & *T)
 // This is used for auto-resolve comparer technique.
 //
-// Beware: input parameter still have to have correct type.
-// For example when wraps a IComparer[int8],
-// parameter passed to the Compare function still have to be int8,
-// otherwise panic
-func HideTypedComparer[T any](comparer IComparer[T]) IComparer[any] {
-	return &wrappedComparer{
+// Eg: a default comparer that wraps a IComparer[int]:
+//
+// - pass int & int to any Compare* method will forward to Compare,
+//
+// - pass *int & *int to any Compare* method will forward to ComparePointerMode,
+//
+// - pass *int & int to any Compare* will panic (not same representation),
+//
+// - pass int & int32 to any Compare* also panic (int32 is not int),
+func ConvertToDefaultComparer[T any](comparer IComparer[T]) IComparer[any] {
+	return &defaultComparer{
 		compareFunc: func(u1, u2 any) int {
+			if u1 == nil && u2 == nil {
+				return comparer.ComparePointerMode(nil, nil)
+			}
+
+			if u1 == nil {
+				p2, okp2 := u2.(*T)
+
+				if okp2 {
+					return comparer.ComparePointerMode(nil, p2)
+				}
+
+				pa2, okpa2 := u2.(*any)
+				if okpa2 {
+					v2_2, okv2_2 := (*pa2).(T)
+					if okv2_2 {
+						return comparer.ComparePointerMode(nil, &v2_2)
+					}
+				}
+
+				panic(fmt.Sprintf("first param is nil but second param neither value or pointer. Found [%T]", u2))
+			}
+
+			if u2 == nil {
+				p1, okp1 := u1.(*T)
+
+				if okp1 {
+					return comparer.ComparePointerMode(p1, nil)
+				}
+
+				pa1, okpa1 := u1.(*any)
+				if okpa1 {
+					v1_2, okv1_2 := (*pa1).(T)
+					if okv1_2 {
+						return comparer.ComparePointerMode(&v1_2, nil)
+					}
+				}
+
+				panic(fmt.Sprintf("second param is nil but first param neither value or pointer. Found [%T]", u1))
+			}
+
 			v1, okv1 := u1.(T)
 			v2, okv2 := u2.(T)
 			if okv1 && okv2 {
@@ -903,19 +961,31 @@ func HideTypedComparer[T any](comparer IComparer[T]) IComparer[any] {
 				return comparer.ComparePointerMode(p1, p2)
 			}
 
-			if (!okv1 && !okp1) || (!okv2 && !okp2) {
-				panic(fmt.Sprintf("first or second params neither value or pointer of type [%T]. Found [%T] and [%T]", *new(T), u1, u2))
+			pa1, okpa1 := u1.(*any)
+			pa2, okpa2 := u2.(*any)
+
+			if okpa1 && okpa2 {
+				v1_2, okv1_2 := (*pa1).(T)
+				v2_2, okv2_2 := (*pa2).(T)
+
+				if okv1_2 && okv2_2 {
+					return comparer.Compare(v1_2, v2_2)
+				}
 			}
 
-			panic(fmt.Sprintf("both params must have the same type: value or pointer. Found [%T] and [%T]", u1, u2))
+			if (!okv1 && !okp1) || (!okv2 && !okp2) {
+				panic(fmt.Sprintf("first or second params neither value or pointer. Found [%T] and [%T]", u1, u2))
+			}
+
+			panic(fmt.Sprintf("both params must have the same presentation, value or pointer. Found [%T] and [%T]", u1, u2))
 		},
 	}
 }
 
-func (i *wrappedComparer) Compare(x, y any) int {
+func (i *defaultComparer) Compare(x, y any) int {
 	return i.compareFunc(x, y)
 }
 
-func (i wrappedComparer) ComparePointerMode(x, y any) int {
+func (i defaultComparer) ComparePointerMode(x, y any) int {
 	return i.compareFunc(x, y)
 }
