@@ -44,6 +44,7 @@ func createRandomIntEnumerable(size int) IEnumerable[int] {
 	return injectIntComparers(NewIEnumerable[int](data...))
 }
 
+// TODO remove
 func injectIntComparers(e IEnumerable[int]) IEnumerable[int] {
 	return e.
 		WithLessComparer(func(i1, i2 int) bool {

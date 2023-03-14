@@ -96,8 +96,6 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name+"_Intersect", func(t *testing.T) {
-			//copyOfSource := tt.source.copy()
-			//copyOfSecond := tt.second.copy()
 			bSource := backupForAssetUnchanged(tt.source)
 			bSecond := backupForAssetUnchanged(tt.second)
 
@@ -112,8 +110,6 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			bSecond.assertUnchanged(t, tt.second)
 		})
 		t.Run(tt.name+"_IntersectBy", func(t *testing.T) {
-			//copyOfSource := tt.source.copy()
-			//copyOfSecond := tt.second.copy()
 			bSource := backupForAssetUnchanged(tt.source)
 			bSecond := backupForAssetUnchanged(tt.second)
 
@@ -128,4 +124,34 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			bSecond.assertUnchanged(t, tt.second)
 		})
 	}
+
+	t.Run("intersect returns distinct", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](5, 2, 2, 6).WithDefaultComparers()
+		ieSecond := NewIEnumerable[int](1, 2, 2, 3)
+		bSource := backupForAssetUnchanged(ieSrc)
+		bSecond := backupForAssetUnchanged(ieSecond)
+
+		ieGot := ieSrc.Intersect(ieSecond)
+		assert.Equal(t, 1, ieGot.Count())
+		assert.Equal(t, 2, ieGot.ToArray()[0])
+
+		bSource.assertUnchanged(t, ieSrc)
+		bSecond.assertUnchanged(t, ieSecond)
+
+		ieGot = ieSrc.IntersectBy(ieSecond, nil)
+		assert.Equal(t, 1, ieGot.Count())
+		assert.Equal(t, 2, ieGot.ToArray()[0])
+
+		bSource.assertUnchanged(t, ieSrc)
+		bSecond.assertUnchanged(t, ieSecond)
+
+		ieGot = ieSrc.IntersectBy(ieSecond, func(v1, v2 int) bool {
+			return v1 == v2
+		})
+		assert.Equal(t, 1, ieGot.Count())
+		assert.Equal(t, 2, ieGot.ToArray()[0])
+
+		bSource.assertUnchanged(t, ieSrc)
+		bSecond.assertUnchanged(t, ieSecond)
+	})
 }

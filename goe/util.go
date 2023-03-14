@@ -103,6 +103,7 @@ func (src *enumerable[T]) assertAggregateAnySeedFuncNonNil(f func(any, T) any) {
 	}
 }
 
+// TODO move all errors into a separate file
 func getErrorNilAggregateFunc() error {
 	return fmt.Errorf("aggregate function is nil")
 }
