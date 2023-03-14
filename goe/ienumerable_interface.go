@@ -6,18 +6,18 @@ type IEnumerable[T any] interface {
 	// C#
 
 	// Aggregate applies an accumulator function over a sequence.
-	Aggregate(f func(pr, v T) T) T
+	Aggregate(f func(previousValue, value T) T) T
 
 	// AggregateWithSeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
-	AggregateWithSeed(seed T, f func(pr, v T) T) T
+	AggregateWithSeed(seed T, f func(previousValue, value T) T) T
 
 	// AggregateWithAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
 	// Notice, the type (specified as 'any') of the seed and the aggregate function `f` param and result,
 	// must be the same type
-	AggregateWithAnySeed(seed any, f func(pr any, v T) any) any
+	AggregateWithAnySeed(seed any, f func(previousValue any, value T) any) any
 
 	// All returns true if all elements matches with predicate, also true when empty
 	All(predicate func(T) bool) bool
@@ -293,18 +293,29 @@ type IEnumerable[T any] interface {
 
 	// Min returns the minimum value in a sequence.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Min() T
 
-	// MinBy returns the minimum value in a sequence according to provided comparer.
+	// MinBy returns the minimum value in a sequence
+	// according to provided less-than-comparer to compare values.
+	//
+	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	MinBy(lessComparer func(left, right T) bool) T
 
-	// Max returns the minimum value in a sequence.
+	// MinByComparer returns the minimum value in a sequence
+	// according to provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	MinByComparer(comparer comparers.IComparer[T]) T
+
+	// Max returns the maximum value in a sequence.
 	//
 	// Require: less comparer provided via WithLessComparer
 	Max() T
 
-	// MaxBy returns the minimum value in a sequence according to provided LESS comparer.
+	// MaxBy returns the maximum value in a sequence according to provided greater-than-comparer.
 	MaxBy(lessComparer func(left, right T) bool) T
 
 	// Order sorts the elements of a sequence in ascending order.
