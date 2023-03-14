@@ -39,43 +39,50 @@ type IEnumerable[T any] interface {
 	// CastByte casts the source IEnumerable[T] into IEnumerable[byte]
 	// if the source data type is byte (uint8), otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[byte], even default
+	// Notice: no comparer from source will be brought along with new IEnumerable[byte],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastByte() IEnumerable[byte]
 
 	// CastInt32 casts the source IEnumerable[T] into IEnumerable[int32]
 	// if the source data type is int32, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int32]
+	// Notice: no comparer from source will be brought along with new IEnumerable[int32],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastInt32() IEnumerable[int32]
 
 	// CastInt64 casts the source IEnumerable[T] into IEnumerable[int64]
 	// if the source data type is int64, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int64]
+	// Notice: no comparer from source will be brought along with new IEnumerable[int64],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastInt64() IEnumerable[int64]
 
 	// CastInt casts the source IEnumerable[T] into IEnumerable[int]
 	// if the source data type is int, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int]
+	// Notice: no comparer from source will be brought along with new IEnumerable[int],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastInt() IEnumerable[int]
 
 	// CastFloat64 casts the source IEnumerable[T] into IEnumerable[float64]
 	// if the source data type is float64, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[float64]
+	// Notice: no comparer from source will be brought along with new IEnumerable[float64],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastFloat64() IEnumerable[float64]
 
 	// CastString casts the source IEnumerable[T] into IEnumerable[string]
 	// if the source data type is string, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[string]
+	// Notice: no comparer from source will be brought along with new IEnumerable[string],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastString() IEnumerable[string]
 
 	// CastBool casts the source IEnumerable[T] into IEnumerable[bool]
 	// if the source data type is bool, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[bool]
+	// Notice: no comparer from source will be brought along with new IEnumerable[bool],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastBool() IEnumerable[bool]
 
 	// ChunkToHolder (Chunk) supposed to split the elements of a sequence into chunks of size at most size.
@@ -298,7 +305,8 @@ type IEnumerable[T any] interface {
 	//
 	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[any]
+	// Notice: no comparer from source will be brought along with new IEnumerable[any],
+	// a default comparer will be assigned automatically if able to resolve.
 	Select(selector func(v T) any) IEnumerable[any]
 
 	// SelectMany projects each element of a sequence to an IEnumerable[T]

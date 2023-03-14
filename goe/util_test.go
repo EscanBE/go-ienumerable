@@ -251,8 +251,3 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 		e.assertAggregateAnySeedFuncNonNil(nil)
 	})
 }
-
-// cast IEnumerable back to *enumerable for accessing private fields.
-func e[T any](ie IEnumerable[T]) *enumerable[T] {
-	return ie.(*enumerable[T])
-}

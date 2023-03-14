@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func Test_enumerable_Select(t *testing.T) {
@@ -24,7 +25,7 @@ func Test_enumerable_Select(t *testing.T) {
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
 		assert.Equal(t, "int8", fmt.Sprintf("%T", gotE.data[0]))
-		assert.Equal(t, "", gotE.dataType)
+		assert.Equal(t, "int8", gotE.dataType)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
@@ -46,7 +47,7 @@ func Test_enumerable_Select(t *testing.T) {
 		assert.Nil(t, gotE.equalityComparer)
 		assert.Nil(t, gotE.lessComparer)
 		assert.Equal(t, "string", fmt.Sprintf("%T", gotE.data[0]))
-		assert.Equal(t, "", gotE.dataType)
+		assert.Equal(t, "string", gotE.dataType)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
@@ -76,5 +77,26 @@ func Test_enumerable_Select(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 
 		_ = eSrc.Select(nil)
+	})
+
+	t.Run("automatically inject type and comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](3, 1)
+
+		ieGot := ieSrc.Select(func(i int) any {
+			return time.Duration(i) * time.Minute
+		})
+
+		gotArray := ieGot.ToArray()
+
+		assert.Equal(t, 3*time.Minute, gotArray[0])
+		assert.Equal(t, 1*time.Minute, gotArray[1])
+
+		eGot := e[any](ieGot)
+		assert.Equal(t, "time.Duration", eGot.dataType)
+		assert.NotNil(t, eGot.defaultComparer)
+		assert.Equal(t, 1, eGot.defaultComparer.Compare(gotArray[0], gotArray[1]))
+		assert.Equal(t, -1, eGot.defaultComparer.Compare(gotArray[1], gotArray[0]))
+		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[0], 3*time.Minute))
+		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[1], 1*time.Minute))
 	})
 }

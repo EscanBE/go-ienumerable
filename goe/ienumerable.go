@@ -26,10 +26,11 @@ func NewIEnumerable[T any](data ...T) IEnumerable[T] {
 	if dataType == "<nil>" {
 		dataType = ""
 	}
-	return &enumerable[T]{
+
+	return (&enumerable[T]{
 		data:     copySlice(data),
 		dataType: dataType,
-	}
+	}).injectDefaultComparer()
 }
 
 // Empty returns an empty IEnumerable with specific type

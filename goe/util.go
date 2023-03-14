@@ -186,3 +186,16 @@ func (src *enumerable[T]) tryFindDefaultComparer() (comparers.IComparer[any], bo
 
 	return nil, false
 }
+
+func (src *enumerable[T]) injectDefaultComparer() IEnumerable[T] {
+	if comparer, found := src.tryFindDefaultComparer(); found {
+		src.defaultComparer = comparer
+	}
+
+	return src
+}
+
+// cast IEnumerable back to *enumerable for accessing private fields.
+func e[T any](ie IEnumerable[T]) *enumerable[T] {
+	return ie.(*enumerable[T])
+}

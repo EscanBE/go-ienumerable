@@ -1,6 +1,7 @@
 package goe
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -49,4 +50,39 @@ func TestNewIEnumerable_dataType(t *testing.T) {
 	assert.Equal(t, "[]complex64", e[[]complex64](NewIEnumerable[[]complex64]()).dataType)
 	assert.Equal(t, "[]complex128", e[[]complex128](NewIEnumerable[[]complex128]()).dataType)
 	assert.Equal(t, "[]string", e[[]string](NewIEnumerable[[]string]()).dataType)
+
+	testInitWithCorrectDataTypeAndComparer[byte](t, 2, 3)
+
+	testInitWithCorrectDataTypeAndComparer[int32](t, 2, 3)
+
+	testInitWithCorrectDataTypeAndComparer[int64](t, 2, 3)
+
+	testInitWithCorrectDataTypeAndComparer[int](t, 2, 3)
+
+	testInitWithCorrectDataTypeAndComparer[float64](t, 2, 3)
+
+	testInitWithCorrectDataTypeAndComparer[string](t, "2", "3")
+
+	testInitWithCorrectDataTypeAndComparer[bool](t, false, true)
+}
+
+func testInitWithCorrectDataTypeAndComparer[T any](t *testing.T, lessValue, greaterValue T) {
+	dataType := fmt.Sprintf("%T", *new(T))
+	t.Run(fmt.Sprintf("cast correct type & comparer [%s]", dataType), func(t *testing.T) {
+		ieSrc := NewIEnumerable[T]()
+
+		eSrc := e[T](ieSrc)
+		assert.Equal(t, dataType, eSrc.dataType)
+		assert.NotNil(t, eSrc.defaultComparer)
+
+		assert.Equal(t, -1, eSrc.defaultComparer.Compare(lessValue, greaterValue))
+		assert.Equal(t, 0, eSrc.defaultComparer.Compare(lessValue, lessValue))
+		assert.Equal(t, 0, eSrc.defaultComparer.Compare(greaterValue, greaterValue))
+		assert.Equal(t, 1, eSrc.defaultComparer.Compare(greaterValue, lessValue))
+
+		assert.Equal(t, -1, eSrc.defaultComparer.Compare(any(lessValue), any(greaterValue)))
+		assert.Equal(t, 0, eSrc.defaultComparer.Compare(any(lessValue), any(lessValue)))
+		assert.Equal(t, 0, eSrc.defaultComparer.Compare(any(greaterValue), any(greaterValue)))
+		assert.Equal(t, 1, eSrc.defaultComparer.Compare(any(greaterValue), any(lessValue)))
+	})
 }

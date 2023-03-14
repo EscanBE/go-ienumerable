@@ -225,4 +225,51 @@ func Test_enumerable_Cast(t *testing.T) {
 			return nil
 		}).CastInt64()
 	})
+
+	testCastCorrectDataTypeAndComparer[byte](t, func(eAny IEnumerable[any]) IEnumerable[byte] {
+		return eAny.CastByte()
+	})
+
+	testCastCorrectDataTypeAndComparer[int32](t, func(eAny IEnumerable[any]) IEnumerable[int32] {
+		return eAny.CastInt32()
+	})
+
+	testCastCorrectDataTypeAndComparer[int64](t, func(eAny IEnumerable[any]) IEnumerable[int64] {
+		return eAny.CastInt64()
+	})
+
+	testCastCorrectDataTypeAndComparer[int](t, func(eAny IEnumerable[any]) IEnumerable[int] {
+		return eAny.CastInt()
+	})
+
+	testCastCorrectDataTypeAndComparer[float64](t, func(eAny IEnumerable[any]) IEnumerable[float64] {
+		return eAny.CastFloat64()
+	})
+
+	testCastCorrectDataTypeAndComparer[string](t, func(eAny IEnumerable[any]) IEnumerable[string] {
+		return eAny.CastString()
+	})
+
+	testCastCorrectDataTypeAndComparer[bool](t, func(eAny IEnumerable[any]) IEnumerable[bool] {
+		return eAny.CastBool()
+	})
+}
+
+func testCastCorrectDataTypeAndComparer[T any](t *testing.T, cast func(IEnumerable[any]) IEnumerable[T]) {
+	dataType := fmt.Sprintf("%T", *new(T))
+	t.Run(fmt.Sprintf("cast correct type & comparer [%s]", dataType), func(t *testing.T) {
+		ieSrc := NewIEnumerable[T]()
+
+		eSrc := e[T](ieSrc)
+		assert.Equal(t, dataType, eSrc.dataType)
+		assert.NotNil(t, eSrc.defaultComparer)
+
+		casted := cast(eSrc.Select(func(input T) any {
+			return input
+		}))
+
+		eCasted := e[T](casted)
+		assert.Equal(t, dataType, eCasted.dataType)
+		assert.NotNil(t, eCasted.defaultComparer)
+	})
 }

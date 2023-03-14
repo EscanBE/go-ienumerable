@@ -24,8 +24,13 @@ func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 
 	result := NewIEnumerable[any](newData...)
 
-	if len(uniqueTypes) == 1 && len(uniqueTypes[0]) > 0 {
-		result.(*enumerable[any]).dataType = uniqueTypes[0] // TODO
+	if len(uniqueTypes) == 1 {
+		dataType := uniqueTypes[0]
+		if len(dataType) > 0 {
+			eResult := e[any](result)
+			eResult.dataType = dataType
+			eResult.injectDefaultComparer()
+		}
 	}
 
 	return result
