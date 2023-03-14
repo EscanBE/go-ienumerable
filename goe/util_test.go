@@ -87,7 +87,7 @@ func (c copiedOriginal[T]) assertUnchanged(t *testing.T, e IEnumerable[T]) {
 		return
 	}
 
-	eData := e.exposeData()
+	eData := e.ToArray()
 	if len(c.data) != len(eData) {
 		assert.Lenf(t, eData, len(c.data), "data of source IEnumerable has been changed, expect len %d but changed to %d", len(c.data), len(eData))
 	} else if len(c.data) > 0 {
@@ -252,7 +252,7 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 	})
 }
 
-// cast IEnumerable back to *enumerable for accessing fields
+// cast IEnumerable back to *enumerable for accessing private fields.
 func e[T any](ie IEnumerable[T]) *enumerable[T] {
 	return ie.(*enumerable[T])
 }

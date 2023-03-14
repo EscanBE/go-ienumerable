@@ -84,8 +84,8 @@ func Test_enumerable_Chunk(t *testing.T) {
 			}
 
 			if tt.want.Count() > 0 {
-				gotData := got.exposeData()
-				for i0, aw := range tt.want.exposeData() {
+				gotData := got.ToArray()
+				for i0, aw := range tt.want.ToArray() {
 					ag := gotData[i0]
 					if len(aw) != len(ag) {
 						t.Errorf("data[%d] length expected %d got %d", i0, len(aw), len(ag))
@@ -227,8 +227,8 @@ func Test_enumerable_ChunkToAny(t *testing.T) {
 			}
 
 			if tt.want.Count() > 0 {
-				gotData := got.exposeData()
-				for i0, aw := range tt.want.exposeData() {
+				gotData := got.ToArray()
+				for i0, aw := range tt.want.ToArray() {
 					ag := gotData[i0]
 					if len(aw) != len(ag) {
 						t.Errorf("data[%d] length expected %d got %d", i0, len(aw), len(ag))

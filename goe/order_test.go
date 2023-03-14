@@ -16,14 +16,14 @@ func Test_enumerable_Order(t *testing.T) {
 		bSrc := backupForAssetUnchanged(src)
 
 		got := src.OrderBy(lessComparer)
-		assert.True(t, reflect.DeepEqual([]int{2, 3, 4, 5, 6, 7}, got.exposeData()))
+		assert.True(t, reflect.DeepEqual([]int{2, 3, 4, 5, 6, 7}, got.ToArray()))
 
 		bSrc.assertUnchanged(t, src)
 		bSrc.assertUnchangedIgnoreData(t, got)
 
 		src = createEmptyIntEnumerable()
 		got = src.OrderBy(lessComparer)
-		assert.Empty(t, got.exposeData())
+		assert.Empty(t, got.ToArray())
 
 		defer deferWantPanicDepends(t, true)
 		_ = src.OrderBy(nil)
@@ -34,14 +34,14 @@ func Test_enumerable_Order(t *testing.T) {
 		bSrc := backupForAssetUnchanged(src)
 
 		got := src.OrderByDescendingBy(lessComparer)
-		assert.True(t, reflect.DeepEqual([]int{7, 6, 5, 4, 3, 2}, got.exposeData()))
+		assert.True(t, reflect.DeepEqual([]int{7, 6, 5, 4, 3, 2}, got.ToArray()))
 
 		bSrc.assertUnchanged(t, src)
 		bSrc.assertUnchangedIgnoreData(t, got)
 
 		src = createEmptyIntEnumerable()
 		got = src.OrderByDescendingBy(lessComparer)
-		assert.Empty(t, got.exposeData())
+		assert.Empty(t, got.ToArray())
 
 		defer deferWantPanicDepends(t, true)
 		_ = src.OrderByDescendingBy(nil)
@@ -52,14 +52,14 @@ func Test_enumerable_Order(t *testing.T) {
 		bSrc := backupForAssetUnchanged(src)
 
 		got := src.Order()
-		assert.True(t, reflect.DeepEqual([]int{2, 3, 4, 5, 6, 7}, got.exposeData()))
+		assert.True(t, reflect.DeepEqual([]int{2, 3, 4, 5, 6, 7}, got.ToArray()))
 
 		bSrc.assertUnchanged(t, src)
 		bSrc.assertUnchangedIgnoreData(t, got)
 
 		src = injectIntComparers(createEmptyIntEnumerable())
 		got = src.Order()
-		assert.Empty(t, got.exposeData())
+		assert.Empty(t, got.ToArray())
 
 		defer deferWantPanicDepends(t, true)
 		_ = createEmptyIntEnumerable().Order()
@@ -70,14 +70,14 @@ func Test_enumerable_Order(t *testing.T) {
 		bSrc := backupForAssetUnchanged(src)
 
 		got := src.OrderByDescending()
-		assert.True(t, reflect.DeepEqual([]int{7, 6, 5, 4, 3, 2}, got.exposeData()))
+		assert.True(t, reflect.DeepEqual([]int{7, 6, 5, 4, 3, 2}, got.ToArray()))
 
 		bSrc.assertUnchanged(t, src)
 		bSrc.assertUnchangedIgnoreData(t, got)
 
 		src = injectIntComparers(createEmptyIntEnumerable())
 		got = src.OrderByDescending()
-		assert.Empty(t, got.exposeData())
+		assert.Empty(t, got.ToArray())
 
 		defer deferWantPanicDepends(t, true)
 		_ = createEmptyIntEnumerable().OrderByDescending()
@@ -90,21 +90,21 @@ func Test_enumerable_Order(t *testing.T) {
 		src := createRandomIntEnumerable(1_000)
 		bSrc := backupForAssetUnchanged(src)
 
-		srcData := copySlice(src.exposeData())
+		srcData := copySlice(src.ToArray())
 
 		got := src.OrderBy(wrongLessComparer)
-		assert.True(t, reflect.DeepEqual(srcData, got.exposeData()))
+		assert.True(t, reflect.DeepEqual(srcData, got.ToArray()))
 
 		got = src.OrderByDescendingBy(wrongLessComparer)
-		assert.True(t, reflect.DeepEqual(srcData, got.exposeData()))
+		assert.True(t, reflect.DeepEqual(srcData, got.ToArray()))
 
 		src.WithLessComparer(wrongLessComparer)
 
 		got = src.Order()
-		assert.True(t, reflect.DeepEqual(srcData, got.exposeData()))
+		assert.True(t, reflect.DeepEqual(srcData, got.ToArray()))
 
 		got = src.OrderByDescending()
-		assert.True(t, reflect.DeepEqual(srcData, got.exposeData()))
+		assert.True(t, reflect.DeepEqual(srcData, got.ToArray()))
 
 		bSrc.assertUnchanged(t, src)
 	})
@@ -113,7 +113,7 @@ func Test_enumerable_Order(t *testing.T) {
 		src := NewIEnumerable[string]("2", "22", "11").WithDefaultComparers()
 		bSrc := backupForAssetUnchanged(src)
 
-		got := src.Order().exposeData()
+		got := src.Order().ToArray()
 		assert.Equal(t, "11", got[0])
 		assert.Equal(t, "2", got[1])
 		assert.Equal(t, "22", got[2])
@@ -125,7 +125,7 @@ func Test_enumerable_Order(t *testing.T) {
 		src := NewIEnumerable[bool](true, false, true, false).WithDefaultComparers()
 		bSrc := backupForAssetUnchanged(src)
 
-		got := src.Order().exposeData()
+		got := src.Order().ToArray()
 		assert.False(t, got[0])
 		assert.False(t, got[1])
 		assert.True(t, got[2])

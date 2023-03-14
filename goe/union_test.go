@@ -82,9 +82,9 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			defer deferWantPanicDepends(t, tt.wantPanic)
 
 			got := tt.source.UnionBy(tt.second, tt.fEquals)
-			gotData := got.exposeData()
+			gotData := got.ToArray()
 
-			wantData := tt.want.exposeData()
+			wantData := tt.want.ToArray()
 
 			assert.True(t, reflect.DeepEqual(wantData, gotData))
 

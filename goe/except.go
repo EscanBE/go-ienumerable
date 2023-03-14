@@ -17,7 +17,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityComparer func(
 	src.assertComparerNonNil(equalityComparer)
 
 	if second.Count() < 1 {
-		return src.copyExceptData().withData(copySlice(src.exposeData()))
+		return src.copyExceptData().withData(copySlice(src.ToArray()))
 	}
 
 	if len(src.data) < 1 {
@@ -25,7 +25,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityComparer func(
 	}
 
 	result := make([]T, 0)
-	secondData := second.exposeData()
+	secondData := second.ToArray()
 	for _, d := range src.data {
 		var foundInAnother bool
 		for _, t := range secondData {

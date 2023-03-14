@@ -99,7 +99,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			// Except
 			resultOfExcept2 := tt.source.Except(tt.second)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), resultOfExcept2.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfExcept2.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)
@@ -115,7 +115,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			// Except
 			resultOfExcept2 := tt.source.ExceptBy(tt.second, tt.equalityComparer)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), resultOfExcept2.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfExcept2.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)

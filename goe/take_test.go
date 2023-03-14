@@ -59,8 +59,8 @@ func Test_enumerable_Take_TakeLast(t *testing.T) {
 			gotTake := tt.src.Take(tt.count)
 			gotTakeLast := tt.src.TakeLast(tt.count)
 
-			assert.True(t, reflect.DeepEqual(tt.wantTake.exposeData(), gotTake.exposeData()))
-			assert.True(t, reflect.DeepEqual(tt.wantTakeLast.exposeData(), gotTakeLast.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.wantTake.ToArray(), gotTake.ToArray()))
+			assert.True(t, reflect.DeepEqual(tt.wantTakeLast.ToArray(), gotTakeLast.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, gotTake)
@@ -119,7 +119,7 @@ func Test_enumerable_TakeWhile(t *testing.T) {
 			// TakeWhile
 			got := tt.src.TakeWhile(tt.predicate)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, got)
@@ -127,7 +127,7 @@ func Test_enumerable_TakeWhile(t *testing.T) {
 			// TakeWhileWidx
 			got = tt.src.TakeWhileWidx(tt.predicateWidx)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, got)

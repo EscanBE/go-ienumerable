@@ -55,9 +55,9 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 			defer deferWantPanicDepends(t, tt.wantPanic)
 
 			got := tt.source.DistinctBy(tt.fEquals)
-			gotData := got.exposeData()
+			gotData := got.ToArray()
 
-			wantData := tt.want.exposeData()
+			wantData := tt.want.ToArray()
 
 			assert.True(t, reflect.DeepEqual(wantData, gotData))
 

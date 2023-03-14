@@ -23,12 +23,12 @@ func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityComparer func(v
 	result := src.copyExceptData()
 
 	if second.Count() < 1 {
-		return result.withData(copySlice(src.exposeData())).internalDistinctBy(equalityComparer)
+		return result.withData(copySlice(src.ToArray())).internalDistinctBy(equalityComparer)
 	}
 
 	if len(src.data) < 1 {
-		return result.withData(copySlice(second.exposeData())).internalDistinctBy(equalityComparer)
+		return result.withData(copySlice(second.ToArray())).internalDistinctBy(equalityComparer)
 	}
 
-	return result.withData(append(copySlice(src.data), copySlice(second.exposeData())...)).internalDistinctBy(equalityComparer)
+	return result.withData(append(copySlice(src.data), copySlice(second.ToArray())...)).internalDistinctBy(equalityComparer)
 }

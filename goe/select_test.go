@@ -14,7 +14,7 @@ func Test_enumerable_Select(t *testing.T) {
 		eGot := eSrc.Select(func(i int8) any {
 			return i * 2
 		})
-		gotData := eGot.exposeData()
+		gotData := eGot.ToArray()
 		assert.Len(t, gotData, 4)
 		assert.Equal(t, int8(4), gotData[0])
 		assert.Equal(t, int8(6), gotData[1])
@@ -36,7 +36,7 @@ func Test_enumerable_Select(t *testing.T) {
 		eGot := eSrc.Select(func(i int8) any {
 			return fmt.Sprintf("%d", i+1)
 		})
-		gotData := eGot.exposeData()
+		gotData := eGot.ToArray()
 		assert.Len(t, gotData, 4)
 		assert.Equal(t, "3", gotData[0])
 		assert.Equal(t, "4", gotData[1])
@@ -59,7 +59,7 @@ func Test_enumerable_Select(t *testing.T) {
 			return int64(i)
 		})
 
-		gotData := eGot.exposeData()
+		gotData := eGot.ToArray()
 		assert.Len(t, gotData, 0)
 
 		gotE := e[any](eGot)

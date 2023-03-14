@@ -106,7 +106,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			// Intersect
 			resultOfIntersect2 := tt.source.Intersect(tt.second)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), resultOfIntersect2.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfIntersect2.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)
@@ -122,7 +122,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			// Intersect
 			resultOfIntersect2 := tt.source.IntersectBy(tt.second, tt.equalityComparer)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), resultOfIntersect2.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfIntersect2.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)

@@ -10,10 +10,10 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		eSrc := NewIEnumerable[int8](3, 4, 5).WithDefaultComparers()
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		srcD := eSrc.exposeData()
+		srcD := eSrc.ToArray()
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, eSrc.Count())
 		assert.Equal(t, srcD[0], gotData[0])
 		assert.Equal(t, srcD[1], gotData[1])
@@ -28,7 +28,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0])
 
@@ -41,7 +41,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0])
 
@@ -54,7 +54,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Empty(t, gotData[0])
 
@@ -67,7 +67,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.False(t, gotData[0])
 
@@ -80,7 +80,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0])
 
@@ -98,7 +98,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0].V1)
 		assert.False(t, gotData[0].V2)
@@ -113,7 +113,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Nil(t, gotData[0])
 
@@ -129,10 +129,10 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		eSrc := NewIEnumerable[int8](3, 4, 5).WithDefaultComparers()
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		srcD := eSrc.exposeData()
+		srcD := eSrc.ToArray()
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, eSrc.Count())
 		assert.Equal(t, srcD[0], gotData[0])
 		assert.Equal(t, srcD[1], gotData[1])
@@ -149,7 +149,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -164,7 +164,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -179,7 +179,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -194,7 +194,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -209,7 +209,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -234,7 +234,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, 99, gotData[0].V1)
 		assert.True(t, gotData[0].V2)
@@ -255,7 +255,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, 99, gotData[0].V1)
 		assert.True(t, gotData[0].V2)

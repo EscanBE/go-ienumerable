@@ -146,7 +146,7 @@ func Test_IOrderedIEnumerable(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			eGot := tt.ordered.GetEnumerable()
 
-			assert.Truef(t, reflect.DeepEqual(tt.want.exposeData(), eGot.exposeData()), "got %v, want %v", eGot.exposeData(), tt.want.exposeData())
+			assert.Truef(t, reflect.DeepEqual(tt.want.ToArray(), eGot.ToArray()), "got %v, want %v", eGot.ToArray(), tt.want.ToArray())
 
 			bSrc.assertUnchanged(t, eSrc)
 			bSrc.assertUnchangedIgnoreData(t, eGot)
@@ -210,7 +210,7 @@ func Test_IOrderedIEnumerable2(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			eGot := tt.ordered.GetEnumerable()
 
-			assert.Truef(t, reflect.DeepEqual(tt.want.exposeData(), eGot.exposeData()), "got %v, want %v", eGot.exposeData(), tt.want.exposeData())
+			assert.Truef(t, reflect.DeepEqual(tt.want.ToArray(), eGot.ToArray()), "got %v, want %v", eGot.ToArray(), tt.want.ToArray())
 
 			bSrc.assertUnchanged(t, eSrc)
 			bSrc.assertUnchangedIgnoreData(t, eGot)

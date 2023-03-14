@@ -289,13 +289,13 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
 
-		got := eSrc.Order().exposeData()
+		got := eSrc.Order().ToArray()
 		assert.False(t, got[0])
 		assert.False(t, got[1])
 		assert.True(t, got[2])
 		assert.True(t, got[3])
 
-		got = eSrc.Except(NewIEnumerable[bool](false)).exposeData()
+		got = eSrc.Except(NewIEnumerable[bool](false)).ToArray()
 		assert.Len(t, got, 2)
 		assert.True(t, got[0])
 		assert.True(t, got[1])

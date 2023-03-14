@@ -460,6 +460,5 @@ type IEnumerable[T any] interface {
 
 	// The following methods are internal APIs
 
-	exposeData() []T
 	exposeDataType() string
 }

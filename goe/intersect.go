@@ -21,7 +21,7 @@ func (src *enumerable[T]) IntersectBy(second IEnumerable[T], equalityComparer fu
 	}
 
 	result := make([]T, 0)
-	secondData := second.exposeData()
+	secondData := second.ToArray()
 	for _, fe := range src.data {
 		var foundInAnother bool
 		for _, se := range secondData {

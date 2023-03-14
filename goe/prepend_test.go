@@ -30,7 +30,7 @@ func Test_enumerable_Prepend(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.src)
 
 			eGot := tt.src.Prepend(tt.element)
-			gotData := eGot.exposeData()
+			gotData := eGot.ToArray()
 			assert.Len(t, gotData, tt.src.Count()+1)
 			assert.Equal(t, tt.element, gotData[0])
 
@@ -44,7 +44,7 @@ func Test_enumerable_Prepend(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Prepend(60)
-		gotData := eGot.exposeData()
+		gotData := eGot.ToArray()
 		assert.Len(t, gotData, eSrc.Count()+1)
 		assert.Equal(t, 60, gotData[0])
 		assert.Equal(t, 61, gotData[1])

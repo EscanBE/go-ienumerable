@@ -5,10 +5,6 @@ import (
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
 )
 
-func (src *enumerable[T]) exposeData() []T {
-	return src.data
-}
-
 func (src *enumerable[T]) exposeDataType() string {
 	return src.dataType
 }
