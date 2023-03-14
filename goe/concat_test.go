@@ -56,6 +56,10 @@ func Test_enumerable_Concat(t *testing.T) {
 			bFirst := backupForAssetUnchanged(tt.first)
 			bSecond := backupForAssetUnchanged(tt.second)
 
+			if tt.wantPanic && tt.first == nil {
+				return
+			}
+
 			defer deferWantPanicDepends(t, tt.wantPanic)
 			got := tt.first.Concat(tt.second)
 

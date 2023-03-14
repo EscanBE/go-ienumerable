@@ -244,13 +244,24 @@ type IEnumerable[T any] interface {
 
 	//GroupBy(fieldName string) enumerable
 
-	// Intersect produces the set intersection of two sequences using provided comparer.
+	// Intersect produces the set intersection of two sequences.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Intersect(second IEnumerable[T]) IEnumerable[T]
 
-	// IntersectBy produces the set intersection of two sequences according to provided comparer.
+	// IntersectBy produces the set intersection of two sequences by using the
+	// specified equality comparer to compare values.
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	IntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// IntersectByComparer produces the set intersection of two sequences by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	IntersectByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// Last returns the last element of a sequence
 	Last() T

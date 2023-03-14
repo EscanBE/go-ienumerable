@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math/rand"
+	"strings"
 	"testing"
 )
 
@@ -125,17 +126,34 @@ func deferWantPanicDepends(t *testing.T, wantPanic bool) {
 		t.Errorf("expect panic")
 	} else if err != nil && !wantPanic {
 		t.Errorf("expect not panic but got %v", err)
+	} else if err != nil && wantPanic {
+		errS := fmt.Sprintf("%v", err)
+		if strings.Contains(errS, "invalid memory address") {
+			panic(err)
+		}
 	}
 }
 
-func deferExpectPanicContains(t *testing.T, msgPart string) {
-	err := recover()
-	if err == nil {
-		t.Errorf("expect error")
-		return
+func deferExpectPanicContains(t *testing.T, msgPart string, wantPanic bool) {
+	if len(msgPart) < 1 {
+		t.Errorf("empty msg part was passed")
 	}
 
-	assert.Contains(t, fmt.Sprintf("%v", err), msgPart)
+	err := recover()
+
+	if wantPanic {
+		if err == nil {
+			t.Errorf("expect error")
+			return
+		}
+
+		assert.Contains(t, fmt.Sprintf("%v", err), msgPart)
+	} else {
+		if err != nil {
+			t.Errorf("not expect error, but got: %v", err)
+			return
+		}
+	}
 }
 
 func Test_enumerable_copyExceptData(t *testing.T) {
@@ -270,7 +288,7 @@ func Test_enumerable_findDefaultComparer(t *testing.T) {
 
 	t.Run("panic if type not registered", func(t *testing.T) {
 		type MyInt64 int64
-		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
 
 		e[MyInt64](NewIEnumerable[MyInt64]()).findDefaultComparer()
 	})

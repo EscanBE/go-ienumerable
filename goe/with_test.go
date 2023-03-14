@@ -296,9 +296,8 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 		assert.True(t, got[3])
 
 		got = eSrc.Except(NewIEnumerable[bool](false)).ToArray()
-		assert.Len(t, got, 2)
+		assert.Len(t, got, 1)
 		assert.True(t, got[0])
-		assert.True(t, got[1])
 	})
 
 	t.Run("not supported", func(t *testing.T) {

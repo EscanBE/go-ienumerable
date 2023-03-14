@@ -39,7 +39,7 @@ func Test_enumerable_Contains(t *testing.T) {
 	t.Run("panic if type not registered for default comparer", func(t *testing.T) {
 		type MyInt64 struct{}
 
-		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
 
 		NewIEnumerable[MyInt64]().Contains(MyInt64{})
 	})
@@ -123,7 +123,7 @@ func Test_enumerable_ContainsBy(t *testing.T) {
 		type MyInt64 struct{}
 		ieSrc := NewIEnumerable[MyInt64]()
 
-		defer deferExpectPanicContains(t, "no default comparer registered")
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
 		ieSrc.ContainsBy(MyInt64{}, nil)
 	})
@@ -203,7 +203,7 @@ func Test_enumerable_ContainsByComparer(t *testing.T) {
 		type MyInt64 struct{}
 		ieSrc := NewIEnumerable[MyInt64]()
 
-		defer deferExpectPanicContains(t, "no default comparer registered")
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
 		ieSrc.ContainsByComparer(MyInt64{}, nil)
 	})

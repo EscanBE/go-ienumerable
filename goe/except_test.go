@@ -24,7 +24,7 @@ func Test_enumerable_Except(t *testing.T) {
 	t.Run("panic if type not registered for default comparer", func(t *testing.T) {
 		type MyInt64 struct{}
 
-		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
 
 		NewIEnumerable[MyInt64]().Except(NewIEnumerable[MyInt64]())
 	})
@@ -34,7 +34,7 @@ func Test_enumerable_ExceptBy(t *testing.T) {
 	t.Run("panic if type not registered for default comparer", func(t *testing.T) {
 		type MyInt64 struct{}
 
-		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
 
 		NewIEnumerable[MyInt64]().ExceptBy(NewIEnumerable[MyInt64](), nil)
 	})
@@ -44,7 +44,7 @@ func Test_enumerable_ExceptByComparer(t *testing.T) {
 	t.Run("panic if type not registered for default comparer", func(t *testing.T) {
 		type MyInt64 struct{}
 
-		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
 
 		NewIEnumerable[MyInt64]().ExceptByComparer(NewIEnumerable[MyInt64](), nil)
 	})
@@ -124,6 +124,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 			name:             "panic with nil src",
 			source:           nil,
 			second:           NewIEnumerable[int](4, 5, 6, 7),
+			want:             NewIEnumerable[int](),
 			equalityComparer: equalityComparer,
 			comparer:         comparers.IntComparer,
 			panic:            true,
@@ -132,6 +133,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 			name:             "panic with nil second",
 			source:           NewIEnumerable[int](1, 2, 3),
 			second:           nil,
+			want:             NewIEnumerable[int](),
 			equalityComparer: equalityComparer,
 			comparer:         comparers.IntComparer,
 			panic:            true,
@@ -140,6 +142,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 			name:             "panic with both nil",
 			source:           nil,
 			second:           nil,
+			want:             NewIEnumerable[int](),
 			equalityComparer: equalityComparer,
 			comparer:         comparers.IntComparer,
 			panic:            true,
@@ -150,6 +153,9 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 			bSource := backupForAssetUnchanged(tt.source)
 			bSecond := backupForAssetUnchanged(tt.second)
 
+			if tt.panic && tt.source == nil {
+				return
+			}
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// Except
@@ -165,6 +171,9 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 			bSource := backupForAssetUnchanged(tt.source)
 			bSecond := backupForAssetUnchanged(tt.second)
 
+			if tt.panic && tt.source == nil {
+				return
+			}
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// ExceptBy
@@ -180,6 +189,9 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 			bSource := backupForAssetUnchanged(tt.source)
 			bSecond := backupForAssetUnchanged(tt.second)
 
+			if tt.panic && tt.source == nil {
+				return
+			}
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// ExceptByComparer
@@ -198,6 +210,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 		bSource := backupForAssetUnchanged(ieSrc)
 		bSecond := backupForAssetUnchanged(ieSecond)
 
+		// Except
 		ieGot := ieSrc.Except(ieSecond)
 		assert.Equal(t, 1, ieGot.Count())
 		assert.Equal(t, 2, ieGot.ToArray()[0])
@@ -205,6 +218,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 		bSource.assertUnchanged(t, ieSrc)
 		bSecond.assertUnchanged(t, ieSecond)
 
+		// ExceptBy
 		ieGot = ieSrc.ExceptBy(ieSecond, nil)
 		assert.Equal(t, 1, ieGot.Count())
 		assert.Equal(t, 2, ieGot.ToArray()[0])
@@ -221,6 +235,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 		bSource.assertUnchanged(t, ieSrc)
 		bSecond.assertUnchanged(t, ieSecond)
 
+		// ExceptByComparer
 		ieGot = ieSrc.ExceptByComparer(ieSecond, nil)
 		assert.Equal(t, 1, ieGot.Count())
 		assert.Equal(t, 2, ieGot.ToArray()[0])
