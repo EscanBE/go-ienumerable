@@ -14,7 +14,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 
 		got := eSrc.DefaultIfEmpty()
 		gotData := got.exposeData()
-		assert.Len(t, gotData, eSrc.len())
+		assert.Len(t, gotData, eSrc.Count())
 		assert.Equal(t, srcD[0], gotData[0])
 		assert.Equal(t, srcD[1], gotData[1])
 		assert.Equal(t, srcD[2], gotData[2])
@@ -133,7 +133,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
 		gotData := got.exposeData()
-		assert.Len(t, gotData, eSrc.len())
+		assert.Len(t, gotData, eSrc.Count())
 		assert.Equal(t, srcD[0], gotData[0])
 		assert.Equal(t, srcD[1], gotData[1])
 		assert.Equal(t, srcD[2], gotData[2])

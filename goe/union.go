@@ -16,13 +16,13 @@ func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityComparer func(v
 	src.assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)
 
-	if len(src.data) < 1 && second.len() < 1 {
+	if len(src.data) < 1 && second.Count() < 1 {
 		return src.copyExceptData().withEmptyData()
 	}
 
 	result := src.copyExceptData()
 
-	if second.len() < 1 {
+	if second.Count() < 1 {
 		return result.withData(copySlice(src.exposeData())).internalDistinctBy(equalityComparer)
 	}
 

@@ -16,7 +16,7 @@ func (src *enumerable[T]) IntersectBy(second IEnumerable[T], equalityComparer fu
 	src.assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)
 
-	if len(src.data) < 1 || second.len() < 1 {
+	if len(src.data) < 1 || second.Count() < 1 {
 		return src.copyExceptData().withEmptyData()
 	}
 

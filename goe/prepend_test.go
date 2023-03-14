@@ -31,7 +31,7 @@ func Test_enumerable_Prepend(t *testing.T) {
 
 			eGot := tt.src.Prepend(tt.element)
 			gotData := eGot.exposeData()
-			assert.Len(t, gotData, tt.src.len()+1)
+			assert.Len(t, gotData, tt.src.Count()+1)
 			assert.Equal(t, tt.element, gotData[0])
 
 			bSrc.assertUnchanged(t, tt.src)
@@ -45,7 +45,7 @@ func Test_enumerable_Prepend(t *testing.T) {
 
 		eGot := eSrc.Prepend(60)
 		gotData := eGot.exposeData()
-		assert.Len(t, gotData, eSrc.len()+1)
+		assert.Len(t, gotData, eSrc.Count()+1)
 		assert.Equal(t, 60, gotData[0])
 		assert.Equal(t, 61, gotData[1])
 		assert.Equal(t, 62, gotData[2])

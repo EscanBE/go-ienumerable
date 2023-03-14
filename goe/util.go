@@ -13,10 +13,6 @@ func (src *enumerable[T]) exposeDataType() string {
 	return src.dataType
 }
 
-func (src *enumerable[T]) len() int {
-	return len(src.data)
-}
-
 func (src *enumerable[T]) assertSrcNonNil() {
 	if src == nil {
 		panic(getErrorSourceIsNil())

@@ -462,5 +462,4 @@ type IEnumerable[T any] interface {
 
 	exposeData() []T
 	exposeDataType() string
-	len() int
 }

@@ -104,6 +104,6 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 	t.Run("equality comparer set on first, not require on second", func(t *testing.T) {
 		second := NewIEnumerable[int](1, 2, 99)
 
-		assert.Equal(t, 7, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).WithDefaultComparers().Union(second).len())
+		assert.Equal(t, 7, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).WithDefaultComparers().Union(second).Count())
 	})
 }

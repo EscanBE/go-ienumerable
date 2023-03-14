@@ -16,7 +16,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityComparer func(
 	src.assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)
 
-	if second.len() < 1 {
+	if second.Count() < 1 {
 		return src.copyExceptData().withData(copySlice(src.exposeData()))
 	}
 

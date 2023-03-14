@@ -73,6 +73,6 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 	})
 
 	t.Run("equality comparer set", func(t *testing.T) {
-		assert.Equal(t, 6, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).WithDefaultComparers().Distinct().len())
+		assert.Equal(t, 6, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).WithDefaultComparers().Distinct().Count())
 	})
 }
