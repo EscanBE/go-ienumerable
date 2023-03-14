@@ -25,7 +25,7 @@ func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 	result := NewIEnumerable[any](newData...)
 
 	if len(uniqueTypes) == 1 && len(uniqueTypes[0]) > 0 {
-		result.(*enumerable[any]).dataType = uniqueTypes[0]
+		result.(*enumerable[any]).dataType = uniqueTypes[0] // TODO
 	}
 
 	return result

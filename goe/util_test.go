@@ -63,13 +63,13 @@ type copiedOriginal[T comparable] struct {
 	hasDefaultComparer bool
 }
 
-func backupForAssetUnchanged[T comparable](e IEnumerable[T]) copiedOriginal[T] {
-	if e == nil {
+func backupForAssetUnchanged[T comparable](ie IEnumerable[T]) copiedOriginal[T] {
+	if ie == nil {
 		return copiedOriginal[T]{
 			isNil: true,
 		}
 	}
-	cast := e.(*enumerable[T])
+	cast := e[T](ie)
 	return copiedOriginal[T]{
 		data:               copySlice(cast.data),
 		dataType:           cast.dataType,
@@ -100,8 +100,8 @@ func (c copiedOriginal[T]) assertUnchanged(t *testing.T, e IEnumerable[T]) {
 	c.assertUnchangedIgnoreData(t, e)
 }
 
-func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, e IEnumerable[T]) {
-	cast := e.(*enumerable[T])
+func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, ie IEnumerable[T]) {
+	cast := e[T](ie)
 
 	assert.Equalf(t, c.dataType, cast.dataType, "dataType has changed, expect %s but got %s", c.dataType, cast.dataType)
 
@@ -250,4 +250,9 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 
 		e.assertAggregateAnySeedFuncNonNil(nil)
 	})
+}
+
+// cast IEnumerable back to *enumerable for accessing fields
+func e[T any](ie IEnumerable[T]) *enumerable[T] {
+	return ie.(*enumerable[T])
 }

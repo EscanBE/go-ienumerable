@@ -9,7 +9,7 @@ import (
 func Test_enumerable_With(t *testing.T) {
 	eSrc := NewIEnumerable[int](1, 2, 3)
 
-	back := eSrc.(*enumerable[int])
+	back := e[int](eSrc)
 	assert.Nil(t, back.equalityComparer)
 	assert.Nil(t, back.lessComparer)
 
@@ -29,54 +29,12 @@ func test_enumerable_With_addWiths(e IEnumerable[int]) {
 }
 
 func Test_enumerable_WithDefaultComparers(t *testing.T) {
-	/*
-		t.Run("performance", func(t *testing.T) {
-			defer deferWantPanicDepends(t, false)
-
-			eSrc1 := createRandomIntEnumerable(2_000_000).WithDefaultComparers()
-			eSrc2 := NewIEnumerable[int](eSrc1.exposeData()...).
-				WithEqualsComparer(func(v1, v2 int) bool {
-					return v1 == v2
-				}).
-				WithLessComparer(func(v1, v2 int) bool {
-					return v1 < v2
-				})
-
-			now := func() int64 {
-				return time.Now().UnixNano()
-			}
-
-			var sum1, sum2 int64
-			var cnt1, cnt2 int
-
-			for turn := 1; turn <= 10; turn++ {
-				startSort1 := now()
-				eSrc1.Order()
-				stopSort1 := now()
-				sum1 += stopSort1 - startSort1
-
-				startSort2 := now()
-				eSrc2.Order()
-				stopSort2 := now()
-				sum2 += stopSort2 - startSort2
-
-				cnt1++
-				cnt2++
-			}
-
-			avg1 := int64(math.Floor(float64(sum1) / float64(cnt1)))
-			avg2 := int64(math.Floor(float64(sum2) / float64(cnt2)))
-			fmt.Printf("Sort 1 avg: %d\n", avg1)
-			fmt.Printf("Sort 2 avg: %d\n", avg2)
-		})
-	*/
-
 	t.Run("int8", func(t *testing.T) {
 		defer deferWantPanicDepends(t, false)
 
 		eSrc := NewIEnumerable[int8](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[int8])
+		back := e[int8](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -90,7 +48,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[byte](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[byte])
+		back := e[byte](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -104,7 +62,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[uint8](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[uint8])
+		back := e[uint8](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -118,7 +76,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[int16](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[int16])
+		back := e[int16](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -132,7 +90,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[uint16](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[uint16])
+		back := e[uint16](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -146,7 +104,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[int32](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[int32])
+		back := e[int32](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -160,7 +118,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[rune](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[rune])
+		back := e[rune](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -174,7 +132,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[uint32](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[uint32])
+		back := e[uint32](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -188,7 +146,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[int64](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[int64])
+		back := e[int64](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -202,7 +160,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[uint64](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[uint64])
+		back := e[uint64](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -216,7 +174,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[int](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[int])
+		back := e[int](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -230,7 +188,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[uint](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[uint])
+		back := e[uint](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -244,7 +202,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[uintptr](2, 1).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[uintptr])
+		back := e[uintptr](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -258,7 +216,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[float32](2.0, 1.0).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[float32])
+		back := e[float32](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -272,7 +230,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[float64](2.0, 1.0).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[float64])
+		back := e[float64](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -286,7 +244,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[complex64](2.0, 1.0).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[complex64])
+		back := e[complex64](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.Nil(t, back.lessComparer)
@@ -299,7 +257,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[complex128](2.0, 1.0).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[complex128])
+		back := e[complex128](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.Nil(t, back.lessComparer)
@@ -312,7 +270,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[string]("2", "1").WithDefaultComparers()
 
-		back := eSrc.(*enumerable[string])
+		back := e[string](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -326,7 +284,7 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 
 		eSrc := NewIEnumerable[bool](true, false, true, false).WithDefaultComparers()
 
-		back := eSrc.(*enumerable[bool])
+		back := e[bool](eSrc)
 
 		assert.NotNil(t, back.equalityComparer)
 		assert.NotNil(t, back.lessComparer)
@@ -361,8 +319,8 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		eDst := NewIEnumerable[int](1, 2, 3).WithEqualsComparer(equalityComparer)
 		eSrc := NewIEnumerable[int]()
 
-		eD := eDst.(*enumerable[int])
-		eS := eSrc.(*enumerable[int])
+		eD := e[int](eDst)
+		eS := e[int](eSrc)
 
 		assert.NotNil(t, eD.equalityComparer)
 		assert.Nil(t, eS.equalityComparer)
@@ -423,8 +381,8 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		eDst := NewIEnumerable[int](1, 2, 3).WithLessComparer(lessComparer)
 		eSrc := NewIEnumerable[int]()
 
-		eD := eDst.(*enumerable[int])
-		eS := eSrc.(*enumerable[int])
+		eD := e[int](eDst)
+		eS := e[int](eSrc)
 
 		assert.NotNil(t, eD.lessComparer)
 		assert.Nil(t, eS.lessComparer)
@@ -484,7 +442,7 @@ func Test_enumerable_WithDefaultComparer(t *testing.T) {
 		eSrc := createRandomIntEnumerable(5)
 		eSrc.WithDefaultComparer(nil)
 
-		e := eSrc.(*enumerable[int])
+		e := e[int](eSrc)
 		assert.Nil(t, e.defaultComparer)
 
 		// replace

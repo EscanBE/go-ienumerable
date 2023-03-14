@@ -5,6 +5,9 @@ import (
 	"math/big"
 )
 
+// unboxAnyAsByte unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into byte.
+//
+// Panic if value is over range or not integer
 func (src *enumerable[T]) unboxAnyAsByte(v T) byte {
 	if src.dataType == "" {
 		// fall through
@@ -111,6 +114,9 @@ func (src *enumerable[T]) unboxAnyAsByte(v T) byte {
 	}
 }
 
+// unboxAnyAsInt32 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int32.
+//
+// Panic if value is over range or not integer
 func (src *enumerable[T]) unboxAnyAsInt32(v T) int32 {
 	if src.dataType == "" {
 		// fall through
@@ -193,6 +199,9 @@ func (src *enumerable[T]) unboxAnyAsInt32(v T) int32 {
 	}
 }
 
+// unboxAnyAsInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int64.
+//
+// Panic if value is over range or not integer
 func (src *enumerable[T]) unboxAnyAsInt64(v T) int64 {
 	if src.dataType == "" {
 		// fall through
@@ -257,6 +266,9 @@ func (src *enumerable[T]) unboxAnyAsInt64(v T) int64 {
 	}
 }
 
+// unboxAnyAsInt unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int.
+//
+// Panic if value is over range or not integer
 func (src *enumerable[T]) unboxAnyAsInt(v T) int {
 	if src.dataType == "" {
 		// fall through
@@ -343,6 +355,11 @@ const (
 	UF64_TYPE_INT64   unboxFloat64DataType = 2
 )
 
+// unboxAnyAsFloat64OrInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) or float32/64
+// into either int64 or float64 value (priority int64), data type specified in result.
+// This design is for sum accuracy.
+//
+// Panic if neither integer nor float
 func (src *enumerable[T]) unboxAnyAsFloat64OrInt64(v T) (rf float64, ri int64, dt unboxFloat64DataType) {
 	if src.dataType == "" {
 		// fall through

@@ -8,30 +8,35 @@ import (
 )
 
 func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
-	eany := NewIEnumerable[any]()
+	//goland:noinspection SpellCheckingInspection
+	ieAny := NewIEnumerable[any]()
+
+	//goland:noinspection GoSnakeCaseUsage, SpellCheckingInspection
+	eAny := e[any](ieAny)
+
 	t.Run("in range", func(t *testing.T) {
-		eany.unboxAnyAsByte(int8(0))
-		eany.unboxAnyAsByte(int8(math.MaxInt8))
-		eany.unboxAnyAsByte(uint8(0))
-		eany.unboxAnyAsByte(uint8(math.MaxUint8))
-		eany.unboxAnyAsByte(int16(0))
-		eany.unboxAnyAsByte(int16(math.MaxUint8))
-		eany.unboxAnyAsByte(uint16(0))
-		eany.unboxAnyAsByte(uint16(math.MaxUint8))
-		eany.unboxAnyAsByte(int32(0))
-		eany.unboxAnyAsByte(int32(math.MaxUint8))
-		eany.unboxAnyAsByte(uint32(0))
-		eany.unboxAnyAsByte(uint32(math.MaxUint8))
-		eany.unboxAnyAsByte(int64(0))
-		eany.unboxAnyAsByte(int64(math.MaxUint8))
-		eany.unboxAnyAsByte(uint64(0))
-		eany.unboxAnyAsByte(uint64(math.MaxUint8))
+		eAny.unboxAnyAsByte(int8(0))
+		eAny.unboxAnyAsByte(int8(math.MaxInt8))
+		eAny.unboxAnyAsByte(uint8(0))
+		eAny.unboxAnyAsByte(uint8(math.MaxUint8))
+		eAny.unboxAnyAsByte(int16(0))
+		eAny.unboxAnyAsByte(int16(math.MaxUint8))
+		eAny.unboxAnyAsByte(uint16(0))
+		eAny.unboxAnyAsByte(uint16(math.MaxUint8))
+		eAny.unboxAnyAsByte(int32(0))
+		eAny.unboxAnyAsByte(int32(math.MaxUint8))
+		eAny.unboxAnyAsByte(uint32(0))
+		eAny.unboxAnyAsByte(uint32(math.MaxUint8))
+		eAny.unboxAnyAsByte(int64(0))
+		eAny.unboxAnyAsByte(int64(math.MaxUint8))
+		eAny.unboxAnyAsByte(uint64(0))
+		eAny.unboxAnyAsByte(uint64(math.MaxUint8))
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsByte(int(0))
+		eAny.unboxAnyAsByte(int(0))
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsByte(int(math.MaxUint8))
-		eany.unboxAnyAsByte(uint(0))
-		eany.unboxAnyAsByte(uint(math.MaxUint8))
+		eAny.unboxAnyAsByte(int(math.MaxUint8))
+		eAny.unboxAnyAsByte(uint(0))
+		eAny.unboxAnyAsByte(uint(math.MaxUint8))
 	})
 
 	t.Run("int8 under range", func(t *testing.T) {
@@ -45,7 +50,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int8 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int8(-1))
+		eAny.unboxAnyAsByte(int8(-1))
 	})
 
 	t.Run("int16 over range", func(t *testing.T) {
@@ -59,7 +64,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int16(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(int16(math.MaxUint8 + 1))
 	})
 
 	t.Run("int16 under range", func(t *testing.T) {
@@ -73,7 +78,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int16(-1))
+		eAny.unboxAnyAsByte(int16(-1))
 	})
 
 	t.Run("uint16 over range", func(t *testing.T) {
@@ -87,7 +92,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint16 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
 	})
 
 	t.Run("int32 over range", func(t *testing.T) {
@@ -101,7 +106,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int32(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(int32(math.MaxUint8 + 1))
 	})
 
 	t.Run("int32 under range", func(t *testing.T) {
@@ -115,7 +120,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int32(-1))
+		eAny.unboxAnyAsByte(int32(-1))
 	})
 
 	t.Run("uint32 over range", func(t *testing.T) {
@@ -129,7 +134,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
 	})
 
 	t.Run("int64 over range", func(t *testing.T) {
@@ -143,7 +148,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int64(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(int64(math.MaxUint8 + 1))
 	})
 
 	t.Run("int64 under range", func(t *testing.T) {
@@ -157,7 +162,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(int64(-1))
+		eAny.unboxAnyAsByte(int64(-1))
 	})
 
 	t.Run("uint64 over range", func(t *testing.T) {
@@ -171,7 +176,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
 	})
 
 	t.Run("int over range", func(t *testing.T) {
@@ -186,7 +191,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 		}()
 
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsByte(int(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(int(math.MaxUint8 + 1))
 	})
 
 	t.Run("int under range", func(t *testing.T) {
@@ -201,7 +206,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 		}()
 
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsByte(int(-1))
+		eAny.unboxAnyAsByte(int(-1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -215,7 +220,7 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to byte")
 		}()
 
-		eany.unboxAnyAsByte(uint(math.MaxUint8 + 1))
+		eAny.unboxAnyAsByte(uint(math.MaxUint8 + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -231,44 +236,57 @@ func Test_enumerable_unboxAnyAsByte_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to byte", str))
 		}()
 
-		eany.unboxAnyAsByte(any(str))
+		eAny.unboxAnyAsByte(any(str))
 	})
 }
 
+//goland:noinspection GoSnakeCaseUsage
 func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
-	ei8 := NewIEnumerable[int8]()
-	eu8 := NewIEnumerable[uint8]()
-	ei16 := NewIEnumerable[int16]()
-	eu16 := NewIEnumerable[uint16]()
-	ei32 := NewIEnumerable[int32]()
-	eu32 := NewIEnumerable[uint32]()
-	ei64 := NewIEnumerable[int64]()
-	eu64 := NewIEnumerable[uint64]()
-	ei := NewIEnumerable[int]()
-	eu := NewIEnumerable[uint]()
+	ieI8 := NewIEnumerable[int8]()
+	ieU8 := NewIEnumerable[uint8]()
+	ieI16 := NewIEnumerable[int16]()
+	ieU16 := NewIEnumerable[uint16]()
+	ieI32 := NewIEnumerable[int32]()
+	ieU32 := NewIEnumerable[uint32]()
+	ieI64 := NewIEnumerable[int64]()
+	ieU64 := NewIEnumerable[uint64]()
+	ieI := NewIEnumerable[int]()
+	ieU := NewIEnumerable[uint]()
+
+	eI8 := e[int8](ieI8)
+	eU8 := e[uint8](ieU8)
+	eI16 := e[int16](ieI16)
+	eU16 := e[uint16](ieU16)
+	eI32 := e[int32](ieI32)
+	eU32 := e[uint32](ieU32)
+	eI64 := e[int64](ieI64)
+	eU64 := e[uint64](ieU64)
+	eI := e[int](ieI)
+	eU := e[uint](ieU)
+
 	t.Run("in range", func(t *testing.T) {
-		ei8.unboxAnyAsByte(int8(0))
-		ei8.unboxAnyAsByte(int8(math.MaxInt8))
-		eu8.unboxAnyAsByte(uint8(0))
-		eu8.unboxAnyAsByte(uint8(math.MaxUint8))
-		ei16.unboxAnyAsByte(int16(0))
-		ei16.unboxAnyAsByte(int16(math.MaxUint8))
-		eu16.unboxAnyAsByte(uint16(0))
-		eu16.unboxAnyAsByte(uint16(math.MaxUint8))
-		ei32.unboxAnyAsByte(int32(0))
-		ei32.unboxAnyAsByte(int32(math.MaxUint8))
-		eu32.unboxAnyAsByte(uint32(0))
-		eu32.unboxAnyAsByte(uint32(math.MaxUint8))
-		ei64.unboxAnyAsByte(int64(0))
-		ei64.unboxAnyAsByte(int64(math.MaxUint8))
-		eu64.unboxAnyAsByte(uint64(0))
-		eu64.unboxAnyAsByte(uint64(math.MaxUint8))
+		eI8.unboxAnyAsByte(int8(0))
+		eI8.unboxAnyAsByte(int8(math.MaxInt8))
+		eU8.unboxAnyAsByte(uint8(0))
+		eU8.unboxAnyAsByte(uint8(math.MaxUint8))
+		eI16.unboxAnyAsByte(int16(0))
+		eI16.unboxAnyAsByte(int16(math.MaxUint8))
+		eU16.unboxAnyAsByte(uint16(0))
+		eU16.unboxAnyAsByte(uint16(math.MaxUint8))
+		eI32.unboxAnyAsByte(int32(0))
+		eI32.unboxAnyAsByte(int32(math.MaxUint8))
+		eU32.unboxAnyAsByte(uint32(0))
+		eU32.unboxAnyAsByte(uint32(math.MaxUint8))
+		eI64.unboxAnyAsByte(int64(0))
+		eI64.unboxAnyAsByte(int64(math.MaxUint8))
+		eU64.unboxAnyAsByte(uint64(0))
+		eU64.unboxAnyAsByte(uint64(math.MaxUint8))
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsByte(int(0))
+		eI.unboxAnyAsByte(int(0))
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsByte(int(math.MaxUint8))
-		eu.unboxAnyAsByte(uint(0))
-		eu.unboxAnyAsByte(uint(math.MaxUint8))
+		eI.unboxAnyAsByte(int(math.MaxUint8))
+		eU.unboxAnyAsByte(uint(0))
+		eU.unboxAnyAsByte(uint(math.MaxUint8))
 	})
 
 	t.Run("int8 under range", func(t *testing.T) {
@@ -282,7 +300,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int8 (expect: int8) cannot be casted to byte")
 		}()
 
-		ei8.unboxAnyAsByte(int8(-1))
+		eI8.unboxAnyAsByte(int8(-1))
 	})
 
 	t.Run("int16 over range", func(t *testing.T) {
@@ -296,7 +314,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 (expect: int16) cannot be casted to byte")
 		}()
 
-		ei16.unboxAnyAsByte(int16(math.MaxUint8 + 1))
+		eI16.unboxAnyAsByte(int16(math.MaxUint8 + 1))
 	})
 
 	t.Run("int16 under range", func(t *testing.T) {
@@ -310,7 +328,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 (expect: int16) cannot be casted to byte")
 		}()
 
-		ei16.unboxAnyAsByte(int16(-1))
+		eI16.unboxAnyAsByte(int16(-1))
 	})
 
 	t.Run("uint16 over range", func(t *testing.T) {
@@ -324,7 +342,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint16 (expect: uint16) cannot be casted to byte")
 		}()
 
-		eu16.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
+		eU16.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
 	})
 
 	t.Run("int32 over range", func(t *testing.T) {
@@ -338,7 +356,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 (expect: int32) cannot be casted to byte")
 		}()
 
-		ei32.unboxAnyAsByte(int32(math.MaxUint8 + 1))
+		eI32.unboxAnyAsByte(int32(math.MaxUint8 + 1))
 	})
 
 	t.Run("int32 under range", func(t *testing.T) {
@@ -352,7 +370,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 (expect: int32) cannot be casted to byte")
 		}()
 
-		ei32.unboxAnyAsByte(int32(-1))
+		eI32.unboxAnyAsByte(int32(-1))
 	})
 
 	t.Run("uint32 over range", func(t *testing.T) {
@@ -366,7 +384,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 (expect: uint32) cannot be casted to byte")
 		}()
 
-		eu32.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
+		eU32.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
 	})
 
 	t.Run("int64 over range", func(t *testing.T) {
@@ -380,7 +398,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to byte")
 		}()
 
-		ei64.unboxAnyAsByte(int64(math.MaxUint8 + 1))
+		eI64.unboxAnyAsByte(int64(math.MaxUint8 + 1))
 	})
 
 	t.Run("int64 under range", func(t *testing.T) {
@@ -394,7 +412,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to byte")
 		}()
 
-		ei64.unboxAnyAsByte(int64(-1))
+		eI64.unboxAnyAsByte(int64(-1))
 	})
 
 	t.Run("uint64 over range", func(t *testing.T) {
@@ -408,7 +426,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to byte")
 		}()
 
-		eu64.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
+		eU64.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
 	})
 
 	t.Run("int over range", func(t *testing.T) {
@@ -423,7 +441,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 		}()
 
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsByte(int(math.MaxUint8 + 1))
+		eI.unboxAnyAsByte(int(math.MaxUint8 + 1))
 	})
 
 	t.Run("int under range", func(t *testing.T) {
@@ -438,7 +456,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 		}()
 
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsByte(int(-1))
+		eI.unboxAnyAsByte(int(-1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -452,7 +470,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to byte")
 		}()
 
-		eu.unboxAnyAsByte(uint(math.MaxUint8 + 1))
+		eU.unboxAnyAsByte(uint(math.MaxUint8 + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -468,35 +486,39 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to byte", str))
 		}()
 
-		NewIEnumerable[string]().unboxAnyAsByte(str)
+		e[string](NewIEnumerable[string]()).unboxAnyAsByte(str)
 	})
 }
 
 func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
+	//goland:noinspection SpellCheckingInspection
 	eany := NewIEnumerable[any]()
+
+	ea1 := e[any](eany)
+
 	t.Run("in range", func(t *testing.T) {
-		eany.unboxAnyAsInt32(int8(math.MinInt8))
-		eany.unboxAnyAsInt32(int8(math.MaxInt8))
-		eany.unboxAnyAsInt32(uint8(0))
-		eany.unboxAnyAsInt32(uint8(math.MaxUint8))
-		eany.unboxAnyAsInt32(int16(math.MinInt16))
-		eany.unboxAnyAsInt32(int16(math.MaxInt16))
-		eany.unboxAnyAsInt32(uint16(0))
-		eany.unboxAnyAsInt32(uint16(math.MaxUint16))
-		eany.unboxAnyAsInt32(int32(math.MinInt32))
-		eany.unboxAnyAsInt32(int32(math.MaxInt32))
-		eany.unboxAnyAsInt32(uint32(0))
-		eany.unboxAnyAsInt32(uint32(math.MaxInt32))
-		eany.unboxAnyAsInt32(int64(math.MinInt32))
-		eany.unboxAnyAsInt32(int64(math.MaxInt32))
-		eany.unboxAnyAsInt32(uint64(0))
-		eany.unboxAnyAsInt32(uint64(math.MaxInt32))
+		ea1.unboxAnyAsInt32(int8(math.MinInt8))
+		ea1.unboxAnyAsInt32(int8(math.MaxInt8))
+		ea1.unboxAnyAsInt32(uint8(0))
+		ea1.unboxAnyAsInt32(uint8(math.MaxUint8))
+		ea1.unboxAnyAsInt32(int16(math.MinInt16))
+		ea1.unboxAnyAsInt32(int16(math.MaxInt16))
+		ea1.unboxAnyAsInt32(uint16(0))
+		ea1.unboxAnyAsInt32(uint16(math.MaxUint16))
+		ea1.unboxAnyAsInt32(int32(math.MinInt32))
+		ea1.unboxAnyAsInt32(int32(math.MaxInt32))
+		ea1.unboxAnyAsInt32(uint32(0))
+		ea1.unboxAnyAsInt32(uint32(math.MaxInt32))
+		ea1.unboxAnyAsInt32(int64(math.MinInt32))
+		ea1.unboxAnyAsInt32(int64(math.MaxInt32))
+		ea1.unboxAnyAsInt32(uint64(0))
+		ea1.unboxAnyAsInt32(uint64(math.MaxInt32))
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsInt32(int(math.MinInt32))
+		ea1.unboxAnyAsInt32(int(math.MinInt32))
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsInt32(int(math.MaxInt32))
-		eany.unboxAnyAsInt32(uint(0))
-		eany.unboxAnyAsInt32(uint(math.MaxInt32))
+		ea1.unboxAnyAsInt32(int(math.MaxInt32))
+		ea1.unboxAnyAsInt32(uint(0))
+		ea1.unboxAnyAsInt32(uint(math.MaxInt32))
 	})
 
 	t.Run("uint32 over range", func(t *testing.T) {
@@ -510,7 +532,7 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 cannot be casted to int32")
 		}()
 
-		eany.unboxAnyAsInt32(uint32(math.MaxInt32 + 1))
+		ea1.unboxAnyAsInt32(uint32(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 over range", func(t *testing.T) {
@@ -524,7 +546,7 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to int32")
 		}()
 
-		eany.unboxAnyAsInt32(int64(math.MaxInt32 + 1))
+		ea1.unboxAnyAsInt32(int64(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 under range", func(t *testing.T) {
@@ -538,7 +560,7 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to int32")
 		}()
 
-		eany.unboxAnyAsInt32(int64(math.MinInt32 - 1))
+		ea1.unboxAnyAsInt32(int64(math.MinInt32 - 1))
 	})
 
 	t.Run("uint64 over range", func(t *testing.T) {
@@ -552,7 +574,7 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to int32")
 		}()
 
-		eany.unboxAnyAsInt32(uint64(math.MaxInt32 + 1))
+		ea1.unboxAnyAsInt32(uint64(math.MaxInt32 + 1))
 	})
 
 	x64 := math.MaxInt > math.MaxInt32
@@ -572,7 +594,7 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 		}()
 
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsInt32(int(math.MinInt32 - 1))
+		ea1.unboxAnyAsInt32(int(math.MinInt32 - 1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -590,7 +612,7 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to int32")
 		}()
 
-		eany.unboxAnyAsInt32(uint(math.MaxInt32 + 1))
+		ea1.unboxAnyAsInt32(uint(math.MaxInt32 + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -606,44 +628,57 @@ func Test_enumerable_unboxAnyAsInt32_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int32", str))
 		}()
 
-		eany.unboxAnyAsInt32(any(str))
+		ea1.unboxAnyAsInt32(any(str))
 	})
 }
 
+//goland:noinspection GoSnakeCaseUsage
 func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
-	ei8 := NewIEnumerable[int8]()
-	eu8 := NewIEnumerable[uint8]()
-	ei16 := NewIEnumerable[int16]()
-	eu16 := NewIEnumerable[uint16]()
-	ei32 := NewIEnumerable[int32]()
-	eu32 := NewIEnumerable[uint32]()
-	ei64 := NewIEnumerable[int64]()
-	eu64 := NewIEnumerable[uint64]()
-	ei := NewIEnumerable[int]()
-	eu := NewIEnumerable[uint]()
+	ieI8 := NewIEnumerable[int8]()
+	ieU8 := NewIEnumerable[uint8]()
+	ieI16 := NewIEnumerable[int16]()
+	ieU16 := NewIEnumerable[uint16]()
+	ieI32 := NewIEnumerable[int32]()
+	ieU32 := NewIEnumerable[uint32]()
+	ieI64 := NewIEnumerable[int64]()
+	ieU64 := NewIEnumerable[uint64]()
+	ieI := NewIEnumerable[int]()
+	ieU := NewIEnumerable[uint]()
+
+	eI8 := e[int8](ieI8)
+	eU8 := e[uint8](ieU8)
+	eI16 := e[int16](ieI16)
+	eU16 := e[uint16](ieU16)
+	eI32 := e[int32](ieI32)
+	eU32 := e[uint32](ieU32)
+	eI64 := e[int64](ieI64)
+	eU64 := e[uint64](ieU64)
+	eI := e[int](ieI)
+	eU := e[uint](ieU)
+
 	t.Run("in range", func(t *testing.T) {
-		ei8.unboxAnyAsInt32(int8(math.MinInt8))
-		ei8.unboxAnyAsInt32(int8(math.MaxInt8))
-		eu8.unboxAnyAsInt32(uint8(0))
-		eu8.unboxAnyAsInt32(uint8(math.MaxUint8))
-		ei16.unboxAnyAsInt32(int16(math.MinInt16))
-		ei16.unboxAnyAsInt32(int16(math.MaxInt16))
-		eu16.unboxAnyAsInt32(uint16(0))
-		eu16.unboxAnyAsInt32(uint16(math.MaxUint16))
-		ei32.unboxAnyAsInt32(int32(math.MinInt32))
-		ei32.unboxAnyAsInt32(int32(math.MaxInt32))
-		eu32.unboxAnyAsInt32(uint32(0))
-		eu32.unboxAnyAsInt32(uint32(math.MaxInt32))
-		ei64.unboxAnyAsInt32(int64(math.MinInt32))
-		ei64.unboxAnyAsInt32(int64(math.MaxInt32))
-		eu64.unboxAnyAsInt32(uint64(0))
-		eu64.unboxAnyAsInt32(uint64(math.MaxInt32))
+		eI8.unboxAnyAsInt32(int8(math.MinInt8))
+		eI8.unboxAnyAsInt32(int8(math.MaxInt8))
+		eU8.unboxAnyAsInt32(uint8(0))
+		eU8.unboxAnyAsInt32(uint8(math.MaxUint8))
+		eI16.unboxAnyAsInt32(int16(math.MinInt16))
+		eI16.unboxAnyAsInt32(int16(math.MaxInt16))
+		eU16.unboxAnyAsInt32(uint16(0))
+		eU16.unboxAnyAsInt32(uint16(math.MaxUint16))
+		eI32.unboxAnyAsInt32(int32(math.MinInt32))
+		eI32.unboxAnyAsInt32(int32(math.MaxInt32))
+		eU32.unboxAnyAsInt32(uint32(0))
+		eU32.unboxAnyAsInt32(uint32(math.MaxInt32))
+		eI64.unboxAnyAsInt32(int64(math.MinInt32))
+		eI64.unboxAnyAsInt32(int64(math.MaxInt32))
+		eU64.unboxAnyAsInt32(uint64(0))
+		eU64.unboxAnyAsInt32(uint64(math.MaxInt32))
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsInt32(int(math.MinInt32))
+		eI.unboxAnyAsInt32(int(math.MinInt32))
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsInt32(int(math.MaxInt32))
-		eu.unboxAnyAsInt32(uint(0))
-		eu.unboxAnyAsInt32(uint(math.MaxInt32))
+		eI.unboxAnyAsInt32(int(math.MaxInt32))
+		eU.unboxAnyAsInt32(uint(0))
+		eU.unboxAnyAsInt32(uint(math.MaxInt32))
 	})
 
 	t.Run("uint32 over range", func(t *testing.T) {
@@ -657,7 +692,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 (expect: uint32) cannot be casted to int32")
 		}()
 
-		eu32.unboxAnyAsInt32(uint32(math.MaxInt32 + 1))
+		eU32.unboxAnyAsInt32(uint32(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 over range", func(t *testing.T) {
@@ -671,7 +706,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to int32")
 		}()
 
-		ei64.unboxAnyAsInt32(int64(math.MaxInt32 + 1))
+		eI64.unboxAnyAsInt32(int64(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 under range", func(t *testing.T) {
@@ -685,7 +720,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to int32")
 		}()
 
-		ei64.unboxAnyAsInt32(int64(math.MinInt32 - 1))
+		eI64.unboxAnyAsInt32(int64(math.MinInt32 - 1))
 	})
 
 	t.Run("uint64 over range", func(t *testing.T) {
@@ -699,7 +734,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to int32")
 		}()
 
-		eu64.unboxAnyAsInt32(uint64(math.MaxInt32 + 1))
+		eU64.unboxAnyAsInt32(uint64(math.MaxInt32 + 1))
 	})
 
 	x64 := math.MaxInt > math.MaxInt32
@@ -719,7 +754,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 		}()
 
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsInt32(int(math.MinInt32 - 1))
+		eI.unboxAnyAsInt32(int(math.MinInt32 - 1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -737,7 +772,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to int32")
 		}()
 
-		eu.unboxAnyAsInt32(uint(math.MaxInt32 + 1))
+		eU.unboxAnyAsInt32(uint(math.MaxInt32 + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -753,39 +788,44 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int32", str))
 		}()
 
-		NewIEnumerable[string]().unboxAnyAsInt32(str)
+		e[string](NewIEnumerable[string]()).unboxAnyAsInt32(str)
 	})
 }
 
 func Test_enumerable_unboxAnyAsInt64_any(t *testing.T) {
-	eany := NewIEnumerable[any]()
+
+	//goland:noinspection SpellCheckingInspection
+	ieAny := NewIEnumerable[any]()
+
+	//goland:noinspection GoSnakeCaseUsage, SpellCheckingInspection
+	eAny := e[any](ieAny)
 
 	x64 := math.MaxInt > math.MaxInt32
 
 	t.Run("in range", func(t *testing.T) {
-		eany.unboxAnyAsInt64(int8(math.MinInt8))
-		eany.unboxAnyAsInt64(int8(math.MaxInt8))
-		eany.unboxAnyAsInt64(uint8(0))
-		eany.unboxAnyAsInt64(uint8(math.MaxUint8))
-		eany.unboxAnyAsInt64(int16(math.MinInt16))
-		eany.unboxAnyAsInt64(int16(math.MaxInt16))
-		eany.unboxAnyAsInt64(uint16(0))
-		eany.unboxAnyAsInt64(uint16(math.MaxUint16))
-		eany.unboxAnyAsInt64(int32(math.MinInt32))
-		eany.unboxAnyAsInt64(int32(math.MaxInt32))
-		eany.unboxAnyAsInt64(uint32(0))
-		eany.unboxAnyAsInt64(uint32(math.MaxUint32))
-		eany.unboxAnyAsInt64(int64(math.MinInt64))
-		eany.unboxAnyAsInt64(int64(math.MaxInt64))
-		eany.unboxAnyAsInt64(uint64(0))
-		eany.unboxAnyAsInt64(uint64(math.MaxInt64))
+		eAny.unboxAnyAsInt64(int8(math.MinInt8))
+		eAny.unboxAnyAsInt64(int8(math.MaxInt8))
+		eAny.unboxAnyAsInt64(uint8(0))
+		eAny.unboxAnyAsInt64(uint8(math.MaxUint8))
+		eAny.unboxAnyAsInt64(int16(math.MinInt16))
+		eAny.unboxAnyAsInt64(int16(math.MaxInt16))
+		eAny.unboxAnyAsInt64(uint16(0))
+		eAny.unboxAnyAsInt64(uint16(math.MaxUint16))
+		eAny.unboxAnyAsInt64(int32(math.MinInt32))
+		eAny.unboxAnyAsInt64(int32(math.MaxInt32))
+		eAny.unboxAnyAsInt64(uint32(0))
+		eAny.unboxAnyAsInt64(uint32(math.MaxUint32))
+		eAny.unboxAnyAsInt64(int64(math.MinInt64))
+		eAny.unboxAnyAsInt64(int64(math.MaxInt64))
+		eAny.unboxAnyAsInt64(uint64(0))
+		eAny.unboxAnyAsInt64(uint64(math.MaxInt64))
 		if x64 {
 			//goland:noinspection GoRedundantConversion
-			eany.unboxAnyAsInt64(int(math.MinInt64))
+			eAny.unboxAnyAsInt64(int(math.MinInt64))
 			//goland:noinspection GoRedundantConversion
-			eany.unboxAnyAsInt64(int(math.MaxInt64))
-			eany.unboxAnyAsInt64(uint(0))
-			eany.unboxAnyAsInt64(uint(math.MaxInt64))
+			eAny.unboxAnyAsInt64(int(math.MaxInt64))
+			eAny.unboxAnyAsInt64(uint(0))
+			eAny.unboxAnyAsInt64(uint(math.MaxInt64))
 		}
 	})
 
@@ -800,7 +840,7 @@ func Test_enumerable_unboxAnyAsInt64_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to int64")
 		}()
 
-		eany.unboxAnyAsInt64(uint64(math.MaxInt64 + 1))
+		eAny.unboxAnyAsInt64(uint64(math.MaxInt64 + 1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -818,7 +858,7 @@ func Test_enumerable_unboxAnyAsInt64_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to int64")
 		}()
 
-		eany.unboxAnyAsInt64(uint(math.MaxInt64 + 1))
+		eAny.unboxAnyAsInt64(uint(math.MaxInt64 + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -834,47 +874,60 @@ func Test_enumerable_unboxAnyAsInt64_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int64", str))
 		}()
 
-		eany.unboxAnyAsInt64(any(str))
+		eAny.unboxAnyAsInt64(any(str))
 	})
 }
 
+//goland:noinspection GoSnakeCaseUsage
 func Test_enumerable_unboxAnyAsInt64_specific(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
 
-	ei8 := NewIEnumerable[int8]()
-	eu8 := NewIEnumerable[uint8]()
-	ei16 := NewIEnumerable[int16]()
-	eu16 := NewIEnumerable[uint16]()
-	ei32 := NewIEnumerable[int32]()
-	eu32 := NewIEnumerable[uint32]()
-	ei64 := NewIEnumerable[int64]()
-	eu64 := NewIEnumerable[uint64]()
-	ei := NewIEnumerable[int]()
-	eu := NewIEnumerable[uint]()
+	ieI8 := NewIEnumerable[int8]()
+	ieU8 := NewIEnumerable[uint8]()
+	ieI16 := NewIEnumerable[int16]()
+	ieU16 := NewIEnumerable[uint16]()
+	ieI32 := NewIEnumerable[int32]()
+	ieU32 := NewIEnumerable[uint32]()
+	ieI64 := NewIEnumerable[int64]()
+	ieU64 := NewIEnumerable[uint64]()
+	ieI := NewIEnumerable[int]()
+	ieU := NewIEnumerable[uint]()
+
+	eI8 := e[int8](ieI8)
+	eU8 := e[uint8](ieU8)
+	eI16 := e[int16](ieI16)
+	eU16 := e[uint16](ieU16)
+	eI32 := e[int32](ieI32)
+	eU32 := e[uint32](ieU32)
+	eI64 := e[int64](ieI64)
+	eU64 := e[uint64](ieU64)
+	eI := e[int](ieI)
+	eU := e[uint](ieU)
+
 	t.Run("in range", func(t *testing.T) {
-		ei8.unboxAnyAsInt64(int8(math.MinInt8))
-		ei8.unboxAnyAsInt64(int8(math.MaxInt8))
-		eu8.unboxAnyAsInt64(uint8(0))
-		eu8.unboxAnyAsInt64(uint8(math.MaxUint8))
-		ei16.unboxAnyAsInt64(int16(math.MinInt16))
-		ei16.unboxAnyAsInt64(int16(math.MaxInt16))
-		eu16.unboxAnyAsInt64(uint16(0))
-		eu16.unboxAnyAsInt64(uint16(math.MaxUint16))
-		ei32.unboxAnyAsInt64(int32(math.MinInt32))
-		ei32.unboxAnyAsInt64(int32(math.MaxInt32))
-		eu32.unboxAnyAsInt64(uint32(0))
-		eu32.unboxAnyAsInt64(uint32(math.MaxInt32))
-		ei64.unboxAnyAsInt64(int64(math.MinInt64))
-		ei64.unboxAnyAsInt64(int64(math.MaxInt64))
-		eu64.unboxAnyAsInt64(uint64(0))
-		eu64.unboxAnyAsInt64(uint64(math.MaxInt32))
+		eI8.unboxAnyAsInt64(int8(math.MinInt8))
+		eI8.unboxAnyAsInt64(int8(math.MaxInt8))
+		eU8.unboxAnyAsInt64(uint8(0))
+		eU8.unboxAnyAsInt64(uint8(math.MaxUint8))
+		eI16.unboxAnyAsInt64(int16(math.MinInt16))
+		eI16.unboxAnyAsInt64(int16(math.MaxInt16))
+		eU16.unboxAnyAsInt64(uint16(0))
+		eU16.unboxAnyAsInt64(uint16(math.MaxUint16))
+		eI32.unboxAnyAsInt64(int32(math.MinInt32))
+		eI32.unboxAnyAsInt64(int32(math.MaxInt32))
+		eU32.unboxAnyAsInt64(uint32(0))
+		eU32.unboxAnyAsInt64(uint32(math.MaxInt32))
+		eI64.unboxAnyAsInt64(int64(math.MinInt64))
+		eI64.unboxAnyAsInt64(int64(math.MaxInt64))
+		eU64.unboxAnyAsInt64(uint64(0))
+		eU64.unboxAnyAsInt64(uint64(math.MaxInt32))
 		if x64 {
 			//goland:noinspection GoRedundantConversion
-			ei.unboxAnyAsInt64(int(math.MinInt64))
+			eI.unboxAnyAsInt64(int(math.MinInt64))
 			//goland:noinspection GoRedundantConversion
-			ei.unboxAnyAsInt64(int(math.MaxInt64))
-			eu.unboxAnyAsInt64(uint(0))
-			eu.unboxAnyAsInt64(uint(math.MaxInt64))
+			eI.unboxAnyAsInt64(int(math.MaxInt64))
+			eU.unboxAnyAsInt64(uint(0))
+			eU.unboxAnyAsInt64(uint(math.MaxInt64))
 		}
 	})
 
@@ -889,7 +942,7 @@ func Test_enumerable_unboxAnyAsInt64_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to int64")
 		}()
 
-		eu64.unboxAnyAsInt64(uint64(math.MaxInt64 + 1))
+		eU64.unboxAnyAsInt64(uint64(math.MaxInt64 + 1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -907,7 +960,7 @@ func Test_enumerable_unboxAnyAsInt64_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to int64")
 		}()
 
-		eu.unboxAnyAsInt64(uint(math.MaxInt64 + 1))
+		eU.unboxAnyAsInt64(uint(math.MaxInt64 + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -923,37 +976,42 @@ func Test_enumerable_unboxAnyAsInt64_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int64", str))
 		}()
 
-		NewIEnumerable[string]().unboxAnyAsInt64(str)
+		e[string](NewIEnumerable[string]()).unboxAnyAsInt64(str)
 	})
 }
 
 func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
 
-	eany := NewIEnumerable[any]()
+	//goland:noinspection SpellCheckingInspection
+	ieAny := NewIEnumerable[any]()
+
+	//goland:noinspection GoSnakeCaseUsage, SpellCheckingInspection
+	eAny := e[any](ieAny)
+
 	t.Run("in range", func(t *testing.T) {
-		eany.unboxAnyAsInt(int8(math.MinInt8))
-		eany.unboxAnyAsInt(int8(math.MaxInt8))
-		eany.unboxAnyAsInt(uint8(0))
-		eany.unboxAnyAsInt(uint8(math.MaxUint8))
-		eany.unboxAnyAsInt(int16(math.MinInt16))
-		eany.unboxAnyAsInt(int16(math.MaxInt16))
-		eany.unboxAnyAsInt(uint16(0))
-		eany.unboxAnyAsInt(uint16(math.MaxUint16))
-		eany.unboxAnyAsInt(int32(math.MinInt32))
-		eany.unboxAnyAsInt(int32(math.MaxInt32))
-		eany.unboxAnyAsInt(uint32(0))
-		eany.unboxAnyAsInt(uint32(math.MaxInt32))
-		eany.unboxAnyAsInt(int64(math.MinInt))
-		eany.unboxAnyAsInt(int64(math.MaxInt))
-		eany.unboxAnyAsInt(uint64(0))
-		eany.unboxAnyAsInt(uint64(math.MaxInt))
+		eAny.unboxAnyAsInt(int8(math.MinInt8))
+		eAny.unboxAnyAsInt(int8(math.MaxInt8))
+		eAny.unboxAnyAsInt(uint8(0))
+		eAny.unboxAnyAsInt(uint8(math.MaxUint8))
+		eAny.unboxAnyAsInt(int16(math.MinInt16))
+		eAny.unboxAnyAsInt(int16(math.MaxInt16))
+		eAny.unboxAnyAsInt(uint16(0))
+		eAny.unboxAnyAsInt(uint16(math.MaxUint16))
+		eAny.unboxAnyAsInt(int32(math.MinInt32))
+		eAny.unboxAnyAsInt(int32(math.MaxInt32))
+		eAny.unboxAnyAsInt(uint32(0))
+		eAny.unboxAnyAsInt(uint32(math.MaxInt32))
+		eAny.unboxAnyAsInt(int64(math.MinInt))
+		eAny.unboxAnyAsInt(int64(math.MaxInt))
+		eAny.unboxAnyAsInt(uint64(0))
+		eAny.unboxAnyAsInt(uint64(math.MaxInt))
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsInt(int(math.MinInt))
+		eAny.unboxAnyAsInt(int(math.MinInt))
 		//goland:noinspection GoRedundantConversion
-		eany.unboxAnyAsInt(int(math.MaxInt))
-		eany.unboxAnyAsInt(uint(0))
-		eany.unboxAnyAsInt(uint(math.MaxInt))
+		eAny.unboxAnyAsInt(int(math.MaxInt))
+		eAny.unboxAnyAsInt(uint(0))
+		eAny.unboxAnyAsInt(uint(math.MaxInt))
 	})
 
 	t.Run("uint32 over range", func(t *testing.T) {
@@ -971,7 +1029,7 @@ func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 cannot be casted to int")
 		}()
 
-		eany.unboxAnyAsInt(uint32(math.MaxInt32 + 1))
+		eAny.unboxAnyAsInt(uint32(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 over range", func(t *testing.T) {
@@ -989,7 +1047,7 @@ func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to int")
 		}()
 
-		eany.unboxAnyAsInt(int64(math.MaxInt32 + 1))
+		eAny.unboxAnyAsInt(int64(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 under range", func(t *testing.T) {
@@ -1007,7 +1065,7 @@ func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to int")
 		}()
 
-		eany.unboxAnyAsInt(int64(math.MinInt32 - 1))
+		eAny.unboxAnyAsInt(int64(math.MinInt32 - 1))
 	})
 
 	t.Run("uint64 over range", func(t *testing.T) {
@@ -1021,7 +1079,7 @@ func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to int")
 		}()
 
-		eany.unboxAnyAsInt(uint64(math.MaxInt + 1))
+		eAny.unboxAnyAsInt(uint64(math.MaxInt + 1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -1035,7 +1093,7 @@ func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to int")
 		}()
 
-		eany.unboxAnyAsInt(uint(math.MaxInt + 1))
+		eAny.unboxAnyAsInt(uint(math.MaxInt + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -1051,46 +1109,59 @@ func Test_enumerable_unboxAnyAsInt_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int", str))
 		}()
 
-		eany.unboxAnyAsInt(any(str))
+		eAny.unboxAnyAsInt(any(str))
 	})
 }
 
+//goland:noinspection GoSnakeCaseUsage
 func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
 
-	ei8 := NewIEnumerable[int8]()
-	eu8 := NewIEnumerable[uint8]()
-	ei16 := NewIEnumerable[int16]()
-	eu16 := NewIEnumerable[uint16]()
-	ei32 := NewIEnumerable[int32]()
-	eu32 := NewIEnumerable[uint32]()
-	ei64 := NewIEnumerable[int64]()
-	eu64 := NewIEnumerable[uint64]()
-	ei := NewIEnumerable[int]()
-	eu := NewIEnumerable[uint]()
+	ieI8 := NewIEnumerable[int8]()
+	ieU8 := NewIEnumerable[uint8]()
+	ieI16 := NewIEnumerable[int16]()
+	ieU16 := NewIEnumerable[uint16]()
+	ieI32 := NewIEnumerable[int32]()
+	ieU32 := NewIEnumerable[uint32]()
+	ieI64 := NewIEnumerable[int64]()
+	ieU64 := NewIEnumerable[uint64]()
+	ieI := NewIEnumerable[int]()
+	ieU := NewIEnumerable[uint]()
+
+	eI8 := e[int8](ieI8)
+	eU8 := e[uint8](ieU8)
+	eI16 := e[int16](ieI16)
+	eU16 := e[uint16](ieU16)
+	eI32 := e[int32](ieI32)
+	eU32 := e[uint32](ieU32)
+	eI64 := e[int64](ieI64)
+	eU64 := e[uint64](ieU64)
+	eI := e[int](ieI)
+	eU := e[uint](ieU)
+
 	t.Run("in range", func(t *testing.T) {
-		ei8.unboxAnyAsInt(int8(math.MinInt8))
-		ei8.unboxAnyAsInt(int8(math.MaxInt8))
-		eu8.unboxAnyAsInt(uint8(0))
-		eu8.unboxAnyAsInt(uint8(math.MaxUint8))
-		ei16.unboxAnyAsInt(int16(math.MinInt16))
-		ei16.unboxAnyAsInt(int16(math.MaxInt16))
-		eu16.unboxAnyAsInt(uint16(0))
-		eu16.unboxAnyAsInt(uint16(math.MaxUint16))
-		ei32.unboxAnyAsInt(int32(math.MinInt32))
-		ei32.unboxAnyAsInt(int32(math.MaxInt32))
-		eu32.unboxAnyAsInt(uint32(0))
-		eu32.unboxAnyAsInt(uint32(math.MaxInt32))
-		ei64.unboxAnyAsInt(int64(math.MinInt32))
-		ei64.unboxAnyAsInt(int64(math.MaxInt32))
-		eu64.unboxAnyAsInt(uint64(0))
-		eu64.unboxAnyAsInt(uint64(math.MaxInt32))
+		eI8.unboxAnyAsInt(int8(math.MinInt8))
+		eI8.unboxAnyAsInt(int8(math.MaxInt8))
+		eU8.unboxAnyAsInt(uint8(0))
+		eU8.unboxAnyAsInt(uint8(math.MaxUint8))
+		eI16.unboxAnyAsInt(int16(math.MinInt16))
+		eI16.unboxAnyAsInt(int16(math.MaxInt16))
+		eU16.unboxAnyAsInt(uint16(0))
+		eU16.unboxAnyAsInt(uint16(math.MaxUint16))
+		eI32.unboxAnyAsInt(int32(math.MinInt32))
+		eI32.unboxAnyAsInt(int32(math.MaxInt32))
+		eU32.unboxAnyAsInt(uint32(0))
+		eU32.unboxAnyAsInt(uint32(math.MaxInt32))
+		eI64.unboxAnyAsInt(int64(math.MinInt32))
+		eI64.unboxAnyAsInt(int64(math.MaxInt32))
+		eU64.unboxAnyAsInt(uint64(0))
+		eU64.unboxAnyAsInt(uint64(math.MaxInt32))
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsInt(int(math.MinInt32))
+		eI.unboxAnyAsInt(int(math.MinInt32))
 		//goland:noinspection GoRedundantConversion
-		ei.unboxAnyAsInt(int(math.MaxInt32))
-		eu.unboxAnyAsInt(uint(0))
-		eu.unboxAnyAsInt(uint(math.MaxInt32))
+		eI.unboxAnyAsInt(int(math.MaxInt32))
+		eU.unboxAnyAsInt(uint(0))
+		eU.unboxAnyAsInt(uint(math.MaxInt32))
 	})
 
 	t.Run("uint32 over range", func(t *testing.T) {
@@ -1108,7 +1179,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 (expect: uint32) cannot be casted to int")
 		}()
 
-		eu32.unboxAnyAsInt(uint32(math.MaxInt32 + 1))
+		eU32.unboxAnyAsInt(uint32(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 over range", func(t *testing.T) {
@@ -1125,7 +1196,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to int")
 		}()
 
-		ei64.unboxAnyAsInt(int64(math.MaxInt32 + 1))
+		eI64.unboxAnyAsInt(int64(math.MaxInt32 + 1))
 	})
 
 	t.Run("int64 under range", func(t *testing.T) {
@@ -1143,7 +1214,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to int")
 		}()
 
-		ei64.unboxAnyAsInt(int64(math.MinInt32 - 1))
+		eI64.unboxAnyAsInt(int64(math.MinInt32 - 1))
 	})
 
 	t.Run("uint64 over range", func(t *testing.T) {
@@ -1157,7 +1228,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to int")
 		}()
 
-		eu64.unboxAnyAsInt(uint64(math.MaxInt + 1))
+		eU64.unboxAnyAsInt(uint64(math.MaxInt + 1))
 	})
 
 	t.Run("uint over range", func(t *testing.T) {
@@ -1171,7 +1242,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to int")
 		}()
 
-		eu.unboxAnyAsInt(uint(math.MaxInt + 1))
+		eU.unboxAnyAsInt(uint(math.MaxInt + 1))
 	})
 
 	t.Run("not integer", func(t *testing.T) {
@@ -1187,111 +1258,118 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to int", str))
 		}()
 
-		NewIEnumerable[string]().unboxAnyAsInt(str)
+		e[string](NewIEnumerable[string]()).unboxAnyAsInt(str)
 	})
 }
 
+//goland:noinspection GoRedundantConversion
 func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_any(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
-	eany := NewIEnumerable[any]()
+
+	//goland:noinspection SpellCheckingInspection
+	ieAny := NewIEnumerable[any]()
+
+	//goland:noinspection GoSnakeCaseUsage, SpellCheckingInspection
+	eAny := e[any](ieAny)
+
 	t.Run("int64 or float64 depends value", func(t *testing.T) {
 		var vf float64
 		var vi int64
 		var dt unboxFloat64DataType
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int8(math.MinInt8))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int8(math.MinInt8))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt8), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int8(math.MaxInt8))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int8(math.MaxInt8))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt8), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint8(0))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint8(0))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint8(math.MaxUint8))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint8(math.MaxUint8))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxUint8), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int16(math.MinInt16))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int16(math.MinInt16))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt16), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int16(math.MaxInt16))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int16(math.MaxInt16))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt16), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint16(0))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint16(0))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint16(math.MaxUint16))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint16(math.MaxUint16))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxUint16), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int32(math.MinInt32))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int32(math.MinInt32))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt32), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int32(math.MaxInt32))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int32(math.MaxInt32))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt32), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint32(0))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint32(0))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint32(math.MaxUint32))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint32(math.MaxUint32))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxUint32), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int64(math.MinInt64))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int64(math.MinInt64))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt64), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int64(math.MaxInt64))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int64(math.MaxInt64))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt64), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint64(0))
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint64(math.MaxInt64))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint64(0))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint64(math.MaxInt64))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt64), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint64(math.MaxUint64))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint64(math.MaxUint64))
 		assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
 		if x64 {
 			//goland:noinspection GoRedundantConversion
-			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int(math.MinInt64))
+			vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int(math.MinInt64))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(math.MinInt64), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
 			//goland:noinspection GoRedundantConversion
-			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(int(math.MaxInt64))
+			vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(int(math.MaxInt64))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(math.MaxInt64), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
-			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint(0))
+			vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint(0))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(0), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
-			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint(math.MaxInt64))
+			vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint(math.MaxInt64))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(math.MaxInt64), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
-			vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(uint(math.MaxUint64))
+			vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(uint(math.MaxUint64))
 			assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
 			assert.Equal(t, int64(0), vi)
 			assert.Equal(t, dt, UF64_TYPE_FLOAT64)
 		}
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(float32(3.3))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(float32(3.3))
 		assert.Greater(t, 0.0001, math.Abs(float64(3.3)-vf))
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
-		vf, vi, dt = eany.unboxAnyAsFloat64OrInt64(float64(9.9))
+		vf, vi, dt = eAny.unboxAnyAsFloat64OrInt64(float64(9.9))
 		assert.Greater(t, 0.0001, math.Abs(float64(9.9)-vf))
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
@@ -1310,123 +1388,138 @@ func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_any(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to float64", str))
 		}()
 
-		NewIEnumerable[string]().unboxAnyAsFloat64OrInt64(str)
+		e[string](NewIEnumerable[string]()).unboxAnyAsFloat64OrInt64(str)
 	})
 }
 
+//goland:noinspection GoSnakeCaseUsage,GoRedundantConversion
 func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_specific(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
 
-	ei8 := NewIEnumerable[int8]()
-	eu8 := NewIEnumerable[uint8]()
-	ei16 := NewIEnumerable[int16]()
-	eu16 := NewIEnumerable[uint16]()
-	ei32 := NewIEnumerable[int32]()
-	eu32 := NewIEnumerable[uint32]()
-	ei64 := NewIEnumerable[int64]()
-	eu64 := NewIEnumerable[uint64]()
-	ei := NewIEnumerable[int]()
-	eu := NewIEnumerable[uint]()
-	ef32 := NewIEnumerable[float32]()
-	ef64 := NewIEnumerable[float64]()
+	ieI8 := NewIEnumerable[int8]()
+	ieU8 := NewIEnumerable[uint8]()
+	ieI16 := NewIEnumerable[int16]()
+	ieU16 := NewIEnumerable[uint16]()
+	ieI32 := NewIEnumerable[int32]()
+	ieU32 := NewIEnumerable[uint32]()
+	ieI64 := NewIEnumerable[int64]()
+	ieU64 := NewIEnumerable[uint64]()
+	ieI := NewIEnumerable[int]()
+	ieU := NewIEnumerable[uint]()
+	ieF32 := NewIEnumerable[float32]()
+	ieF64 := NewIEnumerable[float64]()
+
+	eI8 := e[int8](ieI8)
+	eU8 := e[uint8](ieU8)
+	eI16 := e[int16](ieI16)
+	eU16 := e[uint16](ieU16)
+	eI32 := e[int32](ieI32)
+	eU32 := e[uint32](ieU32)
+	eI64 := e[int64](ieI64)
+	eU64 := e[uint64](ieU64)
+	eI := e[int](ieI)
+	eU := e[uint](ieU)
+	eF32 := e[float32](ieF32)
+	eF64 := e[float64](ieF64)
+
 	t.Run("int64 or float64 depends value", func(t *testing.T) {
 		var vf float64
 		var vi int64
 		var dt unboxFloat64DataType
-		vf, vi, dt = ei8.unboxAnyAsFloat64OrInt64(int8(math.MinInt8))
+		vf, vi, dt = eI8.unboxAnyAsFloat64OrInt64(int8(math.MinInt8))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt8), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei8.unboxAnyAsFloat64OrInt64(int8(math.MaxInt8))
+		vf, vi, dt = eI8.unboxAnyAsFloat64OrInt64(int8(math.MaxInt8))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt8), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu8.unboxAnyAsFloat64OrInt64(uint8(0))
+		vf, vi, dt = eU8.unboxAnyAsFloat64OrInt64(uint8(0))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu8.unboxAnyAsFloat64OrInt64(uint8(math.MaxUint8))
+		vf, vi, dt = eU8.unboxAnyAsFloat64OrInt64(uint8(math.MaxUint8))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxUint8), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei16.unboxAnyAsFloat64OrInt64(int16(math.MinInt16))
+		vf, vi, dt = eI16.unboxAnyAsFloat64OrInt64(int16(math.MinInt16))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt16), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei16.unboxAnyAsFloat64OrInt64(int16(math.MaxInt16))
+		vf, vi, dt = eI16.unboxAnyAsFloat64OrInt64(int16(math.MaxInt16))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt16), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu16.unboxAnyAsFloat64OrInt64(uint16(0))
+		vf, vi, dt = eU16.unboxAnyAsFloat64OrInt64(uint16(0))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu16.unboxAnyAsFloat64OrInt64(uint16(math.MaxUint16))
+		vf, vi, dt = eU16.unboxAnyAsFloat64OrInt64(uint16(math.MaxUint16))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxUint16), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei32.unboxAnyAsFloat64OrInt64(int32(math.MinInt32))
+		vf, vi, dt = eI32.unboxAnyAsFloat64OrInt64(int32(math.MinInt32))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt32), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei32.unboxAnyAsFloat64OrInt64(int32(math.MaxInt32))
+		vf, vi, dt = eI32.unboxAnyAsFloat64OrInt64(int32(math.MaxInt32))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt32), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu32.unboxAnyAsFloat64OrInt64(uint32(0))
+		vf, vi, dt = eU32.unboxAnyAsFloat64OrInt64(uint32(0))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu32.unboxAnyAsFloat64OrInt64(uint32(math.MaxUint32))
+		vf, vi, dt = eU32.unboxAnyAsFloat64OrInt64(uint32(math.MaxUint32))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxUint32), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei64.unboxAnyAsFloat64OrInt64(int64(math.MinInt64))
+		vf, vi, dt = eI64.unboxAnyAsFloat64OrInt64(int64(math.MinInt64))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MinInt64), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = ei64.unboxAnyAsFloat64OrInt64(int64(math.MaxInt64))
+		vf, vi, dt = eI64.unboxAnyAsFloat64OrInt64(int64(math.MaxInt64))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt64), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu64.unboxAnyAsFloat64OrInt64(uint64(0))
-		vf, vi, dt = eu64.unboxAnyAsFloat64OrInt64(uint64(math.MaxInt64))
+		vf, vi, dt = eU64.unboxAnyAsFloat64OrInt64(uint64(0))
+		vf, vi, dt = eU64.unboxAnyAsFloat64OrInt64(uint64(math.MaxInt64))
 		assert.Equal(t, float64(0.0), vf)
 		assert.Equal(t, int64(math.MaxInt64), vi)
 		assert.Equal(t, dt, UF64_TYPE_INT64)
-		vf, vi, dt = eu64.unboxAnyAsFloat64OrInt64(uint64(math.MaxUint64))
+		vf, vi, dt = eU64.unboxAnyAsFloat64OrInt64(uint64(math.MaxUint64))
 		assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
 		if x64 {
 			//goland:noinspection GoRedundantConversion
-			vf, vi, dt = ei.unboxAnyAsFloat64OrInt64(int(math.MinInt64))
+			vf, vi, dt = eI.unboxAnyAsFloat64OrInt64(int(math.MinInt64))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(math.MinInt64), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
 			//goland:noinspection GoRedundantConversion
-			vf, vi, dt = ei.unboxAnyAsFloat64OrInt64(int(math.MaxInt64))
+			vf, vi, dt = eI.unboxAnyAsFloat64OrInt64(int(math.MaxInt64))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(math.MaxInt64), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
-			vf, vi, dt = eu.unboxAnyAsFloat64OrInt64(uint(0))
+			vf, vi, dt = eU.unboxAnyAsFloat64OrInt64(uint(0))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(0), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
-			vf, vi, dt = eu.unboxAnyAsFloat64OrInt64(uint(math.MaxInt64))
+			vf, vi, dt = eU.unboxAnyAsFloat64OrInt64(uint(math.MaxInt64))
 			assert.Equal(t, float64(0.0), vf)
 			assert.Equal(t, int64(math.MaxInt64), vi)
 			assert.Equal(t, dt, UF64_TYPE_INT64)
-			vf, vi, dt = eu.unboxAnyAsFloat64OrInt64(uint(math.MaxUint64))
+			vf, vi, dt = eU.unboxAnyAsFloat64OrInt64(uint(math.MaxUint64))
 			assert.Greater(t, 0.0001, math.Abs(float64(math.MaxUint64)-vf))
 			assert.Equal(t, int64(0), vi)
 			assert.Equal(t, dt, UF64_TYPE_FLOAT64)
 		}
-		vf, vi, dt = ef32.unboxAnyAsFloat64OrInt64(3.3)
+		vf, vi, dt = eF32.unboxAnyAsFloat64OrInt64(3.3)
 		assert.Greater(t, 0.0001, math.Abs(float64(3.3)-vf))
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
-		vf, vi, dt = ef64.unboxAnyAsFloat64OrInt64(9.9)
+		vf, vi, dt = eF64.unboxAnyAsFloat64OrInt64(9.9)
 		assert.Greater(t, 0.0001, math.Abs(float64(9.9)-vf))
 		assert.Equal(t, int64(0), vi)
 		assert.Equal(t, dt, UF64_TYPE_FLOAT64)
@@ -1445,6 +1538,6 @@ func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_specific(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), fmt.Sprintf("value %s of type string cannot be casted to float64", str))
 		}()
 
-		NewIEnumerable[string]().unboxAnyAsFloat64OrInt64(str)
+		e[string](NewIEnumerable[string]()).unboxAnyAsFloat64OrInt64(str)
 	})
 }

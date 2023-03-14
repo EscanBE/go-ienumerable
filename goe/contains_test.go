@@ -90,16 +90,16 @@ func Test_enumerable_Contains2(t *testing.T) {
 	cap := rand.Intn(10) + 10
 	eSrc := createIntEnumerable(0, cap)
 
-	c1 := rand.Intn(cap)
-	c2 := rand.Intn(cap) + cap
+	nContains := rand.Intn(cap)
+	nNotContains := rand.Intn(cap) + cap + 1
 
-	assert.True(t, eSrc.Contains2(c1))
-	assert.False(t, eSrc.Contains2(c2))
+	assert.True(t, eSrc.Contains2(nContains))
+	assert.False(t, eSrc.Contains2(nNotContains))
 
 	eSrcP := eSrc.Select(func(v int) any {
 		return &v
 	})
 
-	assert.True(t, eSrcP.Contains2(&c1))
-	assert.False(t, eSrcP.Contains2(&c2))
+	assert.True(t, eSrcP.Contains2(&nContains))
+	assert.False(t, eSrcP.Contains2(&nNotContains))
 }

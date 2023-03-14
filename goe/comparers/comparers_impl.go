@@ -915,77 +915,78 @@ func ConvertToDefaultComparer[T any](comparer IComparer[T]) IComparer[any] {
 	}
 
 	return &defaultComparer{
-		compareFunc: func(u1, u2 any) int {
-			if u1 == nil && u2 == nil {
+		compareFunc: func(unknown1, unknown2 any) int {
+			if unknown1 == nil && unknown2 == nil {
 				return comparer.ComparePointerMode(nil, nil)
 			}
 
-			if u1 == nil {
-				p2, okp2 := u2.(*T)
+			if unknown1 == nil {
+				pointer2, okPointer2 := unknown2.(*T)
 
-				if okp2 {
-					return comparer.ComparePointerMode(nil, p2)
+				if okPointer2 {
+					return comparer.ComparePointerMode(nil, pointer2)
 				}
 
-				pa2, okpa2 := u2.(*any)
-				if okpa2 {
-					v2_2, okv2_2 := (*pa2).(T)
+				pointerAny2, okPointerAny2 := unknown2.(*any)
+				if okPointerAny2 {
+					//goland:noinspection GoSnakeCaseUsage
+					v2_2, okv2_2 := (*pointerAny2).(T)
 					if okv2_2 {
 						return comparer.ComparePointerMode(nil, &v2_2)
 					}
 				}
 
-				panic(fmt.Sprintf("first param is nil but second param neither value or pointer. Found [%T]", u2))
+				panic(fmt.Sprintf("first param is nil but second param neither value or pointer. Found [%T]", unknown2))
 			}
 
-			if u2 == nil {
-				p1, okp1 := u1.(*T)
+			if unknown2 == nil {
+				pointer1, okPointer1 := unknown1.(*T)
 
-				if okp1 {
-					return comparer.ComparePointerMode(p1, nil)
+				if okPointer1 {
+					return comparer.ComparePointerMode(pointer1, nil)
 				}
 
-				pa1, okpa1 := u1.(*any)
-				if okpa1 {
-					v1_2, okv1_2 := (*pa1).(T)
-					if okv1_2 {
-						return comparer.ComparePointerMode(&v1_2, nil)
+				pointerAny1, okPointerAny1 := unknown1.(*any)
+				if okPointerAny1 {
+					value1, okValue1 := (*pointerAny1).(T)
+					if okValue1 {
+						return comparer.ComparePointerMode(&value1, nil)
 					}
 				}
 
-				panic(fmt.Sprintf("second param is nil but first param neither value or pointer. Found [%T]", u1))
+				panic(fmt.Sprintf("second param is nil but first param neither value or pointer. Found [%T]", unknown1))
 			}
 
-			v1, okv1 := u1.(T)
-			v2, okv2 := u2.(T)
-			if okv1 && okv2 {
-				return comparer.Compare(v1, v2)
+			value1, okValue1 := unknown1.(T)
+			value2, okValue2 := unknown2.(T)
+			if okValue1 && okValue2 {
+				return comparer.Compare(value1, value2)
 			}
 
-			p1, okp1 := u1.(*T)
-			p2, okp2 := u2.(*T)
+			pointer1, okPointer1 := unknown1.(*T)
+			pointer2, okPointer2 := unknown2.(*T)
 
-			if okp1 && okp2 {
-				return comparer.ComparePointerMode(p1, p2)
+			if okPointer1 && okPointer2 {
+				return comparer.ComparePointerMode(pointer1, pointer2)
 			}
 
-			pa1, okpa1 := u1.(*any)
-			pa2, okpa2 := u2.(*any)
+			pointerAny1, okPointerAny1 := unknown1.(*any)
+			pointerAny2, okPointerAny2 := unknown2.(*any)
 
-			if okpa1 && okpa2 {
-				v1_2, okv1_2 := (*pa1).(T)
-				v2_2, okv2_2 := (*pa2).(T)
+			if okPointerAny1 && okPointerAny2 {
+				v1, ok1 := (*pointerAny1).(T)
+				v2, ok2 := (*pointerAny2).(T)
 
-				if okv1_2 && okv2_2 {
-					return comparer.Compare(v1_2, v2_2)
+				if ok1 && ok2 {
+					return comparer.Compare(v1, v2)
 				}
 			}
 
-			if (!okv1 && !okp1) || (!okv2 && !okp2) {
-				panic(fmt.Sprintf("first or second params neither value or pointer. Found [%T] and [%T]", u1, u2))
+			if (!okValue1 && !okPointer1) || (!okValue2 && !okPointer2) {
+				panic(fmt.Sprintf("first or second params neither value or pointer. Found [%T] and [%T]", unknown1, unknown2))
 			}
 
-			panic(fmt.Sprintf("both params must have the same presentation, value or pointer. Found [%T] and [%T]", u1, u2))
+			panic(fmt.Sprintf("both params must have the same presentation, value or pointer. Found [%T] and [%T]", unknown1, unknown2))
 		},
 	}
 }
