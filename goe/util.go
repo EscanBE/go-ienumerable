@@ -170,7 +170,7 @@ func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
 		return comparer
 	}
 
-	panic(fmt.Errorf("no default comparer registerd for [%s]", src.dataType))
+	panic(fmt.Errorf("no default comparer registered for [%s]", src.dataType))
 }
 
 func (src *enumerable[T]) tryFindDefaultComparer() (comparers.IComparer[any], bool) {

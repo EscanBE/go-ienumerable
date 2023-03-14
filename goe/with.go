@@ -16,16 +16,16 @@ func (src *enumerable[T]) WithLessComparer(lessComparer func(left T, right T) bo
 	return src
 }
 
-func (src *enumerable[T]) WithComparerFrom(copyFrom IEnumerable[T]) IEnumerable[T] {
-	cast := copyFrom.(*enumerable[T])
-	if cast.equalityComparer != nil {
-		src.equalityComparer = cast.equalityComparer
+func (src *enumerable[T]) WithComparerFrom(another IEnumerable[T]) IEnumerable[T] {
+	eAnother := another.(*enumerable[T])
+	if eAnother.equalityComparer != nil {
+		src.equalityComparer = eAnother.equalityComparer
 	}
-	if cast.lessComparer != nil {
-		src.lessComparer = cast.lessComparer
+	if eAnother.lessComparer != nil {
+		src.lessComparer = eAnother.lessComparer
 	}
-	if cast.defaultComparer != nil {
-		src.defaultComparer = cast.defaultComparer
+	if eAnother.defaultComparer != nil {
+		src.defaultComparer = eAnother.defaultComparer
 	}
 	return src
 }
@@ -180,18 +180,22 @@ func (src *enumerable[T]) WithDefaultComparers() IEnumerable[T] {
 	return src
 }
 
+// TODO remove
 type requireWithExtraFunc byte
 
+// TODO remove
 const (
 	requireEqualityComparer requireWithExtraFunc = 0b01
 	requireLessComparer     requireWithExtraFunc = 0b10
 )
 
+// TODO remove
 func panicRequire(require requireWithExtraFunc) {
 	requiresName := getRequireName(require)
 	panic(fmt.Errorf("the following comparer must be set: [%s]", strings.Join(requiresName, ",")))
 }
 
+// TODO remove
 func getRequireName(require requireWithExtraFunc) []string {
 	result := make([]string, 0)
 

@@ -34,6 +34,8 @@ type IEnumerable[T any] interface {
 	// AsEnumerable() IEnumerable[T] <= will not be implemented because no inheritance in Go thus never use
 
 	// Average computes the average of a sequence of integer/float values.
+	//
+	// Panic if element can not be cast to number.
 	Average() float64
 
 	// CastByte casts the source IEnumerable[T] into IEnumerable[byte]
@@ -122,10 +124,8 @@ type IEnumerable[T any] interface {
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer or already set, otherwise panic
 	Contains(value T) bool
-
-	Contains2(value T) bool
 
 	// ContainsBy determines whether a sequence contains a specified element by using the specified equality comparer.
 	//

@@ -312,128 +312,37 @@ func Test_enumerable_WithDefaultComparers(t *testing.T) {
 }
 
 func Test_enumerable_WithComparersFrom(t *testing.T) {
-	t.Run("equality comparer", func(t *testing.T) {
-		equalityComparer := func(v1, v2 int) bool {
-			return v1 == v2
-		}
-		eDst := NewIEnumerable[int](1, 2, 3).WithEqualsComparer(equalityComparer)
-		eSrc := NewIEnumerable[int]()
+	t.Run("default comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1, 2, 3)
+		ieDes := NewIEnumerable[int](5)
 
-		eD := e[int](eDst)
-		eS := e[int](eSrc)
+		eS := e[int](ieSrc)
+		eD := e[int](ieDes)
+		eD.defaultComparer = nil
 
-		assert.NotNil(t, eD.equalityComparer)
-		assert.Nil(t, eS.equalityComparer)
+		assert.NotNil(t, eS.defaultComparer)
+		assert.Nil(t, eD.defaultComparer)
 
-		assert.True(t, eDst.Contains(2))
+		assert.True(t, ieSrc.Contains(2))
 
 		//
 
-		_ = eDst.WithComparerFrom(eSrc)
+		_ = ieSrc.WithComparerFrom(ieDes)
 
-		assert.NotNil(t, eD.equalityComparer)
-		assert.Nil(t, eS.equalityComparer)
+		assert.NotNil(t, eS.defaultComparer)
+		assert.Nil(t, eD.defaultComparer)
 
-		assert.True(t, eDst.Contains(2))
-
-		//
-
-		_ = eSrc.WithEqualsComparer(func(v1, v2 int) bool {
-			return false
-		})
-
-		_ = eDst.WithComparerFrom(eSrc)
-
-		assert.NotNil(t, eD.equalityComparer)
-		assert.NotNil(t, eS.equalityComparer)
-
-		assert.False(t, eDst.Contains(2))
+		assert.True(t, ieSrc.Contains(2)) // not changed
 
 		//
 
-		eD.equalityComparer = nil
-		assert.Nil(t, eD.equalityComparer)
+		_ = ieDes.WithComparerFrom(ieSrc)
 
-		_ = eDst.WithComparerFrom(eSrc)
+		assert.NotNil(t, eS.defaultComparer)
+		assert.NotNil(t, eD.defaultComparer)
 
-		assert.NotNil(t, eD.equalityComparer)
-		assert.NotNil(t, eS.equalityComparer)
-
-		assert.False(t, eDst.Contains(2))
-
-		//
-
-		eD.equalityComparer = equalityComparer
-		assert.True(t, eDst.Contains(2))
-
-		_ = eDst.WithComparerFrom(eSrc)
-
-		assert.NotNil(t, eD.equalityComparer)
-		assert.NotNil(t, eS.equalityComparer)
-
-		assert.False(t, eDst.Contains(2)) // override
-	})
-
-	t.Run("less comparer", func(t *testing.T) {
-		lessComparer := func(v1, v2 int) bool {
-			return v1 < v2
-		}
-		eDst := NewIEnumerable[int](1, 2, 3).WithLessComparer(lessComparer)
-		eSrc := NewIEnumerable[int]()
-
-		eD := e[int](eDst)
-		eS := e[int](eSrc)
-
-		assert.NotNil(t, eD.lessComparer)
-		assert.Nil(t, eS.lessComparer)
-
-		assert.Equal(t, 1, eDst.Min())
-
-		//
-
-		_ = eDst.WithComparerFrom(eSrc)
-
-		assert.NotNil(t, eD.lessComparer)
-		assert.Nil(t, eS.lessComparer)
-
-		assert.Equal(t, 1, eDst.Min())
-
-		//
-
-		_ = eSrc.WithLessComparer(func(v1, v2 int) bool {
-			return v1 > v2
-		})
-
-		_ = eDst.WithComparerFrom(eSrc)
-
-		assert.NotNil(t, eD.lessComparer)
-		assert.NotNil(t, eS.lessComparer)
-
-		assert.Equal(t, 3, eDst.Min())
-
-		//
-
-		eD.lessComparer = nil
-		assert.Nil(t, eD.lessComparer)
-
-		_ = eDst.WithComparerFrom(eSrc)
-
-		assert.NotNil(t, eD.lessComparer)
-		assert.NotNil(t, eS.lessComparer)
-
-		assert.Equal(t, 3, eDst.Min())
-
-		//
-
-		eD.lessComparer = lessComparer
-		assert.Equal(t, 1, eDst.Min())
-
-		_ = eDst.WithComparerFrom(eSrc)
-
-		assert.NotNil(t, eD.lessComparer)
-		assert.NotNil(t, eS.lessComparer)
-
-		assert.Equal(t, 3, eDst.Min()) // override
+		assert.True(t, ieSrc.Contains(2))
+		assert.True(t, ieDes.Contains(5))
 	})
 }
 

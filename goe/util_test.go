@@ -127,6 +127,16 @@ func deferWantPanicDepends(t *testing.T, wantPanic bool) {
 	}
 }
 
+func deferExpectPanicContains(t *testing.T, msgPart string) {
+	err := recover()
+	if err == nil {
+		t.Errorf("expect error")
+		return
+	}
+
+	assert.Contains(t, fmt.Sprintf("%v", err), msgPart)
+}
+
 func Test_enumerable_copyExceptData(t *testing.T) {
 	t.Run("copy all except data", func(t *testing.T) {
 		e := new(enumerable[int])
@@ -249,5 +259,18 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
 
 		e.assertAggregateAnySeedFuncNonNil(nil)
+	})
+}
+
+func Test_enumerable_findDefaultComparer(t *testing.T) {
+	t.Run("resolve registered", func(t *testing.T) {
+		assert.NotNil(t, e[int32](NewIEnumerable[int32]()).findDefaultComparer())
+	})
+
+	t.Run("panic if type not registered", func(t *testing.T) {
+		type MyInt64 int64
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+
+		e[MyInt64](NewIEnumerable[MyInt64]()).findDefaultComparer()
 	})
 }

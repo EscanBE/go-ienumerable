@@ -6,6 +6,44 @@ import (
 	"testing"
 )
 
+func Test_enumerable_Contains(t *testing.T) {
+	t.Run("returns correctly", func(t *testing.T) {
+		cap := rand.Intn(10) + 10
+		eSrc := createIntEnumerable(0, cap)
+
+		nContains := rand.Intn(cap)
+		nNotContains := rand.Intn(cap) + cap + 1
+
+		assert.True(t, eSrc.Contains(nContains))
+		assert.False(t, eSrc.Contains(nNotContains))
+
+		eSrcP := eSrc.Select(func(v int) any {
+			return &v
+		})
+
+		assert.True(t, eSrcP.Contains(&nContains))
+		assert.False(t, eSrcP.Contains(&nNotContains))
+	})
+
+	t.Run("empty returns false", func(t *testing.T) {
+		assert.False(t, createEmptyIntEnumerable().Contains(1))
+	})
+
+	t.Run("retry resolve if comparer not set", func(t *testing.T) {
+		eSrc := createEmptyIntEnumerable()
+		e[int](eSrc).defaultComparer = nil
+		assert.False(t, eSrc.Contains(1))
+	})
+
+	t.Run("panic if type not registered for default comparer", func(t *testing.T) {
+		type MyInt64 struct{}
+
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]")
+
+		NewIEnumerable[MyInt64]().Contains(MyInt64{})
+	})
+}
+
 func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 	fEquals := func(t1, t2 int) bool {
 		return t1 == t2
@@ -75,37 +113,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 		})
 	}
 
-	t.Run("equality comparer not set", func(t *testing.T) {
-		defer deferWantPanicDepends(t, true)
-
-		NewIEnumerable[int](1, 5, 2, 345, 65, 4574).Contains(5)
-	})
-
-	t.Run("equality comparer set", func(t *testing.T) {
-		assert.True(t, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).WithDefaultComparers().Contains(5))
-	})
-}
-
-func Test_enumerable_Contains2(t *testing.T) {
-	t.Run("returns correctly", func(t *testing.T) {
-		cap := rand.Intn(10) + 10
-		eSrc := createIntEnumerable(0, cap)
-
-		nContains := rand.Intn(cap)
-		nNotContains := rand.Intn(cap) + cap + 1
-
-		assert.True(t, eSrc.Contains2(nContains))
-		assert.False(t, eSrc.Contains2(nNotContains))
-
-		eSrcP := eSrc.Select(func(v int) any {
-			return &v
-		})
-
-		assert.True(t, eSrcP.Contains2(&nContains))
-		assert.False(t, eSrcP.Contains2(&nNotContains))
-	})
-
-	t.Run("empty returns false", func(t *testing.T) {
-		assert.False(t, createEmptyIntEnumerable().Contains2(1))
+	t.Run("use default comparer", func(t *testing.T) {
+		assert.True(t, NewIEnumerable[int](1, 5, 2, 345, 65, 4574, 1).Contains(5))
 	})
 }
