@@ -2,6 +2,7 @@ package goe
 
 import (
 	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"strings"
 )
 
@@ -15,13 +16,25 @@ func (src *enumerable[T]) WithLessComparer(lessComparer func(left T, right T) bo
 	return src
 }
 
-func (src *enumerable[T]) WithComparersFrom(copyFrom IEnumerable[T]) IEnumerable[T] {
+func (src *enumerable[T]) WithComparerFrom(copyFrom IEnumerable[T]) IEnumerable[T] {
 	cast := copyFrom.(*enumerable[T])
 	if cast.equalityComparer != nil {
 		src.equalityComparer = cast.equalityComparer
 	}
 	if cast.lessComparer != nil {
 		src.lessComparer = cast.lessComparer
+	}
+	if cast.defaultComparer != nil {
+		src.defaultComparer = cast.defaultComparer
+	}
+	return src
+}
+
+func (src *enumerable[T]) WithDefaultComparer(comparer comparers.IComparer[T]) IEnumerable[T] {
+	if comparer == nil {
+		src.defaultComparer = nil
+	} else {
+		src.defaultComparer = comparers.ConvertToDefaultComparer[T](comparer)
 	}
 	return src
 }

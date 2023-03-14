@@ -906,6 +906,14 @@ type defaultComparer struct {
 //
 // - pass int & int32 to any Compare* also panic (int32 is not int),
 func ConvertToDefaultComparer[T any](comparer IComparer[T]) IComparer[any] {
+	if comparer == nil {
+		panic("comparer is nil")
+	}
+
+	if dc, ok := any(comparer).(*defaultComparer); ok {
+		return dc
+	}
+
 	return &defaultComparer{
 		compareFunc: func(u1, u2 any) int {
 			if u1 == nil && u2 == nil {

@@ -55,12 +55,12 @@ func injectIntComparers(e IEnumerable[int]) IEnumerable[int] {
 }
 
 type copiedOriginal[T comparable] struct {
-	isNil             bool
-	data              []T
-	dataType          string
-	hasEqualsComparer bool
-	hasLessComparer   bool
-	hasComparer       bool
+	isNil              bool
+	data               []T
+	dataType           string
+	hasEqualsComparer  bool
+	hasLessComparer    bool
+	hasDefaultComparer bool
 }
 
 func backupForAssetUnchanged[T comparable](e IEnumerable[T]) copiedOriginal[T] {
@@ -71,11 +71,11 @@ func backupForAssetUnchanged[T comparable](e IEnumerable[T]) copiedOriginal[T] {
 	}
 	cast := e.(*enumerable[T])
 	return copiedOriginal[T]{
-		data:              copySlice(cast.data),
-		dataType:          cast.dataType,
-		hasEqualsComparer: cast.equalityComparer != nil,
-		hasLessComparer:   cast.lessComparer != nil,
-		hasComparer:       cast.comparer != nil,
+		data:               copySlice(cast.data),
+		dataType:           cast.dataType,
+		hasEqualsComparer:  cast.equalityComparer != nil,
+		hasLessComparer:    cast.lessComparer != nil,
+		hasDefaultComparer: cast.defaultComparer != nil,
 	}
 }
 
@@ -115,7 +115,7 @@ func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, e IEnumerable
 
 	assert.Equalf(t, c.hasEqualsComparer, cast.equalityComparer != nil, "equality comparer state has changed, expect %s, but got %s", exists(c.hasEqualsComparer), exists(cast.equalityComparer != nil))
 	assert.Equalf(t, c.hasLessComparer, cast.lessComparer != nil, "less comparer state has changed, expect %s, but got %s", exists(c.hasLessComparer), exists(cast.lessComparer != nil))
-	assert.Equalf(t, c.hasComparer, cast.comparer != nil, "comparer state has changed, expect %s, but got %s", exists(c.hasComparer), exists(cast.comparer != nil))
+	assert.Equalf(t, c.hasDefaultComparer, cast.defaultComparer != nil, "default comparer state has changed, expect %s, but got %s", exists(c.hasDefaultComparer), exists(cast.defaultComparer != nil))
 }
 
 func deferWantPanicDepends(t *testing.T, wantPanic bool) {

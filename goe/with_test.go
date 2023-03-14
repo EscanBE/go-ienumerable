@@ -1,6 +1,7 @@
 package goe
 
 import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -370,7 +371,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 
 		//
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.equalityComparer)
 		assert.Nil(t, eS.equalityComparer)
@@ -383,7 +384,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 			return false
 		})
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.equalityComparer)
 		assert.NotNil(t, eS.equalityComparer)
@@ -395,7 +396,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		eD.equalityComparer = nil
 		assert.Nil(t, eD.equalityComparer)
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.equalityComparer)
 		assert.NotNil(t, eS.equalityComparer)
@@ -407,7 +408,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		eD.equalityComparer = equalityComparer
 		assert.True(t, eDst.Contains(2))
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.equalityComparer)
 		assert.NotNil(t, eS.equalityComparer)
@@ -432,7 +433,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 
 		//
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.lessComparer)
 		assert.Nil(t, eS.lessComparer)
@@ -445,7 +446,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 			return v1 > v2
 		})
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.lessComparer)
 		assert.NotNil(t, eS.lessComparer)
@@ -457,7 +458,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		eD.lessComparer = nil
 		assert.Nil(t, eD.lessComparer)
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.lessComparer)
 		assert.NotNil(t, eS.lessComparer)
@@ -469,11 +470,29 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		eD.lessComparer = lessComparer
 		assert.Equal(t, 1, eDst.Min())
 
-		_ = eDst.WithComparersFrom(eSrc)
+		_ = eDst.WithComparerFrom(eSrc)
 
 		assert.NotNil(t, eD.lessComparer)
 		assert.NotNil(t, eS.lessComparer)
 
 		assert.Equal(t, 3, eDst.Min()) // override
+	})
+}
+
+func Test_enumerable_WithDefaultComparer(t *testing.T) {
+	t.Run("inject and remove default comparer", func(t *testing.T) {
+		eSrc := createRandomIntEnumerable(5)
+		eSrc.WithDefaultComparer(nil)
+
+		e := eSrc.(*enumerable[int])
+		assert.Nil(t, e.defaultComparer)
+
+		// replace
+		eSrc.WithDefaultComparer(comparers.IntComparer)
+		assert.NotNil(t, e.defaultComparer)
+
+		// eraser if input nil
+		eSrc.WithDefaultComparer(nil)
+		assert.Nil(t, e.defaultComparer)
 	})
 }

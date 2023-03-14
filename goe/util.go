@@ -140,7 +140,7 @@ func (src *enumerable[T]) copyExceptData() *enumerable[T] {
 		dataType:         src.dataType,
 		equalityComparer: src.equalityComparer,
 		lessComparer:     src.lessComparer,
-		comparer:         src.comparer,
+		defaultComparer:  src.defaultComparer,
 	}
 }
 
@@ -177,8 +177,8 @@ func getMapKeys[T comparable](m map[T]bool) []T {
 }
 
 func (src *enumerable[T]) getDefaultComparer() comparers.IComparer[any] {
-	if src.comparer != nil {
-		return src.comparer
+	if src.defaultComparer != nil {
+		return src.defaultComparer
 	}
 
 	if len(src.dataType) > 0 {

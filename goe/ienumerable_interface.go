@@ -1,5 +1,7 @@
 package goe
 
+import "github.com/EscanBE/go-ienumerable/goe/comparers"
+
 type IEnumerable[T any] interface {
 	// C#
 
@@ -446,8 +448,12 @@ type IEnumerable[T any] interface {
 	// Supported types: int8/16/32/64, uint8/16/32/64, int, uint, uintptr, float32/64, complex64/128 (equality comparer only), string
 	WithDefaultComparers() IEnumerable[T]
 
-	// WithComparersFrom copies all existing comparers from the other IEnumerable[T] specified as parameter
-	WithComparersFrom(copyFrom IEnumerable[T]) IEnumerable[T]
+	// WithComparerFrom copies existing comparer from the other IEnumerable[T] specified as parameter
+	WithComparerFrom(copyFrom IEnumerable[T]) IEnumerable[T]
+
+	// WithDefaultComparer will override default comparer to be used in this IEnumerable.
+	// Setting to nil will remove existing if any.
+	WithDefaultComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// The following methods are internal APIs
 

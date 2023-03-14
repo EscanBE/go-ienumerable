@@ -1068,6 +1068,24 @@ func Test_defaultComparer(t *testing.T) {
 		assert.Equal(t, 1, ConvertToDefaultComparer[bool](BoolComparer).Compare(any(true), any(false)))
 	})
 
+	t.Run("ConvertToDefaultComparer returns same instance if already defaultComparer", func(t *testing.T) {
+		comparer := Int8Comparer
+		dc1 := ConvertToDefaultComparer[int8](comparer)
+		assert.NotEqual(t, fmt.Sprintf("%p", &dc1), fmt.Sprintf("%p", &comparer))
+		dc2 := ConvertToDefaultComparer[any](dc1)
+		assert.NotEqual(t, fmt.Sprintf("%p", &dc2), fmt.Sprintf("%p", &comparer))
+		assert.True(t, dc1 == dc2)
+
+		dc1.(*defaultComparer).compareFunc = nil
+		assert.Nil(t, dc1.(*defaultComparer).compareFunc)
+		assert.Nil(t, dc2.(*defaultComparer).compareFunc) // dc2 func is nil because the same instance
+	})
+
+	t.Run("ConvertToDefaultComparer panic if input is nil", func(t *testing.T) {
+		defer deferExpectPanicContains(t, "comparer is nil")
+		_ = ConvertToDefaultComparer[int8](nil)
+	})
+
 	t.Run("resolve for both type or pointer value", func(t *testing.T) {
 		dcInt8 := ConvertToDefaultComparer[int8](Int8Comparer)
 		x := int8(3)
