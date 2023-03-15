@@ -345,17 +345,27 @@ type IEnumerable[T any] interface {
 	// OrderByComparer sorts the elements of a sequence in ascending order
 	// according to the provided comparers.IComparer[T] to compare values.
 	//
-	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	OrderByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// OrderByDescending sorts the elements of a sequence in descending order.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	OrderByDescending() IEnumerable[T]
 
-	// OrderByDescendingBy sorts the elements of a sequence in descending order.
-	// specified less comparer to compare values.
-	OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T]
+	// OrderByDescendingBy sorts the elements of a sequence in descending order
+	// according to the provided greater-than-comparer to compare values.
+	//
+	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
+	OrderByDescendingBy(greaterComparer func(left, right T) bool) IEnumerable[T]
+
+	// OrderByDescendingByComparer sorts the elements of a sequence in descending order
+	// according to the provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	OrderByDescendingByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]

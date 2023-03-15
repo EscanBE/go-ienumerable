@@ -73,16 +73,54 @@ func (src *enumerable[T]) internalOrderBy(lessComparer func(left, right T) bool)
 func (src *enumerable[T]) OrderByDescending() IEnumerable[T] {
 	src.assertSrcNonNil()
 
-	if src.lessComparer == nil {
-		panicRequire(requireLessComparer)
+	comparer := src.defaultComparer
+	if comparer == nil {
+		comparer = src.findDefaultComparer()
 	}
 
-	return src.OrderByDescendingBy(src.lessComparer)
+	return src.internalOrderByDescendingBy(func(v1, v2 T) bool {
+		return comparer.Compare(v1, v2) > 0
+	})
 }
 
 func (src *enumerable[T]) OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertComparerNonNil(lessComparer)
+
+	if lessComparer == nil {
+		comparer := src.defaultComparer
+		if comparer == nil {
+			comparer = src.findDefaultComparer()
+		}
+		lessComparer = func(v1, v2 T) bool {
+			return comparer.Compare(v1, v2) > 0
+		}
+	}
+
+	return src.internalOrderByDescendingBy(lessComparer)
+}
+
+func (src *enumerable[T]) OrderByDescendingByComparer(comparer comparers.IComparer[T]) IEnumerable[T] {
+	src.assertSrcNonNil()
+
+	if comparer != nil {
+		return src.internalOrderByDescendingBy(func(v1, v2 T) bool {
+			return comparer.Compare(v1, v2) > 0
+		})
+	}
+
+	defaultComparer := src.defaultComparer
+	if defaultComparer == nil {
+		defaultComparer = src.findDefaultComparer()
+	}
+
+	return src.internalOrderByDescendingBy(func(v1, v2 T) bool {
+		return defaultComparer.Compare(v1, v2) > 0
+	})
+}
+
+func (src *enumerable[T]) internalOrderByDescendingBy(greaterComparer func(left, right T) bool) IEnumerable[T] {
+	src.assertSrcNonNil()
+	src.assertComparerNonNil(greaterComparer)
 
 	if len(src.data) < 1 {
 		return src.copyExceptData().withEmptyData()
@@ -91,7 +129,7 @@ func (src *enumerable[T]) OrderByDescendingBy(lessComparer func(left, right T) b
 	copied := copySlice(src.data)
 
 	sort.SliceStable(copied, func(i, j int) bool {
-		return lessComparer(copied[j], copied[i])
+		return greaterComparer(copied[i], copied[j])
 	})
 
 	return src.copyExceptData().withData(copied)
