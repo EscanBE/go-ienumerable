@@ -2,6 +2,7 @@ package comparers
 
 import (
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 )
@@ -22,6 +23,7 @@ var (
 	UintptrComparer    = NewUintptrComparer()
 	Float32Comparer    = NewFloat32Comparer()
 	Float64Comparer    = NewFloat64Comparer()
+	BigIntComparer     = NewBigIntComparer()
 	Complex64Comparer  = NewComplex64Comparer()
 	Complex128Comparer = NewComplex128Comparer()
 	StringComparer     = NewStringComparer()
@@ -44,6 +46,7 @@ var mappedDefaultComparers = map[string]IComparer[any]{
 	getNormalizeTypeName[uintptr]():       ConvertToDefaultComparer[uintptr](NewUintptrComparer()),
 	getNormalizeTypeName[float32]():       ConvertToDefaultComparer[float32](NewFloat32Comparer()),
 	getNormalizeTypeName[float64]():       ConvertToDefaultComparer[float64](NewFloat64Comparer()),
+	getNormalizeTypeName[*big.Int]():      ConvertToDefaultComparer[*big.Int](NewBigIntComparer()),
 	getNormalizeTypeName[complex64]():     ConvertToDefaultComparer[complex64](NewComplex64Comparer()),
 	getNormalizeTypeName[complex128]():    ConvertToDefaultComparer[complex128](NewComplex128Comparer()),
 	getNormalizeTypeName[string]():        ConvertToDefaultComparer[string](NewStringComparer()),

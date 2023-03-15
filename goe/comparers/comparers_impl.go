@@ -2,6 +2,7 @@ package comparers
 
 import (
 	"fmt"
+	"math/big"
 	"strings"
 	"time"
 )
@@ -535,6 +536,46 @@ func (i float64Comparer) ComparePointerMode(x, y any) int {
 	}
 
 	return i.Compare(AnyPointerToType[float64](x), AnyPointerToType[float64](y))
+}
+
+type bigIntComparer struct {
+}
+
+// NewBigIntComparer returns IComparer for *big.Int with default comparison.
+func NewBigIntComparer() IComparer[*big.Int] {
+	return bigIntComparer{}
+}
+
+func (i bigIntComparer) Compare(x, y *big.Int) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return x.Cmp(y)
+}
+
+func (i bigIntComparer) ComparePointerMode(x, y any) int {
+	if x == nil && y == nil {
+		return 0
+	}
+
+	if x == nil {
+		return -1
+	}
+
+	if y == nil {
+		return 1
+	}
+
+	return AnyPointerToType[*big.Int](x).Cmp(AnyPointerToType[*big.Int](y))
 }
 
 type complex64Comparer struct {

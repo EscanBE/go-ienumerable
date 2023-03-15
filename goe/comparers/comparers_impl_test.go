@@ -612,6 +612,61 @@ func Test_float64Comparer_Compare(t *testing.T) {
 	}
 }
 
+func Test_bigIntComparer_Compare(t *testing.T) {
+	tests := []struct {
+		x    *big.Int
+		y    *big.Int
+		want int
+	}{
+		{
+			x:    new(big.Int),
+			y:    new(big.Int),
+			want: 0,
+		},
+		{
+			x:    big.NewInt(math.MinInt64),
+			y:    big.NewInt(math.MinInt64),
+			want: 0,
+		},
+		{
+			x:    big.NewInt(math.MaxInt64),
+			y:    big.NewInt(math.MaxInt64),
+			want: 0,
+		},
+		{
+			x:    big.NewInt(math.MinInt64),
+			y:    big.NewInt(math.MaxInt64),
+			want: -1,
+		},
+		{
+			x:    big.NewInt(math.MaxInt64),
+			y:    big.NewInt(math.MinInt64),
+			want: 1,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("%v-%v", tt.x, tt.y), func(t *testing.T) {
+			comparer := BigIntComparer
+
+			if got := comparer.Compare(tt.x, tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+
+			if got := comparer.ComparePointerMode(&tt.x, &tt.y); got != tt.want {
+				t.Errorf("Compare() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+
+	t.Run("*big.Int accepts nil as params for Compare", func(t *testing.T) {
+		comparer := BigIntComparer
+
+		assert.Equal(t, 0, comparer.Compare(nil, nil))
+		assert.Equal(t, -1, comparer.Compare(nil, big.NewInt(0)))
+		assert.Equal(t, 1, comparer.Compare(big.NewInt(0), nil))
+	})
+}
+
 func Test_complex64Comparer_Compare(t *testing.T) {
 	tests := []struct {
 		x    complex64
@@ -1182,6 +1237,7 @@ func Test_compareBothMode(t *testing.T) {
 	testCompareBothModeFor[uintptr](t, 1, 3)
 	testCompareBothModeFor[float32](t, 1, 3)
 	testCompareBothModeFor[float64](t, 1, 3)
+	testCompareBothModeFor[*big.Int](t, big.NewInt(1), big.NewInt(3))
 	testCompareBothModeFor[string](t, "1", "3")
 	testCompareBothModeFor[bool](t, false, true)
 	testCompareBothModeFor[complex64](t, 1, 3)
@@ -1206,15 +1262,11 @@ func testCompareBothModeFor[T any](t *testing.T, small, big T) {
 }
 
 func TestAnyPointerToPointerType(t *testing.T) {
-	iBi1 := new(big.Int)
-	iBi1.SetInt64(1)
-	testAnyPointerToPointerType(t, iBi1, 1, func(o *big.Int) interface{} {
+	testAnyPointerToPointerType(t, big.NewInt(1), 1, func(o *big.Int) interface{} {
 		return int(o.Int64())
 	})
 
-	iBf1 := new(big.Float)
-	iBf1.SetFloat64(1.1)
-	testAnyPointerToPointerType(t, iBf1, 1.1, func(o *big.Float) interface{} {
+	testAnyPointerToPointerType(t, big.NewFloat(1.1), 1.1, func(o *big.Float) interface{} {
 		f, _ := o.Float64()
 		return f
 	})
