@@ -1,54 +1,14 @@
 package goe
 
 import (
+	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
 )
 
-func Test_enumerable_Distinct(t *testing.T) {
-	t.Run("returns correctly", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4)
-		ieWant := NewIEnumerable[int](1, 2, 3, 6, 5, 4)
-		bSrc := backupForAssetUnchanged(ieSrc)
-
-		got := ieSrc.Distinct()
-
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-
-		bSrc.assertUnchanged(t, ieSrc)
-	})
-
-	t.Run("empty returns empty", func(t *testing.T) {
-		assert.Zero(t, createEmptyIntEnumerable().Distinct().Count())
-	})
-
-	t.Run("retry resolve if comparer not set", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4)
-		ieWant := NewIEnumerable[int](1, 2, 3, 6, 5, 4)
-
-		e[int](ieSrc).defaultComparer = nil
-
-		bSrc := backupForAssetUnchanged(ieSrc)
-
-		got := ieSrc.Distinct()
-
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-
-		bSrc.assertUnchanged(t, ieSrc)
-	})
-
-	t.Run("panic if type not registered for default comparer", func(t *testing.T) {
-		type MyInt64 struct{}
-
-		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
-
-		NewIEnumerable[MyInt64]().Distinct()
-	})
-}
-
-func Test_enumerable_DistinctBy(t *testing.T) {
+func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 	fEquals := func(v1, v2 int) bool {
 		return v1 == v2
 	}
@@ -80,6 +40,14 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 			want:     NewIEnumerable[int](2),
 		},
 		{
+			name:     "distinct",
+			source:   NewIEnumerable[int](2, 2),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
+			want:     NewIEnumerable[int](2),
+		},
+		{
 			name:     "no equality comparer still ok since int has default comparer",
 			source:   NewIEnumerable[int](2),
 			fEquals:  nil,
@@ -95,17 +63,18 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 			comparer: comparers.IntComparer,
 			want:     NewIEnumerable[int](1, 2, 3, 6, 5, 4),
 		},
-		{
-			name:     "distinct",
-			source:   NewIEnumerable[int](2, 2),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			want:     NewIEnumerable[int](2),
-		},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+		t.Run(fmt.Sprintf("Distinct-%s", tt.name), func(t *testing.T) {
+			bSrc := backupForAssetUnchanged(tt.source)
+
+			got := tt.source.Distinct()
+
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
+
+			bSrc.assertUnchanged(t, tt.source)
+		})
+		t.Run(fmt.Sprintf("DistinctBy-%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
 			// EqualsFunc
@@ -152,7 +121,10 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 
 		bSrc := backupForAssetUnchanged(ieSrc)
 
-		got := ieSrc.DistinctBy(nil)
+		got := ieSrc.Distinct()
+		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
+
+		got = ieSrc.DistinctBy(nil)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		var eff func(v1, v2 int) bool
@@ -176,7 +148,16 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 		bSrc.assertUnchanged(t, ieSrc)
 	})
 
-	t.Run("panic if no default resolver", func(t *testing.T) {
+	t.Run("panic if no default resolver (Distinct)", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
+
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
+
+		ieSrc.Distinct()
+	})
+
+	t.Run("panic if no default resolver (DistinctBy)", func(t *testing.T) {
 		type MyInt64 struct{}
 		ieSrc := NewIEnumerable[MyInt64]()
 
