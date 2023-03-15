@@ -41,7 +41,7 @@ func Test_enumerable_Reverse(t *testing.T) {
 
 			eGot := eSource.Reverse()
 
-			assert.True(t, reflect.DeepEqual(eWant.exposeData(), eGot.exposeData()))
+			assert.True(t, reflect.DeepEqual(eWant.ToArray(), eGot.ToArray()))
 
 			backSrc.assertUnchanged(t, eSource)
 		})

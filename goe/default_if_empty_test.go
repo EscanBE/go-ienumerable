@@ -7,14 +7,14 @@ import (
 
 func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	t.Run("non-empty", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8](3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		srcD := eSrc.exposeData()
+		srcD := eSrc.ToArray()
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
-		assert.Len(t, gotData, eSrc.len())
+		gotData := got.ToArray()
+		assert.Len(t, gotData, eSrc.Count())
 		assert.Equal(t, srcD[0], gotData[0])
 		assert.Equal(t, srcD[1], gotData[1])
 		assert.Equal(t, srcD[2], gotData[2])
@@ -24,11 +24,11 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("uint32", func(t *testing.T) {
-		eSrc := NewIEnumerable[uint32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[uint32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0])
 
@@ -37,11 +37,11 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("float32", func(t *testing.T) {
-		eSrc := NewIEnumerable[float32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[float32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0])
 
@@ -50,11 +50,11 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("string", func(t *testing.T) {
-		eSrc := NewIEnumerable[string]().WithDefaultComparers()
+		eSrc := NewIEnumerable[string]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Empty(t, gotData[0])
 
@@ -63,11 +63,11 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("bool", func(t *testing.T) {
-		eSrc := NewIEnumerable[bool]().WithDefaultComparers()
+		eSrc := NewIEnumerable[bool]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.False(t, gotData[0])
 
@@ -76,11 +76,11 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("complex64", func(t *testing.T) {
-		eSrc := NewIEnumerable[complex64]().WithDefaultComparers()
+		eSrc := NewIEnumerable[complex64]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0])
 
@@ -98,7 +98,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Zero(t, gotData[0].V1)
 		assert.False(t, gotData[0].V2)
@@ -113,7 +113,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Nil(t, gotData[0])
 
@@ -126,14 +126,14 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("non-empty", func(t *testing.T) {
 		defaultValue := int8(6)
 
-		eSrc := NewIEnumerable[int8](3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		srcD := eSrc.exposeData()
+		srcD := eSrc.ToArray()
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
-		assert.Len(t, gotData, eSrc.len())
+		gotData := got.ToArray()
+		assert.Len(t, gotData, eSrc.Count())
 		assert.Equal(t, srcD[0], gotData[0])
 		assert.Equal(t, srcD[1], gotData[1])
 		assert.Equal(t, srcD[2], gotData[2])
@@ -145,11 +145,11 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("uint32", func(t *testing.T) {
 		defaultValue := uint32(99)
 
-		eSrc := NewIEnumerable[uint32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[uint32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -160,11 +160,11 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("float32", func(t *testing.T) {
 		defaultValue := float32(99.99)
 
-		eSrc := NewIEnumerable[float32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[float32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -175,11 +175,11 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("string", func(t *testing.T) {
 		defaultValue := "99"
 
-		eSrc := NewIEnumerable[string]().WithDefaultComparers()
+		eSrc := NewIEnumerable[string]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -190,11 +190,11 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("bool", func(t *testing.T) {
 		defaultValue := true
 
-		eSrc := NewIEnumerable[bool]().WithDefaultComparers()
+		eSrc := NewIEnumerable[bool]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -205,11 +205,11 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("complex64", func(t *testing.T) {
 		defaultValue := complex64(99)
 
-		eSrc := NewIEnumerable[complex64]().WithDefaultComparers()
+		eSrc := NewIEnumerable[complex64]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, defaultValue, gotData[0])
 
@@ -234,7 +234,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, 99, gotData[0].V1)
 		assert.True(t, gotData[0].V2)
@@ -255,7 +255,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
-		gotData := got.exposeData()
+		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
 		assert.Equal(t, 99, gotData[0].V1)
 		assert.True(t, gotData[0].V2)

@@ -1,21 +1,23 @@
 package goe
 
+import "github.com/EscanBE/go-ienumerable/goe/comparers"
+
 type IEnumerable[T any] interface {
 	// C#
 
 	// Aggregate applies an accumulator function over a sequence.
-	Aggregate(f func(pr, v T) T) T
+	Aggregate(f func(previousValue, value T) T) T
 
 	// AggregateWithSeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
-	AggregateWithSeed(seed T, f func(pr, v T) T) T
+	AggregateWithSeed(seed T, f func(previousValue, value T) T) T
 
 	// AggregateWithAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
 	// Notice, the type (specified as 'any') of the seed and the aggregate function `f` param and result,
 	// must be the same type
-	AggregateWithAnySeed(seed any, f func(pr any, v T) any) any
+	AggregateWithAnySeed(seed any, f func(previousValue any, value T) any) any
 
 	// All returns true if all elements matches with predicate, also true when empty
 	All(predicate func(T) bool) bool
@@ -32,48 +34,57 @@ type IEnumerable[T any] interface {
 	// AsEnumerable() IEnumerable[T] <= will not be implemented because no inheritance in Go thus never use
 
 	// Average computes the average of a sequence of integer/float values.
+	//
+	// Panic if element can not be cast to number.
 	Average() float64
 
 	// CastByte casts the source IEnumerable[T] into IEnumerable[byte]
 	// if the source data type is byte (uint8), otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[byte], even default
+	// Notice: no comparer from source will be brought along with new IEnumerable[byte],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastByte() IEnumerable[byte]
 
 	// CastInt32 casts the source IEnumerable[T] into IEnumerable[int32]
 	// if the source data type is int32, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int32]
+	// Notice: no comparer from source will be brought along with new IEnumerable[int32],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastInt32() IEnumerable[int32]
 
 	// CastInt64 casts the source IEnumerable[T] into IEnumerable[int64]
 	// if the source data type is int64, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int64]
+	// Notice: no comparer from source will be brought along with new IEnumerable[int64],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastInt64() IEnumerable[int64]
 
 	// CastInt casts the source IEnumerable[T] into IEnumerable[int]
 	// if the source data type is int, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[int]
+	// Notice: no comparer from source will be brought along with new IEnumerable[int],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastInt() IEnumerable[int]
 
 	// CastFloat64 casts the source IEnumerable[T] into IEnumerable[float64]
 	// if the source data type is float64, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[float64]
+	// Notice: no comparer from source will be brought along with new IEnumerable[float64],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastFloat64() IEnumerable[float64]
 
 	// CastString casts the source IEnumerable[T] into IEnumerable[string]
 	// if the source data type is string, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[string]
+	// Notice: no comparer from source will be brought along with new IEnumerable[string],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastString() IEnumerable[string]
 
 	// CastBool casts the source IEnumerable[T] into IEnumerable[bool]
 	// if the source data type is bool, otherwise panic.
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[bool]
+	// Notice: no comparer from source will be brought along with new IEnumerable[bool],
+	// a default comparer will be assigned automatically if able to resolve.
 	CastBool() IEnumerable[bool]
 
 	// ChunkToHolder (Chunk) supposed to split the elements of a sequence into chunks of size at most size.
@@ -113,13 +124,24 @@ type IEnumerable[T any] interface {
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Contains(value T) bool
 
-	// ContainsBy determines whether a sequence contains a specified element by using the specified equality comparer.
+	// ContainsBy determines whether a sequence contains a specified element
+	// by using the specified equality comparer to compare values.
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
 	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
+
+	// ContainsByComparer determines whether a sequence contains a specified element
+	// by using the specified comparers.IComparer[T] to compare values.
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	//
+	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
+	ContainsByComparer(value T, comparer comparers.IComparer[T]) bool
 
 	// Count returns the number of elements in a sequence.
 	Count() int
@@ -137,12 +159,22 @@ type IEnumerable[T any] interface {
 
 	// Distinct returns distinct elements from a sequence.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Distinct() IEnumerable[T]
 
 	// DistinctBy returns distinct elements from a sequence by using the
 	// specified equality comparer to compare values.
-	DistinctBy(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
+	DistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// DistinctByComparer returns distinct elements from a sequence by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	DistinctByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
@@ -172,12 +204,22 @@ type IEnumerable[T any] interface {
 
 	// Except produces the set difference of two sequences.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Except(second IEnumerable[T]) IEnumerable[T]
 
 	// ExceptBy produces the set difference of two sequences by using the
 	// specified equality comparer to compare values.
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	ExceptBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// ExceptByComparer produces the set difference of two sequences by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	ExceptByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// First returns the first element of a sequence
 	First() T
@@ -202,13 +244,24 @@ type IEnumerable[T any] interface {
 
 	//GroupBy(fieldName string) enumerable
 
-	// Intersect produces the set intersection of two sequences using provided comparer.
+	// Intersect produces the set intersection of two sequences.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Intersect(second IEnumerable[T]) IEnumerable[T]
 
-	// IntersectBy produces the set intersection of two sequences according to provided comparer.
+	// IntersectBy produces the set intersection of two sequences by using the
+	// specified equality comparer to compare values.
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	IntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// IntersectByComparer produces the set intersection of two sequences by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	IntersectByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// Last returns the last element of a sequence
 	Last() T
@@ -240,43 +293,84 @@ type IEnumerable[T any] interface {
 
 	// Min returns the minimum value in a sequence.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Min() T
 
-	// MinBy returns the minimum value in a sequence according to provided comparer.
+	// MinBy returns the minimum value in a sequence
+	// according to the provided less-than-comparer to compare values.
+	//
+	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	MinBy(lessComparer func(left, right T) bool) T
 
-	// Max returns the minimum value in a sequence.
+	// MinByComparer returns the minimum value in a sequence
+	// according to the provided comparers.IComparer[T] to compare values.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	MinByComparer(comparer comparers.IComparer[T]) T
+
+	// Max returns the greatest value in a sequence.
+	//
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Max() T
 
-	// MaxBy returns the minimum value in a sequence according to provided LESS comparer.
-	MaxBy(lessComparer func(left, right T) bool) T
+	// MaxBy returns the greatest value in a sequence
+	// according to the provided greater-than-comparer to compare values.
+	//
+	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
+	MaxBy(greaterComparer func(left, right T) bool) T
+
+	// MaxByComparer returns the greatest value in a sequence
+	// according to the provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	MaxByComparer(comparer comparers.IComparer[T]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Order() IEnumerable[T]
 
-	// OrderBy sorts the elements of a sequence in ascending order.
-	// specified less comparer to compare values.
+	// OrderBy sorts the elements of a sequence in ascending order
+	// according to the provided less-than-comparer to compare values.
+	//
+	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
+
+	// OrderByComparer sorts the elements of a sequence in ascending order
+	// according to the provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	OrderByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// OrderByDescending sorts the elements of a sequence in descending order.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	OrderByDescending() IEnumerable[T]
 
-	// OrderByDescendingBy sorts the elements of a sequence in descending order.
-	// specified less comparer to compare values.
-	OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T]
+	// OrderByDescendingBy sorts the elements of a sequence in descending order
+	// according to the provided greater-than-comparer to compare values.
+	//
+	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
+	OrderByDescendingBy(greaterComparer func(left, right T) bool) IEnumerable[T]
+
+	// OrderByDescendingByComparer sorts the elements of a sequence in descending order
+	// according to the provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	OrderByDescendingByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
 
 	// Repeat generates a new sequence that contains one repeated value.
-	// Comparers will be copied into the new IEnumerable[T].
 	//
 	// Panic if count is less than 0
 	Repeat(element T, count int) IEnumerable[T]
@@ -287,18 +381,50 @@ type IEnumerable[T any] interface {
 	// Select projects each element of a sequence into a new form.
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
-	// in just one command, so additional transform from 'any' to target types is required.
+	// in just one command, so additional transform from 'any' to target types might be required.
 	//
 	// There are some Cast* methods
 	// CastByte, CastInt, CastString, ... so can do combo like example:
 	//
 	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[any]
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any]
+	//
+	// - A default comparer will be assigned automatically if able to resolve.
+	//
+	// - It is not able to resolve default comparer for result type if sequence contains no element.
+	//
+	// - If not able to auto-resolve a default comparer for type of result,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
 
-	// SelectMany projects each element of a sequence to an IEnumerable[T]
-	// and flattens the resulting sequences into one sequence.
+	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
+	//
+	// The sample result value parameter is used to automatically detect comparer for type of result
+	// and must be the same type with every value yields from selector,
+	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
+	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	//
+	// Due to limitation of current Go, there is no way to directly cast into target type
+	// in just one command, so additional transform from 'any' to target types might be required.
+	//
+	// There are some Cast* methods
+	// CastByte, CastInt, CastString, ... so can do combo like example:
+	//
+	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
+	//
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any]
+	//
+	// - Panic if sample result value is nil or type not match with result element type
+	SelectWithSampleValueOfResult(selector func(v T) any, notNilSampleResultValue any) IEnumerable[any]
+
+	// SelectMany projects each element of a sequence to an array of interface
+	// and flattens the resulting sequences into one sequence: IEnumerable[any]
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types is required.
@@ -308,8 +434,45 @@ type IEnumerable[T any] interface {
 	//
 	// IEnumerable[[]int](src).SelectMany([]int{x,y} => []any{x * 2, y * 2}).CastInt() and will result IEnumerable[int]
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[any]
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any]
+	//
+	// - A default comparer will be assigned automatically if able to resolve.
+	//
+	// - It is not able to resolve default comparer for result type if sequence contains no element.
+	//
+	// - If not able to auto-resolve a default comparer for type of result,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	//
+	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
+
+	// SelectManyWithSampleValueOfResult projects each element of a sequence to an array of interface
+	//	// and flattens the resulting sequences into one sequence: IEnumerable[any]
+	//
+	// The sample result value parameter is used to automatically detect comparer for type of result
+	// and must be the same type with every value yields from selector,
+	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
+	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	//
+	// Due to limitation of current Go, there is no way to directly cast into target type
+	// in just one command, so additional transform from 'any' to target types might be required.
+	//
+	// There are some Cast* methods
+	// CastByte, CastInt, CastString, ... so can do combo like example:
+	//
+	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
+	//
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any].
+	//
+	// - Panic if sample result value is nil or type not match with result element type.
+	//
+	// - Panic if selector returns nil.
+	SelectManyWithSampleValueOfResult(selector func(v T) []any, notNilSampleResultValue any) IEnumerable[any]
 
 	// Single returns the only element of a sequence,
 	// and panic if there is not exactly one element in the sequence.
@@ -410,12 +573,22 @@ type IEnumerable[T any] interface {
 
 	// Union produces the set union of two sequences.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Union(second IEnumerable[T]) IEnumerable[T]
 
 	// UnionBy produces the set union of two sequences by using the
-	// specified equality comparer to compare values.
+	// specified equality-comparer to compare values.
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	UnionBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// UnionByComparer produces the set union of two sequences by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	UnionByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
@@ -423,60 +596,16 @@ type IEnumerable[T any] interface {
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#
 
-	// Extra: the following methods are used to inject comparer into IEnumerable[T] instance
-	// and those comparers is going to be used for methods like: Distinct, Order, etc
+	// Extra: the following methods are used to inject comparers.IComparer into IEnumerable[T] instance
+	// and those comparers is going to be used for methods like: Distinct, Order, etc...
 
-	// WithEqualsComparer the equality comparer, to indicate if 2 source values are equals, will be embedded
-	// into this IEnumerable which automatically be used for the following methods:
-	// Contains, Except, Distinct, Union
-	WithEqualsComparer(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+	// WithComparerFrom copies existing comparer from the other IEnumerable[T] specified as parameter
+	WithComparerFrom(copyFrom IEnumerable[T]) IEnumerable[T]
 
-	// WithLessComparer the less comparer, to indicate if left source is lower than right source, will be embedded
-	// into this IEnumerable which automatically be used for the following methods:
-	// Min, Max, Order, OrderByDescending
-	WithLessComparer(lessComparer func(left, right T) bool) IEnumerable[T]
-
-	// WithDefaultComparers automatically detect type of T and inject comparers of the corresponding type,
-	// equals to call WithEqualsComparer and WithLessComparer with predefined comparer.
+	// WithDefaultComparer setting default comparer to be used in this IEnumerable[T].
 	//
-	// If the type of T is not a supported type, a panic will be raised.
+	// If any existing (previously set or automatically detected) will be overridden.
 	//
-	// Supported types: int8/16/32/64, uint8/16/32/64, int, uint, uintptr, float32/64, complex64/128 (equality comparer only), string
-	WithDefaultComparers() IEnumerable[T]
-
-	// WithComparersFrom copies all existing comparers from the other IEnumerable[T] specified as parameter
-	WithComparersFrom(copyFrom IEnumerable[T]) IEnumerable[T]
-
-	// The following methods are internal APIs
-
-	exposeData() []T
-	exposeDataType() string
-	len() int
-
-	// unboxAnyAsByte unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into byte.
-	//
-	// Panic if value is over range or not integer
-	unboxAnyAsByte(v T) byte
-
-	// unboxAnyAsInt32 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int32.
-	//
-	// Panic if value is over range or not integer
-	unboxAnyAsInt32(v T) int32
-
-	// unboxAnyAsInt unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int.
-	//
-	// Panic if value is over range or not integer
-	unboxAnyAsInt(v T) int
-
-	// unboxAnyAsInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) into int64.
-	//
-	// Panic if value is over range or not integer
-	unboxAnyAsInt64(v T) int64
-
-	// unboxAnyAsFloat64OrInt64 unbox any integer (int, int8/16/32/64, uint, uint8/16/32/64) or float32/64
-	// into either int64 or float64 value (priority int64), data type specified in result.
-	// This design is for sum accuracy.
-	//
-	// Panic if neither integer nor float
-	unboxAnyAsFloat64OrInt64(v T) (rf float64, ri int64, dt unboxFloat64DataType)
+	// Setting to nil will remove existing if any.
+	WithDefaultComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 }

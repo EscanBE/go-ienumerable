@@ -6,21 +6,24 @@ import (
 )
 
 func Test_enumerable_Empty(t *testing.T) {
-	srcS := NewIEnumerable[string]("hello", "world").WithDefaultComparers()
+	srcS := NewIEnumerable[string]("hello", "world")
 	bSrc := backupForAssetUnchanged(srcS)
-	
+
 	gotS := srcS.Empty()
-	assert.Zero(t, gotS.len())
-	assert.Equal(t, "string", gotS.exposeDataType())
+	eGot := e[string](gotS)
+	assert.Zero(t, gotS.Count())
+	assert.Equal(t, "string", eGot.dataType)
 
 	bSrc.assertUnchanged(t, srcS)
 	bSrc.assertUnchangedIgnoreData(t, gotS)
 
 	gotI := NewIEnumerable[int](99, 999).Empty()
-	assert.Zero(t, gotI.len())
-	assert.Equal(t, "int", gotI.exposeDataType())
+	eGotI := e[int](gotI)
+	assert.Zero(t, gotI.Count())
+	assert.Equal(t, "int", eGotI.dataType)
 
 	gotA := NewIEnumerable[any](99, 999, "string", 0.0).Empty()
-	assert.Zero(t, gotA.len())
-	assert.Equal(t, "", gotA.exposeDataType())
+	eGotA := e[any](gotA)
+	assert.Zero(t, gotA.Count())
+	assert.Equal(t, "", eGotA.dataType)
 }

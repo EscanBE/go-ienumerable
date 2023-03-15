@@ -34,15 +34,15 @@ func Test_enumerable_Skip_SkipLast(t *testing.T) {
 			name:         "all",
 			src:          createIntEnumerable(1, 5),
 			count:        5,
-			wantSkip:     injectIntComparers(createEmptyIntEnumerable()),
-			wantSkipLast: injectIntComparers(createEmptyIntEnumerable()),
+			wantSkip:     createEmptyIntEnumerable(),
+			wantSkipLast: createEmptyIntEnumerable(),
 		},
 		{
 			name:         "all",
 			src:          createIntEnumerable(1, 5),
 			count:        6,
-			wantSkip:     injectIntComparers(createEmptyIntEnumerable()),
-			wantSkipLast: injectIntComparers(createEmptyIntEnumerable()),
+			wantSkip:     createEmptyIntEnumerable(),
+			wantSkipLast: createEmptyIntEnumerable(),
 		},
 		{
 			name:         "empty",
@@ -59,8 +59,8 @@ func Test_enumerable_Skip_SkipLast(t *testing.T) {
 			gotSkip := tt.src.Skip(tt.count)
 			gotSkipLast := tt.src.SkipLast(tt.count)
 
-			assert.True(t, reflect.DeepEqual(tt.wantSkip.exposeData(), gotSkip.exposeData()))
-			assert.True(t, reflect.DeepEqual(tt.wantSkipLast.exposeData(), gotSkipLast.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.wantSkip.ToArray(), gotSkip.ToArray()))
+			assert.True(t, reflect.DeepEqual(tt.wantSkipLast.ToArray(), gotSkipLast.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, gotSkip)
@@ -119,7 +119,7 @@ func Test_enumerable_SkipWhile(t *testing.T) {
 			// SkipWhile
 			got := tt.src.SkipWhile(tt.predicate)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, got)
@@ -127,7 +127,7 @@ func Test_enumerable_SkipWhile(t *testing.T) {
 			// SkipWhileWidx
 			got = tt.src.SkipWhileWidx(tt.predicateWidx)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, got)

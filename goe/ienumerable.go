@@ -15,9 +15,7 @@ type enumerable[T any] struct {
 	data     []T
 	dataType string
 
-	equalityComparer func(d1, d2 T) bool
-	lessComparer     func(d1, d2 T) bool
-	comparer         comparers.IComparer[T]
+	defaultComparer comparers.IComparer[any]
 }
 
 // NewIEnumerable returns an IEnumerable with the same type as data elements
@@ -26,10 +24,11 @@ func NewIEnumerable[T any](data ...T) IEnumerable[T] {
 	if dataType == "<nil>" {
 		dataType = ""
 	}
-	return &enumerable[T]{
+
+	return (&enumerable[T]{
 		data:     copySlice(data),
 		dataType: dataType,
-	}
+	}).injectDefaultComparer()
 }
 
 // Empty returns an empty IEnumerable with specific type

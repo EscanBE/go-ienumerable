@@ -5,8 +5,6 @@ import "fmt"
 var _ ChunkHolder[any] = &chunkHolderImpl[any]{}
 
 type ChunkHolder[T any] interface {
-	exposeData() [][]T
-	exposeDateType() string
 }
 
 type chunkHolderImpl[T any] struct {
@@ -29,9 +27,10 @@ func NewChunkHolder[T any](data ...[]T) ChunkHolder[T] {
 // GetChunkedIEnumeratorFromHolder moves the inner result into IEnumerable[[]T].
 //
 // Will panic if type of provided T not exactly matches with stored result
-func GetChunkedIEnumeratorFromHolder[T any](c ChunkHolder[T]) IEnumerable[[]T] {
+func GetChunkedIEnumeratorFromHolder[T any](ch ChunkHolder[T]) IEnumerable[[]T] {
 	inputType := fmt.Sprintf("%T", *new(T))
-	resultType := c.exposeDateType()
+	c := c[T](ch)
+	resultType := c.dataType
 	if inputType != resultType {
 		if inputType == "<nil>" {
 			inputType = "interface {}"
@@ -39,15 +38,12 @@ func GetChunkedIEnumeratorFromHolder[T any](c ChunkHolder[T]) IEnumerable[[]T] {
 		if resultType == "" {
 			resultType = "interface {}"
 		}
-		panic(fmt.Sprintf("chunked has data with type of []%s, can not be casted into []%s", c.exposeDateType(), inputType))
+		panic(fmt.Sprintf("chunked has data with type of []%s, can not be casted into []%s", c.dataType, inputType))
 	}
-	return NewIEnumerable[[]T](c.exposeData()...)
+	return NewIEnumerable[[]T](c.data...)
 }
 
-func (h *chunkHolderImpl[T]) exposeData() [][]T {
-	return h.data
-}
-
-func (h *chunkHolderImpl[T]) exposeDateType() string {
-	return h.dataType
+// cast ChunkHolder back to *chunkHolderImpl for accessing private fields.
+func c[T any](ch ChunkHolder[T]) *chunkHolderImpl[T] {
+	return ch.(*chunkHolderImpl[T])
 }

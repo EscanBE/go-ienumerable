@@ -27,7 +27,7 @@ func Test_enumerable_Where(t *testing.T) {
 			predicate: func(i int) bool {
 				return i > 5
 			},
-			want: injectIntComparers(createEmptyIntEnumerable()),
+			want: createEmptyIntEnumerable(),
 		},
 		{
 			name: "empty",
@@ -44,7 +44,7 @@ func Test_enumerable_Where(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.src)
 			got := tt.src.Where(tt.predicate)
 
-			assert.True(t, reflect.DeepEqual(tt.want.exposeData(), got.exposeData()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSrc.assertUnchanged(t, tt.src)
 			bSrc.assertUnchangedIgnoreData(t, got)

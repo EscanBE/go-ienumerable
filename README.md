@@ -10,7 +10,7 @@ Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/
 In addition: Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1) IEnumerator[T] [here in the enumerator interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerator_interface.go) definition
 
 ```go
-got := goe.NewIEnumerable[string]("Hello", "World").WithDefaultComparers().
+got := goe.NewIEnumerable[string]("Hello", "World").
     Where(func(v string) bool {
         return len(v) < 3
     }).OrderByDescending().Reverse().
@@ -60,9 +60,9 @@ type IComparer[T any] interface {
     ComparePointerMode(x, y *T) int
 }
 ```
-See implementation sample in `example`
+See implementation sample in `example`.
 
 `go-ienumerable` will attempts to resolve a default comparer using predefined comparers for some type. You can register a comparer for `YourType` by implement your own `IComparer[YourType]`.
-See sample of implement and default comparer registration in `example`
+See sample of implement and default comparer registration for custom types and other types in `example`.
 
-Predefined `IComparer[T]`: `string`, `bool`, `int`, `int8/16/32/64`, `uint`, `uint8/16/32/64`, `float32/64`, `complex64/128`, `time.Time`, `time.Duration`
+Predefined `IComparer[T]`: `string`, `bool`, `int`, `int8/16/32/64`, `uint`, `uint8/16/32/64`, `float32/64`, `*big.Int`, `complex64/128`, `time.Time`, `time.Duration` with corresponding initialized comparer instance, eg: `compares.StringComparer` is a string comparer, `compares.Uint32Comparer` is uint32 comparer and so on.
