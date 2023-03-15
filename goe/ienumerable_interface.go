@@ -573,12 +573,22 @@ type IEnumerable[T any] interface {
 
 	// Union produces the set union of two sequences.
 	//
-	// Require: equality comparer provided via WithEqualsComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Union(second IEnumerable[T]) IEnumerable[T]
 
 	// UnionBy produces the set union of two sequences by using the
-	// specified equality comparer to compare values.
+	// specified equality-comparer to compare values.
+	//
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
 	UnionBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
+
+	// UnionByComparer produces the set union of two sequences by using the
+	// specified comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	UnionByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
