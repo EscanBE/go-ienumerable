@@ -6,7 +6,7 @@ import (
 )
 
 func Test_enumerable_Empty(t *testing.T) {
-	srcS := NewIEnumerable[string]("hello", "world").WithDefaultComparers()
+	srcS := NewIEnumerable[string]("hello", "world")
 	bSrc := backupForAssetUnchanged(srcS)
 
 	gotS := srcS.Empty()

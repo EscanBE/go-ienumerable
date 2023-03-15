@@ -7,7 +7,7 @@ import (
 
 func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	t.Run("non-empty", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8](3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		srcD := eSrc.ToArray()
@@ -24,7 +24,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("uint32", func(t *testing.T) {
-		eSrc := NewIEnumerable[uint32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[uint32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
@@ -37,7 +37,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("float32", func(t *testing.T) {
-		eSrc := NewIEnumerable[float32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[float32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
@@ -50,7 +50,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("string", func(t *testing.T) {
-		eSrc := NewIEnumerable[string]().WithDefaultComparers()
+		eSrc := NewIEnumerable[string]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
@@ -63,7 +63,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("bool", func(t *testing.T) {
-		eSrc := NewIEnumerable[bool]().WithDefaultComparers()
+		eSrc := NewIEnumerable[bool]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
@@ -76,7 +76,7 @@ func Test_enumerable_DefaultIfEmpty(t *testing.T) {
 	})
 
 	t.Run("complex64", func(t *testing.T) {
-		eSrc := NewIEnumerable[complex64]().WithDefaultComparers()
+		eSrc := NewIEnumerable[complex64]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmpty()
@@ -126,7 +126,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("non-empty", func(t *testing.T) {
 		defaultValue := int8(6)
 
-		eSrc := NewIEnumerable[int8](3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		srcD := eSrc.ToArray()
@@ -145,7 +145,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("uint32", func(t *testing.T) {
 		defaultValue := uint32(99)
 
-		eSrc := NewIEnumerable[uint32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[uint32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
@@ -160,7 +160,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("float32", func(t *testing.T) {
 		defaultValue := float32(99.99)
 
-		eSrc := NewIEnumerable[float32]().WithDefaultComparers()
+		eSrc := NewIEnumerable[float32]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
@@ -175,7 +175,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("string", func(t *testing.T) {
 		defaultValue := "99"
 
-		eSrc := NewIEnumerable[string]().WithDefaultComparers()
+		eSrc := NewIEnumerable[string]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
@@ -190,7 +190,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("bool", func(t *testing.T) {
 		defaultValue := true
 
-		eSrc := NewIEnumerable[bool]().WithDefaultComparers()
+		eSrc := NewIEnumerable[bool]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)
@@ -205,7 +205,7 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	t.Run("complex64", func(t *testing.T) {
 		defaultValue := complex64(99)
 
-		eSrc := NewIEnumerable[complex64]().WithDefaultComparers()
+		eSrc := NewIEnumerable[complex64]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		got := eSrc.DefaultIfEmptyUsing(defaultValue)

@@ -596,26 +596,8 @@ type IEnumerable[T any] interface {
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#
 
-	// Extra: the following methods are used to inject comparer into IEnumerable[T] instance
-	// and those comparers is going to be used for methods like: Distinct, Order, etc
-
-	// WithEqualsComparer the equality comparer, to indicate if 2 source values are equals, will be embedded
-	// into this IEnumerable which automatically be used for the following methods:
-	// Contains, Except, Distinct, Union
-	WithEqualsComparer(equalsComparer func(v1, v2 T) bool) IEnumerable[T]
-
-	// WithLessComparer the less comparer, to indicate if left source is lower than right source, will be embedded
-	// into this IEnumerable which automatically be used for the following methods:
-	// Min, Max, Order, OrderByDescending
-	WithLessComparer(lessComparer func(left, right T) bool) IEnumerable[T]
-
-	// WithDefaultComparers automatically detect type of T and inject comparers of the corresponding type,
-	// equals to call WithEqualsComparer and WithLessComparer with predefined comparer.
-	//
-	// If the type of T is not a supported type, a panic will be raised.
-	//
-	// Supported types: int8/16/32/64, uint8/16/32/64, int, uint, uintptr, float32/64, complex64/128 (equality comparer only), string
-	WithDefaultComparers() IEnumerable[T]
+	// Extra: the following methods are used to inject comparers.IComparer into IEnumerable[T] instance
+	// and those comparers is going to be used for methods like: Distinct, Order, etc...
 
 	// WithComparerFrom copies existing comparer from the other IEnumerable[T] specified as parameter
 	WithComparerFrom(copyFrom IEnumerable[T]) IEnumerable[T]

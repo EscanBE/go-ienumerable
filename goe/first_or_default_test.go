@@ -41,7 +41,7 @@ func Test_enumerable_FirstOrDefault(t *testing.T) {
 	}
 
 	t.Run("default string", func(t *testing.T) {
-		eSrc := NewIEnumerable[string]().WithDefaultComparers()
+		eSrc := NewIEnumerable[string]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		assert.Equal(t, "", eSrc.FirstOrDefault())
@@ -108,7 +108,7 @@ func Test_enumerable_FirstOrDefaultBy(t *testing.T) {
 	}
 
 	t.Run("default string", func(t *testing.T) {
-		eSrc := NewIEnumerable[string]("hello", "world").WithDefaultComparers()
+		eSrc := NewIEnumerable[string]("hello", "world")
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		assert.Equal(t, "", eSrc.FirstOrDefaultBy(func(s string) bool {

@@ -27,8 +27,8 @@ func Test_enumerable_Take_TakeLast(t *testing.T) {
 			name:         "negative",
 			src:          createIntEnumerable(2, 11),
 			count:        -1 * (rand.Intn(100) + 1),
-			wantTake:     injectIntComparers(createEmptyIntEnumerable()),
-			wantTakeLast: injectIntComparers(createEmptyIntEnumerable()),
+			wantTake:     createEmptyIntEnumerable(),
+			wantTakeLast: createEmptyIntEnumerable(),
 		},
 		{
 			name:         "all",

@@ -205,7 +205,7 @@ func Test_enumerable_Except_ExceptBy_ExceptByComparer(t *testing.T) {
 	}
 
 	t.Run("except returns distinct", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](5, 2, 2, 6).WithDefaultComparers()
+		ieSrc := NewIEnumerable[int](5, 2, 2, 6)
 		ieSecond := NewIEnumerable[int](5, 6, 7, 8)
 		bSource := backupForAssetUnchanged(ieSrc)
 		bSecond := backupForAssetUnchanged(ieSecond)

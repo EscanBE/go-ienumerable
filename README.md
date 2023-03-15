@@ -3,14 +3,14 @@
 
 # go-ienumerable [![GoDoc](https://godoc.org/github.com/EscanBE/go-ienumerable?status.svg)](https://godoc.org/github.com/EscanBE/go-ienumerable) [![Go Report Card](https://goreportcard.com/badge/github.com/EscanBE/go-ienumerable)](https://goreportcard.com/report/github.com/EscanBE/go-ienumerable)
 
-> Code coverage: 100% files, 98% statements
+> Code coverage: 100% files, 100% statements
 
 Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) IEnumerable[T] [here in the enumerable interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerable_interface.go) definition
 
 In addition: Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1) IEnumerator[T] [here in the enumerator interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerator_interface.go) definition
 
 ```go
-got := goe.NewIEnumerable[string]("Hello", "World").WithDefaultComparers().
+got := goe.NewIEnumerable[string]("Hello", "World").
     Where(func(v string) bool {
         return len(v) < 3
     }).OrderByDescending().Reverse().

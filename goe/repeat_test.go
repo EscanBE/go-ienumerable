@@ -7,7 +7,7 @@ import (
 )
 
 func Test_enumerable_Repeat(t *testing.T) {
-	eSrc := NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7, 8).WithDefaultComparers()
+	eSrc := NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7, 8)
 	bSrc := backupForAssetUnchanged(eSrc)
 
 	eGot := eSrc.Repeat(9, 4)

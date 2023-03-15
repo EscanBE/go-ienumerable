@@ -34,7 +34,7 @@ func createIntEnumerable(from, to int) IEnumerable[int] {
 	for i := from; i <= to; i++ {
 		data = append(data, i)
 	}
-	return injectIntComparers(NewIEnumerable[int](data...))
+	return NewIEnumerable[int](data...)
 }
 
 func createRandomIntEnumerable(size int) IEnumerable[int] {
@@ -42,26 +42,13 @@ func createRandomIntEnumerable(size int) IEnumerable[int] {
 	for i := 0; i < size; i++ {
 		data[i] = rand.Int()
 	}
-	return injectIntComparers(NewIEnumerable[int](data...))
-}
-
-// TODO remove
-func injectIntComparers(e IEnumerable[int]) IEnumerable[int] {
-	return e.
-		WithLessComparer(func(i1, i2 int) bool {
-			return i1 < i2
-		}).
-		WithEqualsComparer(func(i1, i2 int) bool {
-			return i1 == i2
-		})
+	return NewIEnumerable[int](data...)
 }
 
 type copiedOriginal[T comparable] struct {
 	isNil              bool
 	data               []T
 	dataType           string
-	hasEqualsComparer  bool
-	hasLessComparer    bool
 	hasDefaultComparer bool
 }
 
@@ -75,8 +62,6 @@ func backupForAssetUnchanged[T comparable](ie IEnumerable[T]) copiedOriginal[T] 
 	return copiedOriginal[T]{
 		data:               copySlice(cast.data),
 		dataType:           cast.dataType,
-		hasEqualsComparer:  cast.equalityComparer != nil,
-		hasLessComparer:    cast.lessComparer != nil,
 		hasDefaultComparer: cast.defaultComparer != nil,
 	}
 }
@@ -115,8 +100,6 @@ func (c copiedOriginal[T]) assertUnchangedIgnoreData(t *testing.T, ie IEnumerabl
 		}
 	}
 
-	assert.Equalf(t, c.hasEqualsComparer, cast.equalityComparer != nil, "equality comparer state has changed, expect %s, but got %s", exists(c.hasEqualsComparer), exists(cast.equalityComparer != nil))
-	assert.Equalf(t, c.hasLessComparer, cast.lessComparer != nil, "less comparer state has changed, expect %s, but got %s", exists(c.hasLessComparer), exists(cast.lessComparer != nil))
 	assert.Equalf(t, c.hasDefaultComparer, cast.defaultComparer != nil, "default comparer state has changed, expect %s, but got %s", exists(c.hasDefaultComparer), exists(cast.defaultComparer != nil))
 }
 
@@ -158,21 +141,13 @@ func deferExpectPanicContains(t *testing.T, msgPart string, wantPanic bool) {
 
 func Test_enumerable_copyExceptData(t *testing.T) {
 	t.Run("copy all except data", func(t *testing.T) {
-		e := new(enumerable[int])
-		e.data = []int{2, 3}
-		e.dataType = "int"
-		e.equalityComparer = func(v1, v2 int) bool {
-			return v1 == v2
-		}
-		e.lessComparer = func(v1, v2 int) bool {
-			return v1 < v2
-		}
+		ie := NewIEnumerable[int](2, 3)
+		e := e[int](ie)
 
 		copied := e.copyExceptData()
 		assert.Len(t, copied.data, 0)
 		assert.Equal(t, "int", copied.dataType)
-		assert.NotNil(t, copied.equalityComparer)
-		assert.NotNil(t, copied.lessComparer)
+		assert.NotNil(t, copied.defaultComparer)
 	})
 
 	t.Run("copy nil yields nil", func(t *testing.T) {
@@ -227,21 +202,24 @@ func Test_enumerable_assertSrcNonNil(t *testing.T) {
 	e := new(enumerable[int])
 	e = nil
 
-	defer deferWantPanicDepends(t, true)
+	defer deferExpectPanicContains(t, getErrorSourceIsNil().Error(), true)
+
 	e.assertSrcNonNil()
 }
 
 func Test_enumerable_assertSrcNonEmpty(t *testing.T) {
 	e := new(enumerable[int])
 
-	defer deferWantPanicDepends(t, true)
+	defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
+
 	e.assertSrcNonEmpty()
 }
 
 func Test_enumerable_assertPredicateNonNil(t *testing.T) {
 	e := new(enumerable[int])
 
-	defer deferWantPanicDepends(t, true)
+	defer deferExpectPanicContains(t, getErrorNilPredicate().Error(), true)
+
 	e.assertPredicateNonNil(nil)
 }
 
@@ -249,7 +227,7 @@ func Test_enumerable_assertSelectorNonNil(t *testing.T) {
 	t.Run("selector", func(t *testing.T) {
 		e := new(enumerable[int])
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilSelector().Error(), true)
 
 		e.assertSelectorNonNil(nil)
 	})
@@ -257,7 +235,7 @@ func Test_enumerable_assertSelectorNonNil(t *testing.T) {
 	t.Run("array selector", func(t *testing.T) {
 		e := new(enumerable[int])
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilSelector().Error(), true)
 
 		e.assertArraySelectorNonNil(nil)
 	})
@@ -267,7 +245,7 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 	t.Run("aggregate func", func(t *testing.T) {
 		e := new(enumerable[int])
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilAggregateFunc().Error(), true)
 
 		e.assertAggregateFuncNonNil(nil)
 	})
@@ -275,7 +253,7 @@ func Test_enumerable_assertAggregateFuncNonNil(t *testing.T) {
 	t.Run("aggregate any seed func", func(t *testing.T) {
 		e := new(enumerable[int])
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilAggregateFunc().Error(), true)
 
 		e.assertAggregateAnySeedFuncNonNil(nil)
 	})
@@ -288,8 +266,21 @@ func Test_enumerable_findDefaultComparer(t *testing.T) {
 
 	t.Run("panic if type not registered", func(t *testing.T) {
 		type MyInt64 int64
+
+		e := e[MyInt64](NewIEnumerable[MyInt64]())
+
 		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyInt64]", true)
 
-		e[MyInt64](NewIEnumerable[MyInt64]()).findDefaultComparer()
+		e.findDefaultComparer()
+	})
+}
+
+func Test_enumerable_assertComparerNonNil(t *testing.T) {
+	t.Run("comparer func", func(t *testing.T) {
+		e := new(enumerable[int])
+
+		defer deferExpectPanicContains(t, getErrorNilComparer().Error(), true)
+
+		e.assertComparerNonNil(nil)
 	})
 }

@@ -8,7 +8,7 @@ import (
 )
 
 func Test_example_1(t *testing.T) {
-	got := goe.NewIEnumerable[string]("Hello", "World").WithDefaultComparers().
+	got := goe.NewIEnumerable[string]("Hello", "World").
 		Where(func(v string) bool {
 			return len(v) < 3
 		}).OrderByDescending().Reverse().

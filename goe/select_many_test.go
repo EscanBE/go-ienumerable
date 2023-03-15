@@ -150,8 +150,7 @@ func Test_enumerable_SelectManyWithSampleValueOfResult(t *testing.T) {
 		assert.Equal(t, int8(8), gotData[2])
 		assert.Equal(t, int8(10), gotData[3])
 		gotE := e[any](eGot)
-		assert.Nil(t, gotE.equalityComparer)
-		assert.Nil(t, gotE.lessComparer)
+		assert.NotNil(t, gotE.defaultComparer)
 		assert.Equal(t, "int8", fmt.Sprintf("%T", gotE.data[0]))
 		assert.Equal(t, "int8", gotE.dataType)
 	})
@@ -173,8 +172,7 @@ func Test_enumerable_SelectManyWithSampleValueOfResult(t *testing.T) {
 		assert.Equal(t, "5", gotData[2])
 		assert.Equal(t, "6", gotData[3])
 		gotE := e[any](eGot)
-		assert.Nil(t, gotE.equalityComparer)
-		assert.Nil(t, gotE.lessComparer)
+		assert.NotNil(t, gotE.defaultComparer)
 		assert.Equal(t, "string", fmt.Sprintf("%T", gotE.data[0]))
 		assert.Equal(t, "string", gotE.dataType)
 	})
@@ -218,9 +216,19 @@ func Test_enumerable_SelectManyWithSampleValueOfResult(t *testing.T) {
 	t.Run("nil selector", func(t *testing.T) {
 		eSrc := NewIEnumerable[int8]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilSelector().Error(), true)
 
-		_ = eSrc.SelectWithSampleValueOfResult(nil, 0)
+		_ = eSrc.SelectManyWithSampleValueOfResult(nil, 0)
+	})
+
+	t.Run("sample result value can not be nil", func(t *testing.T) {
+		eSrc := NewIEnumerable[int8]()
+
+		defer deferExpectPanicContains(t, getErrorSampleValueIsNil().Error(), true)
+
+		_ = eSrc.SelectManyWithSampleValueOfResult(func(i int8) []any {
+			return []any{i}
+		}, nil)
 	})
 
 	t.Run("automatically inject type and comparer", func(t *testing.T) {

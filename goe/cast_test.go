@@ -43,9 +43,10 @@ func Test_unbox_alias(t *testing.T) {
 	})
 }
 
+//goland:noinspection GoRedundantConversion
 func Test_enumerable_Cast(t *testing.T) {
 	t.Run("byte", func(t *testing.T) {
-		eSrc := NewIEnumerable[byte](5, 3).WithDefaultComparers()
+		eSrc := NewIEnumerable[byte](5, 3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v byte) any {
@@ -55,8 +56,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, byte(5), eGot.data[0])
 		assert.Equal(t, byte(3), eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 
@@ -67,7 +67,7 @@ func Test_enumerable_Cast(t *testing.T) {
 	})
 
 	t.Run("int32", func(t *testing.T) {
-		eSrc := NewIEnumerable[int32](5, 3).WithDefaultComparers()
+		eSrc := NewIEnumerable[int32](5, 3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v int32) any {
@@ -77,8 +77,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, int32(5), eGot.data[0])
 		assert.Equal(t, int32(3), eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 
@@ -89,7 +88,7 @@ func Test_enumerable_Cast(t *testing.T) {
 	})
 
 	t.Run("int64", func(t *testing.T) {
-		eSrc := NewIEnumerable[int64](5, 3).WithDefaultComparers()
+		eSrc := NewIEnumerable[int64](5, 3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v int64) any {
@@ -99,8 +98,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, int64(5), eGot.data[0])
 		assert.Equal(t, int64(3), eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 
@@ -111,7 +109,7 @@ func Test_enumerable_Cast(t *testing.T) {
 	})
 
 	t.Run("int", func(t *testing.T) {
-		eSrc := NewIEnumerable[int](5, 3).WithDefaultComparers()
+		eSrc := NewIEnumerable[int](5, 3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v int) any {
@@ -121,8 +119,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, 5, eGot.data[0])
 		assert.Equal(t, 3, eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 
@@ -133,7 +130,7 @@ func Test_enumerable_Cast(t *testing.T) {
 	})
 
 	t.Run("float64", func(t *testing.T) {
-		eSrc := NewIEnumerable[float64](5.0, 3.0).WithDefaultComparers()
+		eSrc := NewIEnumerable[float64](5.0, 3.0)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v float64) any {
@@ -143,8 +140,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, float64(5.0), eGot.data[0])
 		assert.Equal(t, float64(3.0), eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
@@ -159,12 +155,11 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, float64(math.MaxUint32), eGot.data[0])
 		assert.Equal(t, float64(3.0), eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 	})
 
 	t.Run("string", func(t *testing.T) {
-		eSrc := NewIEnumerable[string]("5", "3").WithDefaultComparers()
+		eSrc := NewIEnumerable[string]("5", "3")
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v string) any {
@@ -174,8 +169,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, "5", eGot.data[0])
 		assert.Equal(t, "3", eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 
@@ -186,7 +180,7 @@ func Test_enumerable_Cast(t *testing.T) {
 	})
 
 	t.Run("bool", func(t *testing.T) {
-		eSrc := NewIEnumerable[bool](true, false).WithDefaultComparers()
+		eSrc := NewIEnumerable[bool](true, false)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(v bool) any {
@@ -196,8 +190,7 @@ func Test_enumerable_Cast(t *testing.T) {
 		assert.Equal(t, true, eGot.data[0])
 		assert.Equal(t, false, eGot.data[1])
 
-		assert.Nil(t, eGot.equalityComparer)
-		assert.Nil(t, eGot.lessComparer)
+		assert.NotNil(t, eGot.defaultComparer)
 
 		bSrc.assertUnchanged(t, eSrc)
 
@@ -208,7 +201,7 @@ func Test_enumerable_Cast(t *testing.T) {
 	})
 
 	t.Run("panic message when nil value", func(t *testing.T) {
-		eSrc := NewIEnumerable[int32](2, 3).WithDefaultComparers()
+		eSrc := NewIEnumerable[int32](2, 3)
 
 		defer func() {
 			err := recover()

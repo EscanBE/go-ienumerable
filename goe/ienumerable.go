@@ -15,9 +15,7 @@ type enumerable[T any] struct {
 	data     []T
 	dataType string
 
-	equalityComparer func(d1, d2 T) bool
-	lessComparer     func(d1, d2 T) bool
-	defaultComparer  comparers.IComparer[any]
+	defaultComparer comparers.IComparer[any]
 }
 
 // NewIEnumerable returns an IEnumerable with the same type as data elements
