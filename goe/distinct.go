@@ -15,37 +15,52 @@ func (src *enumerable[T]) Distinct() IEnumerable[T] {
 	})
 }
 
-func (src *enumerable[T]) DistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
-	if equalityComparer == nil {
-		comparer := src.defaultComparer
-		if comparer == nil {
-			comparer = src.findDefaultComparer()
+func (src *enumerable[T]) DistinctBy(equalityOrComparer interface{}) IEnumerable[T] {
+	var isEquals EqualsFunc[T]
+
+	if equalityOrComparer != nil {
+		if eff, okEff := equalityOrComparer.(func(v1, v2 T) bool); okEff {
+			if eff != nil {
+				isEquals = eff
+			}
+		} else if eft, okEft := equalityOrComparer.(EqualsFunc[T]); okEft {
+			if eft != nil {
+				isEquals = eft
+			}
+		} else if cff, okCff := equalityOrComparer.(func(v1, v2 T) int); okCff {
+			if cff != nil {
+				isEquals = func(v1, v2 T) bool {
+					return cff(v1, v2) == 0
+				}
+			}
+		} else if cft, okCft := equalityOrComparer.(CompareFunc[T]); okCft {
+			if cft != nil {
+				isEquals = func(v1, v2 T) bool {
+					return cft(v1, v2) == 0
+				}
+			}
+		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
+			if cpr != nil {
+				isEquals = func(v1, v2 T) bool {
+					return cpr.Compare(v1, v2) == 0
+				}
+			}
+		} else {
+			panic(getErrorComparerMustBeEqualsFuncOrIComparer())
 		}
-		equalityComparer = func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) == 0
+	}
+
+	if isEquals == nil {
+		defaultComparer := src.defaultComparer
+		if defaultComparer == nil {
+			defaultComparer = src.findDefaultComparer()
+		}
+		isEquals = func(v1, v2 T) bool {
+			return defaultComparer.Compare(v1, v2) == 0
 		}
 	}
 
-	return src.internalDistinctBy(equalityComparer)
-}
-
-func (src *enumerable[T]) DistinctByComparer(comparer comparers.IComparer[T]) IEnumerable[T] {
-	src.assertSrcNonNil()
-
-	if comparer != nil {
-		return src.internalDistinctBy(func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) == 0
-		})
-	}
-
-	defaultComparer := src.defaultComparer
-	if defaultComparer == nil {
-		defaultComparer = src.findDefaultComparer()
-	}
-
-	return src.internalDistinctBy(func(v1, v2 T) bool {
-		return defaultComparer.Compare(v1, v2) == 0
-	})
+	return src.internalDistinctBy(isEquals)
 }
 
 func (src *enumerable[T]) internalDistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T] {

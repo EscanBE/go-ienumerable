@@ -160,6 +160,7 @@ func Test_enumerable_ContainsBy(t *testing.T) {
 		eSrc.defaultComparer = nil
 
 		assert.True(t, ieSrc.ContainsBy(3, nil))
+
 		var eff func(v1, v2 int) bool
 		assert.True(t, ieSrc.ContainsBy(3, eff))
 		var eft EqualsFunc[int]

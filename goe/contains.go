@@ -25,35 +25,35 @@ func (src *enumerable[T]) Contains(value T) bool {
 	return false
 }
 
-func (src *enumerable[T]) ContainsBy(value T, comparer interface{}) bool {
+func (src *enumerable[T]) ContainsBy(value T, equalityOrComparer interface{}) bool {
 	src.assertSrcNonNil()
 
-	var equalityComparer EqualsFunc[T]
+	var isEquals EqualsFunc[T]
 
-	if comparer != nil {
-		if eff, okEff := comparer.(func(v1, v2 T) bool); okEff {
+	if equalityOrComparer != nil {
+		if eff, okEff := equalityOrComparer.(func(v1, v2 T) bool); okEff {
 			if eff != nil {
-				equalityComparer = eff
+				isEquals = eff
 			}
-		} else if eft, okEft := comparer.(EqualsFunc[T]); okEft {
+		} else if eft, okEft := equalityOrComparer.(EqualsFunc[T]); okEft {
 			if eft != nil {
-				equalityComparer = eft
+				isEquals = eft
 			}
-		} else if cff, okCff := comparer.(func(v1, v2 T) int); okCff {
+		} else if cff, okCff := equalityOrComparer.(func(v1, v2 T) int); okCff {
 			if cff != nil {
-				equalityComparer = func(v1, v2 T) bool {
+				isEquals = func(v1, v2 T) bool {
 					return cff(v1, v2) == 0
 				}
 			}
-		} else if cft, okCft := comparer.(CompareFunc[T]); okCft {
+		} else if cft, okCft := equalityOrComparer.(CompareFunc[T]); okCft {
 			if cft != nil {
-				equalityComparer = func(v1, v2 T) bool {
+				isEquals = func(v1, v2 T) bool {
 					return cft(v1, v2) == 0
 				}
 			}
-		} else if cpr, okCpr := comparer.(comparers.IComparer[T]); okCpr {
+		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
 			if cpr != nil {
-				equalityComparer = func(v1, v2 T) bool {
+				isEquals = func(v1, v2 T) bool {
 					return cpr.Compare(v1, v2) == 0
 				}
 			}
@@ -62,12 +62,12 @@ func (src *enumerable[T]) ContainsBy(value T, comparer interface{}) bool {
 		}
 	}
 
-	if equalityComparer == nil {
+	if isEquals == nil {
 		defaultComparer := src.defaultComparer
 		if defaultComparer == nil {
 			defaultComparer = src.findDefaultComparer()
 		}
-		equalityComparer = func(v1, v2 T) bool {
+		isEquals = func(v1, v2 T) bool {
 			return defaultComparer.Compare(v1, v2) == 0
 		}
 	}
@@ -77,7 +77,7 @@ func (src *enumerable[T]) ContainsBy(value T, comparer interface{}) bool {
 	}
 
 	for _, d := range src.data {
-		if equalityComparer(value, d) {
+		if isEquals(value, d) {
 			return true
 		}
 	}
