@@ -78,6 +78,12 @@ func (src *enumerable[T]) assertSelectorNonNil(selector func(T) any) {
 	}
 }
 
+func (src *enumerable[T]) assertSelectorSameNonNil(selector func(T) T) {
+	if selector == nil {
+		panic(getErrorNilSelector())
+	}
+}
+
 func (src *enumerable[T]) assertArraySelectorNonNil(selector func(T) []any) {
 	if selector == nil {
 		panic(getErrorNilSelector())

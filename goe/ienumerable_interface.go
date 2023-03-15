@@ -315,6 +315,8 @@ type IEnumerable[T any] interface {
 	// OrderBy sorts the elements of a sequence in ascending order
 	// according to the provided less-than-comparer to compare values.
 	//
+	// Comparer must be: GreaterFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	//
 	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
 
@@ -354,7 +356,8 @@ type IEnumerable[T any] interface {
 	// Reverse inverts the order of the elements in a sequence.
 	Reverse() IEnumerable[T]
 
-	// Select projects each element of a sequence into a new form.
+	// Select projects each element of a sequence into a new form,
+	// if want to keep original data type, use SelectNewValue instead.
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types might be required.
@@ -376,6 +379,13 @@ type IEnumerable[T any] interface {
 	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
 	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
+
+	// SelectNewValue projects each element of a sequence into a new value , keep the original type.
+	//
+	// Notice:
+	//
+	// - Existing comparer from source will be brought along with new IEnumerable[T].
+	SelectNewValue(selector func(v T) T) IEnumerable[T]
 
 	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
 	//
