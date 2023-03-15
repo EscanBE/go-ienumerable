@@ -371,7 +371,6 @@ type IEnumerable[T any] interface {
 	Prepend(element T) IEnumerable[T]
 
 	// Repeat generates a new sequence that contains one repeated value.
-	// Comparers will be copied into the new IEnumerable[T].
 	//
 	// Panic if count is less than 0
 	Repeat(element T, count int) IEnumerable[T]
@@ -382,16 +381,46 @@ type IEnumerable[T any] interface {
 	// Select projects each element of a sequence into a new form.
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
-	// in just one command, so additional transform from 'any' to target types is required.
+	// in just one command, so additional transform from 'any' to target types might be required.
 	//
 	// There are some Cast* methods
 	// CastByte, CastInt, CastString, ... so can do combo like example:
 	//
 	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[any],
-	// a default comparer will be assigned automatically if able to resolve.
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any]
+	//
+	// - A default comparer will be assigned automatically if able to resolve.
+	//
+	// - It is not able to resolve default comparer for result type if sequence contains no element.
+	//
+	// - If not able to auto-resolve a default comparer for type of result,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
+
+	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
+	//
+	// The sample result value parameter is used to automatically detect comparer for type of result,
+	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
+	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	//
+	// Due to limitation of current Go, there is no way to directly cast into target type
+	// in just one command, so additional transform from 'any' to target types might be required.
+	//
+	// There are some Cast* methods
+	// CastByte, CastInt, CastString, ... so can do combo like example:
+	//
+	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
+	//
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any]
+	//
+	// - Panic if sample result value is nil or type not match with result element type
+	SelectWithSampleValueOfResult(selector func(v T) any, notNilSampleResultValue any) IEnumerable[any]
 
 	// SelectMany projects each element of a sequence to an IEnumerable[T]
 	// and flattens the resulting sequences into one sequence.
@@ -404,7 +433,13 @@ type IEnumerable[T any] interface {
 	//
 	// IEnumerable[[]int](src).SelectMany([]int{x,y} => []any{x * 2, y * 2}).CastInt() and will result IEnumerable[int]
 	//
-	// Notice: no comparer from source will be brought along with new IEnumerable[any]
+	// Notice:
+	//
+	// - Comparer from source will NOT be brought along with new IEnumerable[any]
+	//
+	// - A default comparer will be assigned automatically if able to resolve.
+	//
+	// - If not able to auto-resolve, you might need to specify comparers.IComparer manually
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
 	// Single returns the only element of a sequence,

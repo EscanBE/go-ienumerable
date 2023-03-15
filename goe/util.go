@@ -91,6 +91,16 @@ func getErrorNilSelector() error {
 	return fmt.Errorf("selector is nil")
 }
 
+func (src *enumerable[T]) assertSampleResultValueNonNil(sampleResultValue any) {
+	if sampleResultValue == nil {
+		panic(getErrorSampleValueIsNil())
+	}
+}
+
+func getErrorSampleValueIsNil() error {
+	return fmt.Errorf("sample result value is nil")
+}
+
 func (src *enumerable[T]) assertAggregateFuncNonNil(f func(T, T) T) {
 	if f == nil {
 		panic(getErrorNilAggregateFunc())
