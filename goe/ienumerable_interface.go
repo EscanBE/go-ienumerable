@@ -315,7 +315,7 @@ type IEnumerable[T any] interface {
 	// OrderBy sorts the elements of a sequence in ascending order
 	// according to the provided less-than-comparer to compare values.
 	//
-	// Comparer must be: GreaterFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// Comparer must be: LessFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
@@ -377,14 +377,12 @@ type IEnumerable[T any] interface {
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
 	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
-	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
 
 	// SelectNewValue projects each element of a sequence into a new value , keep the original type.
 	//
-	// Notice:
-	//
-	// - Existing comparer from source will be brought along with new IEnumerable[T].
+	// Notice: Existing comparer from source will be brought along with the new IEnumerable[T].
 	SelectNewValue(selector func(v T) T) IEnumerable[T]
 
 	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
@@ -392,7 +390,7 @@ type IEnumerable[T any] interface {
 	// The sample result value parameter is used to automatically detect comparer for type of result
 	// and must be the same type with every value yields from selector,
 	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
-	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// thus panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types might be required.
@@ -430,7 +428,7 @@ type IEnumerable[T any] interface {
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
 	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
-	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
@@ -441,7 +439,7 @@ type IEnumerable[T any] interface {
 	// The sample result value parameter is used to automatically detect comparer for type of result
 	// and must be the same type with every value yields from selector,
 	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
-	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// thus panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types might be required.
@@ -497,13 +495,9 @@ type IEnumerable[T any] interface {
 	SkipLast(count int) IEnumerable[T]
 
 	// SkipWhile bypasses elements in a sequence as long as a specified condition is true
-	// and then returns the remaining elements.
-	SkipWhile(predicate func(value T) bool) IEnumerable[T]
-
-	// SkipWhileWidx bypasses elements in a sequence as long as a specified condition is true
-	// and then returns the remaining elements.
-	// The element's index is used in the logic of the predicate function.
-	SkipWhileWidx(predicate func(value T, index int) bool) IEnumerable[T]
+	//
+	// The predicate param is required, must be either: Predicate[T] or PredicateWithIndex[T].
+	SkipWhile(predicate interface{}) IEnumerable[T]
 
 	// SumInt32 computes the sum of a sequence of integer values.
 	//
@@ -549,7 +543,7 @@ type IEnumerable[T any] interface {
 
 	// TakeWhile returns elements from a sequence as long as a specified condition is true.
 	//
-	// The predicate param is required, must be: Predicate[T] or PredicateWithIndex[T].
+	// The predicate param is required, must be either: Predicate[T] or PredicateWithIndex[T].
 	TakeWhile(predicate interface{}) IEnumerable[T]
 
 	// ToArray creates an array from a IEnumerable[T].

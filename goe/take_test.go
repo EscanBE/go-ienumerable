@@ -152,6 +152,19 @@ func Test_enumerable_TakeWhile(t *testing.T) {
 		})
 	}
 
+	t.Run("match by index", func(t *testing.T) {
+		ieSrc := createIntEnumerable(100, 120)
+
+		got := ieSrc.TakeWhile(func(_, index int) bool {
+			return index < 5
+		})
+
+		want := createIntEnumerable(100, 104)
+		if !assert.True(t, reflect.DeepEqual(want.ToArray(), got.ToArray())) {
+			fmt.Printf("Want: [%v]\nGot:  [%v]", want.ToArray(), got.ToArray())
+		}
+	})
+
 	t.Run("not accepting nil predicate", func(t *testing.T) {
 		ieSrc := createIntEnumerable(1, 10)
 
