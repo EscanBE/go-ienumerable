@@ -299,13 +299,13 @@ type IEnumerable[T any] interface {
 	Min() T
 
 	// MinBy returns the minimum value in a sequence
-	// according to provided less-than-comparer to compare values.
+	// according to the provided less-than-comparer to compare values.
 	//
 	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	MinBy(lessComparer func(left, right T) bool) T
 
 	// MinByComparer returns the minimum value in a sequence
-	// according to provided comparers.IComparer[T] to compare values.
+	// according to the provided comparers.IComparer[T] to compare values.
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	MinByComparer(comparer comparers.IComparer[T]) T
@@ -318,25 +318,35 @@ type IEnumerable[T any] interface {
 	Max() T
 
 	// MaxBy returns the greatest value in a sequence
-	// according to provided greater-than-comparer to compare values.
+	// according to the provided greater-than-comparer to compare values.
 	//
 	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
 	MaxBy(greaterComparer func(left, right T) bool) T
 
 	// MaxByComparer returns the greatest value in a sequence
-	// according to provided comparers.IComparer[T] to compare values.
+	// according to the provided comparers.IComparer[T] to compare values.
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	MaxByComparer(comparer comparers.IComparer[T]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
-	// Require: less comparer provided via WithLessComparer
+	// Require: type must be registered for default comparer
+	// or already set via WithDefaultComparer or WithComparerFrom,
+	// otherwise panic.
 	Order() IEnumerable[T]
 
-	// OrderBy sorts the elements of a sequence in ascending order.
-	// specified less comparer to compare values.
+	// OrderBy sorts the elements of a sequence in ascending order
+	// according to the provided less-than-comparer to compare values.
+	//
+	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
+
+	// OrderByComparer sorts the elements of a sequence in ascending order
+	// according to the provided comparers.IComparer[T] to compare values.
+	//
+	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
+	OrderByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
 
 	// OrderByDescending sorts the elements of a sequence in descending order.
 	//
