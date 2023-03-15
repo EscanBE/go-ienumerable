@@ -300,14 +300,10 @@ type IEnumerable[T any] interface {
 	// MaxBy returns the greatest value in a sequence
 	// according to the provided greater-than-comparer to compare values.
 	//
-	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
-	MaxBy(greaterComparer func(left, right T) bool) T
-
-	// MaxByComparer returns the greatest value in a sequence
-	// according to the provided comparers.IComparer[T] to compare values.
+	// Comparer must be: GreaterFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MaxByComparer(comparer comparers.IComparer[T]) T
+	MaxBy(greaterThanOrComparer interface{}) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//

@@ -183,4 +183,22 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 		var badFunc func(v int) bool
 		ieSrc.ContainsBy(1, badFunc)
 	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc LessFunc[int]
+		ieSrc.ContainsBy(1, badFunc)
+	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc GreaterFunc[int]
+		ieSrc.ContainsBy(1, badFunc)
+	})
 }

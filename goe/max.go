@@ -16,41 +16,55 @@ func (src *enumerable[T]) Max() T {
 	})
 }
 
-func (src *enumerable[T]) MaxBy(greaterComparer func(left, right T) bool) T {
+func (src *enumerable[T]) MaxBy(greaterThanOrComparer interface{}) T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
 
-	if greaterComparer == nil {
-		comparer := src.defaultComparer
-		if comparer == nil {
-			comparer = src.findDefaultComparer()
+	var isGreaterThan GreaterFunc[T]
+
+	if greaterThanOrComparer != nil {
+		if gff, okGff := greaterThanOrComparer.(func(v1, v2 T) bool); okGff {
+			if gff != nil {
+				isGreaterThan = gff
+			}
+		} else if gft, okGft := greaterThanOrComparer.(GreaterFunc[T]); okGft {
+			if gft != nil {
+				isGreaterThan = gft
+			}
+		} else if cff, okCff := greaterThanOrComparer.(func(v1, v2 T) int); okCff {
+			if cff != nil {
+				isGreaterThan = func(v1, v2 T) bool {
+					return cff(v1, v2) > 0
+				}
+			}
+		} else if cft, okCft := greaterThanOrComparer.(CompareFunc[T]); okCft {
+			if cft != nil {
+				isGreaterThan = func(v1, v2 T) bool {
+					return cft(v1, v2) > 0
+				}
+			}
+		} else if cpr, okCpr := greaterThanOrComparer.(comparers.IComparer[T]); okCpr {
+			if cpr != nil {
+				isGreaterThan = func(v1, v2 T) bool {
+					return cpr.Compare(v1, v2) > 0
+				}
+			}
+		} else {
+			panic(getErrorComparerMustBeLessThanFuncOrIComparer())
 		}
-		greaterComparer = func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) > 0
+	}
+
+	if isGreaterThan == nil {
+		defaultComparer := src.defaultComparer
+		if defaultComparer == nil {
+			defaultComparer = src.findDefaultComparer()
+		}
+		isGreaterThan = func(v1, v2 T) bool {
+			return defaultComparer.Compare(v1, v2) > 0
 		}
 	}
 
-	return src.internalMaxBy(greaterComparer)
-}
-
-func (src *enumerable[T]) MaxByComparer(comparer comparers.IComparer[T]) T {
-	src.assertSrcNonNil()
-	src.assertSrcNonEmpty()
-
-	if comparer != nil {
-		return src.internalMaxBy(func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) > 0
-		})
-	}
-
-	defaultComparer := src.defaultComparer
-	if defaultComparer == nil {
-		defaultComparer = src.findDefaultComparer()
-	}
-
-	return src.internalMaxBy(func(v1, v2 T) bool {
-		return defaultComparer.Compare(v1, v2) > 0
-	})
+	return src.internalMaxBy(isGreaterThan)
 }
 
 func (src *enumerable[T]) internalMaxBy(greaterComparer func(left, right T) bool) T {
@@ -58,14 +72,14 @@ func (src *enumerable[T]) internalMaxBy(greaterComparer func(left, right T) bool
 	src.assertSrcNonEmpty()
 	src.assertComparerNonNil(greaterComparer)
 
-	Max := src.data[0]
+	max := src.data[0]
 
 	for i := 1; i < len(src.data); i++ {
 		ele := src.data[i]
-		if greaterComparer(ele, Max) {
-			Max = ele
+		if greaterComparer(ele, max) {
+			max = ele
 		}
 	}
 
-	return Max
+	return max
 }

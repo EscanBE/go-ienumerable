@@ -129,10 +129,10 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 
 		assert.Equal(t, -3, ieSrc.MinBy(nil))
 
-		var eff func(v1, v2 int) bool
-		assert.Equal(t, -3, ieSrc.MinBy(eff))
-		var eft LessFunc[int]
-		assert.Equal(t, -3, ieSrc.MinBy(eft))
+		var lff func(v1, v2 int) bool
+		assert.Equal(t, -3, ieSrc.MinBy(lff))
+		var lft LessFunc[int]
+		assert.Equal(t, -3, ieSrc.MinBy(lft))
 
 		var cff func(v1, v2 int) int
 		assert.Equal(t, -3, ieSrc.MinBy(cff))
@@ -167,6 +167,24 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 		defer deferExpectPanicContains(t, "comparer must be", true)
 
 		var badFunc func(v int) bool
+		ieSrc.MinBy(badFunc)
+	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc GreaterFunc[int]
+		ieSrc.MinBy(badFunc)
+	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc EqualsFunc[int]
 		ieSrc.MinBy(badFunc)
 	})
 
