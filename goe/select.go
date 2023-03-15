@@ -48,10 +48,15 @@ func (src *enumerable[T]) SelectWithSampleValueOfResult(selector func(v T) any, 
 	if len(src.data) > 0 {
 		for i, d := range src.data {
 			v := selector(d)
-			newData[i] = v
-			resultType := fmt.Sprintf("%T", v)
-			if sampleResultType != resultType {
-				panic(fmt.Sprintf("sample result is type [%s] but got result %v of type [%s]", sampleResultType, v, resultType))
+			if v != nil {
+				newData[i] = v
+
+				resultType := fmt.Sprintf("%T", v)
+				if sampleResultType != resultType {
+					panic(fmt.Sprintf("sample result is type [%s] but got result %v of type [%s]", sampleResultType, v, resultType))
+				}
+			} else {
+				newData[i] = nil
 			}
 		}
 	}

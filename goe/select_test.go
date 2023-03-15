@@ -9,7 +9,7 @@ import (
 
 func Test_enumerable_Select(t *testing.T) {
 	t.Run("int8", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8](2, 3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](2, 3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(i int8) any {
@@ -31,7 +31,7 @@ func Test_enumerable_Select(t *testing.T) {
 	})
 
 	t.Run("string", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8](2, 3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](2, 3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(i int8) any {
@@ -53,7 +53,7 @@ func Test_enumerable_Select(t *testing.T) {
 	})
 
 	t.Run("empty", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8]().WithDefaultComparers()
+		eSrc := NewIEnumerable[int8]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.Select(func(i int8) any {
@@ -72,7 +72,7 @@ func Test_enumerable_Select(t *testing.T) {
 	})
 
 	t.Run("nil selector", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8]().WithDefaultComparers()
+		eSrc := NewIEnumerable[int8]()
 
 		defer deferWantPanicDepends(t, true)
 
@@ -99,11 +99,34 @@ func Test_enumerable_Select(t *testing.T) {
 		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[0], 3*time.Minute))
 		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[1], 1*time.Minute))
 	})
+
+	t.Run("not panic if not able to detect comparer", func(t *testing.T) {
+		type MyInt struct {
+			Value int
+		}
+
+		ieSrc := NewIEnumerable[int](3, 1)
+
+		ieGot := ieSrc.Select(func(i int) any {
+			return MyInt{
+				Value: i,
+			}
+		})
+
+		gotArray := ieGot.ToArray()
+
+		assert.Equal(t, 3, gotArray[0].(MyInt).Value)
+		assert.Equal(t, 1, gotArray[1].(MyInt).Value)
+
+		eGot := e[any](ieGot)
+		assert.Equal(t, "goe.MyInt", eGot.dataType)
+		assert.Nil(t, eGot.defaultComparer)
+	})
 }
 
 func Test_enumerable_SelectWithSampleValueOfResult(t *testing.T) {
 	t.Run("int8", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8](2, 3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](2, 3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.SelectWithSampleValueOfResult(func(i int8) any {
@@ -125,7 +148,7 @@ func Test_enumerable_SelectWithSampleValueOfResult(t *testing.T) {
 	})
 
 	t.Run("string", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8](2, 3, 4, 5).WithDefaultComparers()
+		eSrc := NewIEnumerable[int8](2, 3, 4, 5)
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.SelectWithSampleValueOfResult(func(i int8) any {
@@ -147,7 +170,7 @@ func Test_enumerable_SelectWithSampleValueOfResult(t *testing.T) {
 	})
 
 	t.Run("empty", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8]().WithDefaultComparers()
+		eSrc := NewIEnumerable[int8]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
 		eGot := eSrc.SelectWithSampleValueOfResult(func(i int8) any {
@@ -158,15 +181,14 @@ func Test_enumerable_SelectWithSampleValueOfResult(t *testing.T) {
 		assert.Len(t, gotData, 0)
 
 		gotE := e[any](eGot)
-		assert.Nil(t, gotE.equalityComparer)
-		assert.Nil(t, gotE.lessComparer)
+		assert.NotNil(t, gotE.defaultComparer)
 		assert.Equal(t, "int64", gotE.dataType)
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
 	t.Run("nil selector", func(t *testing.T) {
-		eSrc := NewIEnumerable[int8]().WithDefaultComparers()
+		eSrc := NewIEnumerable[int8]()
 
 		defer deferWantPanicDepends(t, true)
 
@@ -192,6 +214,26 @@ func Test_enumerable_SelectWithSampleValueOfResult(t *testing.T) {
 		assert.Equal(t, -1, eGot.defaultComparer.Compare(gotArray[1], gotArray[0]))
 		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[0], 3*time.Minute))
 		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[1], 1*time.Minute))
+	})
+
+	t.Run("nil value as result of selector is ok", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](9, 3)
+
+		ieGot := ieSrc.SelectWithSampleValueOfResult(func(i int) any {
+			return nil
+		}, time.Duration(0))
+
+		gotArray := ieGot.ToArray()
+
+		assert.Len(t, gotArray, 2)
+		assert.Nil(t, gotArray[0])
+		assert.Nil(t, gotArray[1])
+
+		eGot := e[any](ieGot)
+		assert.Equal(t, "time.Duration", eGot.dataType)
+		assert.NotNil(t, eGot.defaultComparer)
+		assert.Equal(t, 1, eGot.defaultComparer.Compare(time.Minute, time.Second))
+		assert.Equal(t, -1, eGot.defaultComparer.Compare(time.Second, time.Minute))
 	})
 
 	t.Run("not panic if not able to detect comparer", func(t *testing.T) {

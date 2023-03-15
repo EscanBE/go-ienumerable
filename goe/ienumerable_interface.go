@@ -403,7 +403,8 @@ type IEnumerable[T any] interface {
 
 	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
 	//
-	// The sample result value parameter is used to automatically detect comparer for type of result,
+	// The sample result value parameter is used to automatically detect comparer for type of result
+	// and must be the same type with every value yields from selector,
 	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
 	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
 	//
@@ -439,7 +440,11 @@ type IEnumerable[T any] interface {
 	//
 	// - A default comparer will be assigned automatically if able to resolve.
 	//
-	// - If not able to auto-resolve, you might need to specify comparers.IComparer manually
+	// - It is not able to resolve default comparer for result type if sequence contains no element.
+	//
+	// - If not able to auto-resolve a default comparer for type of result,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
 	// Single returns the only element of a sequence,
