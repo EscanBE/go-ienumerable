@@ -50,7 +50,7 @@ func (src *enumerable[T]) MaxBy(greaterThanOrComparer interface{}) T {
 				}
 			}
 		} else {
-			panic(getErrorComparerMustBeLessThanFuncOrIComparer())
+			panic(getErrorComparerMustBeGreaterThanFuncOrIComparer())
 		}
 	}
 

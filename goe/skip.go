@@ -48,7 +48,7 @@ func (src *enumerable[T]) SkipWhile(predicate func(value T) bool) IEnumerable[T]
 
 func (src *enumerable[T]) SkipWhileWidx(predicate func(value T, index int) bool) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertPredicate2NonNil(predicate)
+	src.assertPredicateNonNil(predicate)
 
 	if len(src.data) > 0 {
 		for i, d := range src.data {

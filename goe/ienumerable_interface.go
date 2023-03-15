@@ -548,11 +548,9 @@ type IEnumerable[T any] interface {
 	TakeLast(count int) IEnumerable[T]
 
 	// TakeWhile returns elements from a sequence as long as a specified condition is true.
-	TakeWhile(predicate func(value T) bool) IEnumerable[T]
-
-	// TakeWhileWidx returns elements from a sequence as long as a specified condition is true.
-	// The element's index is used in the logic of the predicate function.
-	TakeWhileWidx(predicate func(value T, index int) bool) IEnumerable[T]
+	//
+	// The predicate param is required, must be: Predicate[T] or PredicateWithIndex[T].
+	TakeWhile(predicate interface{}) IEnumerable[T]
 
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T

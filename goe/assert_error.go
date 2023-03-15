@@ -46,15 +46,28 @@ func (_ *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
 	}
 }
 
-func (src *enumerable[T]) assertPredicateNonNil(predicate func(T) bool) {
+//goland:noinspection SpellCheckingInspection
+func (src *enumerable[T]) assertPredicateNonNil(predicate interface{}) {
 	if predicate == nil {
 		panic(getErrorNilPredicate())
-	}
-}
-
-func (src *enumerable[T]) assertPredicate2NonNil(predicate func(T, int) bool) {
-	if predicate == nil {
-		panic(getErrorNilPredicate())
+	} else if pff, okPff := predicate.(func(value T) bool); okPff {
+		if pff == nil {
+			panic(getErrorNilPredicate())
+		}
+	} else if pft, okPft := predicate.(Predicate[T]); okPft {
+		if pft == nil {
+			panic(getErrorNilPredicate())
+		}
+	} else if piff, okPiff := predicate.(func(value T, index int) bool); okPiff {
+		if piff == nil {
+			panic(getErrorNilPredicate())
+		}
+	} else if pift, okPift := predicate.(PredicateWithIndex[T]); okPift {
+		if pift == nil {
+			panic(getErrorNilPredicate())
+		}
+	} else {
+		panic(getErrorPredicateMustBePredicate())
 	}
 }
 
@@ -138,4 +151,12 @@ func getErrorComparerMustBeEqualsFuncOrIComparer() error {
 
 func getErrorComparerMustBeLessThanFuncOrIComparer() error {
 	return fmt.Errorf("comparer must be\n- less-than function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
+}
+
+func getErrorComparerMustBeGreaterThanFuncOrIComparer() error {
+	return fmt.Errorf("comparer must be\n- greater-than function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
+}
+
+func getErrorPredicateMustBePredicate() error {
+	return fmt.Errorf("predicate must be\n- single predicate function: func(value T) bool\n- or predicate with index: func(value T, index int) bool")
 }
