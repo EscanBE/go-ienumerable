@@ -1,6 +1,9 @@
 package goe
 
-import "sort"
+import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"sort"
+)
 
 // ensure implementation
 var _ IOrderedEnumerable[any] = &orderedEnumerable[any]{}
@@ -11,8 +14,8 @@ type orderedEnumerable[T any] struct {
 }
 
 type chainableComparer[T any] struct {
-	compare   func(v1, v2 T) int
-	orderType chainableComparerOrderType
+	compareFunc CompareFunc[T]
+	orderType   chainableComparerOrderType
 }
 
 type chainableComparerOrderType byte
@@ -24,33 +27,25 @@ const (
 )
 
 // newIOrderedEnumerable returns a new IOrderedEnumerable with the same type as data elements
-func newIOrderedEnumerable[T any](src IEnumerable[T], comparer func(v1, v2 T) int, orderType chainableComparerOrderType) IOrderedEnumerable[T] {
-	return &orderedEnumerable[T]{
+func newIOrderedEnumerable[T any](src IEnumerable[T], compareFuncOrComparer interface{}, orderType chainableComparerOrderType) IOrderedEnumerable[T] {
+	return (&orderedEnumerable[T]{
 		sourceIEnumerable: src,
-		chainableComparers: []chainableComparer[T]{
-			{
-				compare:   comparer,
-				orderType: orderType,
-			},
-		},
-	}
+	}).chainMoreComparer(compareFuncOrComparer, orderType)
 }
 
-func (o *orderedEnumerable[T]) ThenBy(comparer func(v1 T, v2 T) int) IOrderedEnumerable[T] {
+func (o *orderedEnumerable[T]) ThenBy(compareFuncOrComparer interface{}) IOrderedEnumerable[T] {
 	o.assertSrcNonNil()
-	o.assertComparerNonNil(comparer)
 
-	return o.chainMoreLessComparer(comparer, CLC_ASC)
+	return o.chainMoreComparer(compareFuncOrComparer, CLC_ASC)
 }
 
-func (o *orderedEnumerable[T]) ThenByDescending(comparer func(v1 T, v2 T) int) IOrderedEnumerable[T] {
+func (o *orderedEnumerable[T]) ThenByDescending(compareFuncOrComparer interface{}) IOrderedEnumerable[T] {
 	o.assertSrcNonNil()
-	o.assertComparerNonNil(comparer)
 
-	return o.chainMoreLessComparer(comparer, CLC_DESC)
+	return o.chainMoreComparer(compareFuncOrComparer, CLC_DESC)
 }
 
-func (o *orderedEnumerable[T]) GetEnumerable() IEnumerable[T] {
+func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 	o.assertSrcNonNil()
 
 	e := o.sourceIEnumerable.(*enumerable[T])
@@ -72,7 +67,7 @@ func (o *orderedEnumerable[T]) GetEnumerable() IEnumerable[T] {
 					v2 = copied[i]
 				}
 
-				compareResult := comparer.compare(v1, v2)
+				compareResult := comparer.compareFunc(v1, v2)
 				if compareResult < 0 {
 					return true
 				}
@@ -91,24 +86,41 @@ func (o *orderedEnumerable[T]) GetEnumerable() IEnumerable[T] {
 	return result
 }
 
-func (o *orderedEnumerable[T]) chainMoreLessComparer(comparer func(v1 T, v2 T) int, orderType chainableComparerOrderType) *orderedEnumerable[T] {
+func (o *orderedEnumerable[T]) chainMoreComparer(compareFuncOrComparer interface{}, orderType chainableComparerOrderType) *orderedEnumerable[T] {
+	var compareFunc CompareFunc[T]
+
+	if compareFuncOrComparer == nil {
+		panic(getErrorNilComparer())
+	} else if cff, okCff := compareFuncOrComparer.(func(v1, v2 T) int); okCff {
+		if cff == nil {
+			panic(getErrorNilComparer())
+		}
+
+		compareFunc = cff
+	} else if cft, okCft := compareFuncOrComparer.(CompareFunc[T]); okCft {
+		if cft == nil {
+			panic(getErrorNilComparer())
+		}
+
+		compareFunc = cft
+	} else if cpr, okCpr := compareFuncOrComparer.(comparers.IComparer[T]); okCpr {
+		/* This will never reach since comparers.IComparer[T] is an interface and there is a nil check above
+		if cpr == nil {
+			panic(getErrorNilComparer())
+		}
+		*/
+		compareFunc = func(v1, v2 T) int {
+			return cpr.Compare(v1, v2)
+		}
+	} else {
+		panic(getErrorComparerMustBeCompareFuncOrIComparer())
+	}
+
 	return &orderedEnumerable[T]{
 		sourceIEnumerable: o.sourceIEnumerable,
 		chainableComparers: append(copySlice(o.chainableComparers), chainableComparer[T]{
-			compare:   comparer,
-			orderType: orderType,
+			compareFunc: compareFunc,
+			orderType:   orderType,
 		}),
-	}
-}
-
-func (o *orderedEnumerable[T]) assertSrcNonNil() {
-	if o == nil {
-		panic(getErrorSourceIsNil())
-	}
-}
-
-func (_ *orderedEnumerable[T]) assertComparerNonNil(lessComparer func(v1 T, v2 T) int) {
-	if lessComparer == nil {
-		panic(getErrorNilComparer())
 	}
 }
