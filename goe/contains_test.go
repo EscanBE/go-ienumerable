@@ -135,9 +135,8 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 	}
 
 	t.Run("auto-resolve comparer if default comparer not set", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4)
-		eSrc := e[int](ieSrc)
-		eSrc.defaultComparer = nil
+		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4).
+			WithDefaultComparer(nil)
 
 		assert.True(t, ieSrc.Contains(3))
 
@@ -155,6 +154,8 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 
 		var comparer comparers.IComparer[int]
 		assert.True(t, ieSrc.ContainsBy(3, comparer))
+
+		assert.Nil(t, e[int](ieSrc).defaultComparer)
 	})
 
 	t.Run("panic if no default resolver (Contains)", func(t *testing.T) {

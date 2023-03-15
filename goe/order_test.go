@@ -61,8 +61,8 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 			bSrc.assertUnchanged(t, tt.source)
 
 			// auto resolve when comparer not set
-			cpSrc := tt.source.CastInt()
-			e[int](cpSrc).defaultComparer = nil
+			cpSrc := tt.source.CastInt().
+				WithDefaultComparer(nil)
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
@@ -73,6 +73,8 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 			}
 
 			bSrc.assertUnchanged(t, cpSrc)
+
+			assert.Nil(t, e[int](cpSrc).defaultComparer)
 		})
 		t.Run(fmt.Sprintf("OrderBy_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
@@ -86,8 +88,8 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 			bSrc.assertUnchanged(t, tt.source)
 
 			// auto resolve when comparer not set
-			cpSrc := tt.source.CastInt()
-			e[int](cpSrc).defaultComparer = nil
+			cpSrc := tt.source.CastInt().
+				WithDefaultComparer(nil)
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
@@ -98,6 +100,8 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 			}
 
 			bSrc.assertUnchanged(t, cpSrc)
+
+			assert.Nil(t, e[int](cpSrc).defaultComparer)
 		})
 		t.Run(fmt.Sprintf("OrderByComparer_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
@@ -111,8 +115,8 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 			bSrc.assertUnchanged(t, tt.source)
 
 			// auto resolve when comparer not set
-			cpSrc := tt.source.CastInt()
-			e[int](cpSrc).defaultComparer = nil
+			cpSrc := tt.source.CastInt().
+				WithDefaultComparer(nil)
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
@@ -123,6 +127,8 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 			}
 
 			bSrc.assertUnchanged(t, cpSrc)
+
+			assert.Nil(t, e[int](cpSrc).defaultComparer)
 		})
 	}
 
@@ -207,8 +213,8 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 			bSrc.assertUnchanged(t, tt.source)
 
 			// auto resolve when comparer not set
-			cpSrc := tt.source.CastInt()
-			e[int](cpSrc).defaultComparer = nil
+			cpSrc := tt.source.CastInt().
+				WithDefaultComparer(nil)
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
@@ -219,6 +225,8 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 			}
 
 			bSrc.assertUnchanged(t, cpSrc)
+
+			assert.Nil(t, e[int](cpSrc).defaultComparer)
 		})
 		t.Run(fmt.Sprintf("OrderByDescendingBy_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
@@ -232,8 +240,8 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 			bSrc.assertUnchanged(t, tt.source)
 
 			// auto resolve when comparer not set
-			cpSrc := tt.source.CastInt()
-			e[int](cpSrc).defaultComparer = nil
+			cpSrc := tt.source.CastInt().
+				WithDefaultComparer(nil)
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
@@ -244,6 +252,8 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 			}
 
 			bSrc.assertUnchanged(t, cpSrc)
+
+			assert.Nil(t, e[int](cpSrc).defaultComparer)
 		})
 		t.Run(fmt.Sprintf("OrderByDescendingByComparer_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
@@ -257,8 +267,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 			bSrc.assertUnchanged(t, tt.source)
 
 			// auto resolve when comparer not set
-			cpSrc := tt.source.CastInt()
-			e[int](cpSrc).defaultComparer = nil
+			cpSrc := tt.source.CastInt().WithDefaultComparer(nil)
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
@@ -269,6 +278,8 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 			}
 
 			bSrc.assertUnchanged(t, cpSrc)
+
+			assert.Nil(t, e[int](cpSrc).defaultComparer)
 		})
 	}
 

@@ -7,118 +7,142 @@ import (
 	"testing"
 )
 
-func Test_enumerable_Union_UnionBy_UnionByComparer(t *testing.T) {
-	equalityComparer := func(i1, i2 int) bool {
+func Test_enumerable_Union_UnionBy(t *testing.T) {
+	fEquals := func(i1, i2 int) bool {
 		return i1 == i2
 	}
-
+	fCompare := func(v1, v2 int) int {
+		return comparers.IntComparer.Compare(v1, v2)
+	}
 	tests := []struct {
-		name             string
-		source           IEnumerable[int]
-		second           IEnumerable[int]
-		want             IEnumerable[int]
-		equalityComparer func(int, int) bool
-		comparer         comparers.IComparer[int]
-		panic            bool
+		name     string
+		source   IEnumerable[int]
+		second   IEnumerable[int]
+		want     IEnumerable[int]
+		fEquals  func(int, int) bool
+		fCompare func(int, int) int
+		comparer comparers.IComparer[int]
+		panic    bool
 	}{
 		{
-			name:             "union not any duplicated",
-			source:           NewIEnumerable[int](1, 2, 3),
-			second:           NewIEnumerable[int](4, 5, 6, 7),
-			want:             NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union not any duplicated",
+			source:   NewIEnumerable[int](1, 2, 3),
+			second:   NewIEnumerable[int](4, 5, 6, 7),
+			want:     NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "union with duplicated",
-			source:           NewIEnumerable[int](1, 2, 2, 3),
-			second:           NewIEnumerable[int](1, 3),
-			want:             NewIEnumerable[int](1, 2, 3),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union returns distinct",
+			source:   NewIEnumerable[int](5, 2, 2, 6),
+			second:   NewIEnumerable[int](1, 2, 2, 3),
+			want:     NewIEnumerable[int](5, 2, 6, 1, 3),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "no comparer",
-			source:           NewIEnumerable[int](1, 2, 3),
-			second:           NewIEnumerable[int](4, 5, 6, 7),
-			want:             NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7),
-			equalityComparer: nil,
-			comparer:         nil,
+			name:     "union with duplicated",
+			source:   NewIEnumerable[int](1, 2, 2, 3),
+			second:   NewIEnumerable[int](1, 3),
+			want:     NewIEnumerable[int](1, 2, 3),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "union one",
-			source:           NewIEnumerable[int](1, 1, 1, 1, 1),
-			second:           NewIEnumerable[int](1, 1, 1, 1),
-			want:             NewIEnumerable[int](1),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "no comparer",
+			source:   NewIEnumerable[int](1, 2, 3),
+			second:   NewIEnumerable[int](4, 5, 6, 7),
+			want:     NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7),
+			fEquals:  nil,
+			fCompare: nil,
+			comparer: nil,
 		},
 		{
-			name:             "union some",
-			source:           NewIEnumerable[int](2, 2, 2, 2, 3, 3, 3, 3),
-			second:           NewIEnumerable[int](1, 1, 1, 1, 1, 2, 3),
-			want:             NewIEnumerable[int](2, 3, 1),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union one",
+			source:   NewIEnumerable[int](1, 1, 1, 1, 1),
+			second:   NewIEnumerable[int](1, 1, 1, 1),
+			want:     NewIEnumerable[int](1),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "union all",
-			source:           NewIEnumerable[int](1, 2, 3, 5, 6, 6),
-			second:           NewIEnumerable[int](1, 1, 1, 3, 3, 3, 6, 6, 6, 5, 5, 5, 2, 2, 2),
-			want:             NewIEnumerable[int](1, 2, 3, 5, 6),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union some",
+			source:   NewIEnumerable[int](2, 2, 2, 2, 3, 3, 3, 3),
+			second:   NewIEnumerable[int](1, 1, 1, 1, 1, 2, 3),
+			want:     NewIEnumerable[int](2, 3, 1),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "union when source empty",
-			source:           NewIEnumerable[int](),
-			second:           NewIEnumerable[int](4, 5, 6, 7),
-			want:             NewIEnumerable[int](4, 5, 6, 7),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union all",
+			source:   NewIEnumerable[int](1, 2, 3, 5, 6, 6),
+			second:   NewIEnumerable[int](1, 1, 1, 3, 3, 3, 6, 6, 6, 5, 5, 5, 2, 2, 2),
+			want:     NewIEnumerable[int](1, 2, 3, 5, 6),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "union when second empty",
-			source:           NewIEnumerable[int](1, 2, 3),
-			second:           NewIEnumerable[int](),
-			want:             NewIEnumerable[int](1, 2, 3),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union when source empty",
+			source:   NewIEnumerable[int](),
+			second:   NewIEnumerable[int](4, 5, 6, 7),
+			want:     NewIEnumerable[int](4, 5, 6, 7),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "union when both empty",
-			source:           NewIEnumerable[int](),
-			second:           NewIEnumerable[int](),
-			want:             NewIEnumerable[int](),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
+			name:     "union when second empty",
+			source:   NewIEnumerable[int](1, 2, 3),
+			second:   NewIEnumerable[int](),
+			want:     NewIEnumerable[int](1, 2, 3),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "panic with nil src",
-			source:           nil,
-			second:           NewIEnumerable[int](4, 5, 6, 7),
-			want:             NewIEnumerable[int](),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
-			panic:            true,
+			name:     "union when both empty",
+			source:   NewIEnumerable[int](),
+			second:   NewIEnumerable[int](),
+			want:     NewIEnumerable[int](),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
 		},
 		{
-			name:             "panic with nil second",
-			source:           NewIEnumerable[int](1, 2, 3),
-			second:           nil,
-			want:             NewIEnumerable[int](),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
-			panic:            true,
+			name:     "panic with nil src",
+			source:   nil,
+			second:   NewIEnumerable[int](4, 5, 6, 7),
+			want:     NewIEnumerable[int](),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
+			panic:    true,
 		},
 		{
-			name:             "panic with both nil",
-			source:           nil,
-			second:           nil,
-			want:             NewIEnumerable[int](),
-			equalityComparer: equalityComparer,
-			comparer:         comparers.IntComparer,
-			panic:            true,
+			name:     "panic with nil second",
+			source:   NewIEnumerable[int](1, 2, 3),
+			second:   nil,
+			want:     NewIEnumerable[int](),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
+			panic:    true,
+		},
+		{
+			name:     "panic with both nil",
+			source:   nil,
+			second:   nil,
+			want:     NewIEnumerable[int](),
+			fEquals:  fEquals,
+			fCompare: fCompare,
+			comparer: comparers.IntComparer,
+			panic:    true,
 		},
 	}
 	for _, tt := range tests {
@@ -132,9 +156,9 @@ func Test_enumerable_Union_UnionBy_UnionByComparer(t *testing.T) {
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// Union
-			resultOfUnion2 := tt.source.Union(tt.second)
+			got := tt.source.Union(tt.second)
 
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfUnion2.ToArray()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)
@@ -149,28 +173,40 @@ func Test_enumerable_Union_UnionBy_UnionByComparer(t *testing.T) {
 			}
 			defer deferWantPanicDepends(t, tt.panic)
 
-			// Union
-			resultOfUnion2 := tt.source.UnionBy(tt.second, tt.equalityComparer)
+			// EqualsFunc
+			got := tt.source.UnionBy(tt.second, tt.fEquals)
 
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfUnion2.ToArray()))
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)
-		})
 
-		t.Run(tt.name+"_UnionByComparer", func(t *testing.T) {
-			bSource := backupForAssetUnchanged(tt.source)
-			bSecond := backupForAssetUnchanged(tt.second)
+			got = tt.source.UnionBy(tt.second, EqualsFunc[int](tt.fEquals))
 
-			if tt.panic && tt.source == nil {
-				return
-			}
-			defer deferWantPanicDepends(t, tt.panic)
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
-			// Union
-			resultOfUnion2 := tt.source.UnionByComparer(tt.second, tt.comparer)
+			bSource.assertUnchanged(t, tt.source)
+			bSecond.assertUnchanged(t, tt.second)
 
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), resultOfUnion2.ToArray()))
+			// CompareFunc
+			got = tt.source.UnionBy(tt.second, tt.fCompare)
+
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
+
+			bSource.assertUnchanged(t, tt.source)
+			bSecond.assertUnchanged(t, tt.second)
+
+			got = tt.source.UnionBy(tt.second, CompareFunc[int](tt.fCompare))
+
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
+
+			bSource.assertUnchanged(t, tt.source)
+			bSecond.assertUnchanged(t, tt.second)
+
+			// IComparer
+			got = tt.source.UnionBy(tt.second, tt.comparer)
+
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
 			bSource.assertUnchanged(t, tt.source)
 			bSecond.assertUnchanged(t, tt.second)
@@ -178,11 +214,8 @@ func Test_enumerable_Union_UnionBy_UnionByComparer(t *testing.T) {
 	}
 
 	t.Run("auto-resolve comparer if default comparer is nil", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](5, 2, 2, 6)
-		ieSecond := NewIEnumerable[int](1, 2, 2, 3)
-
-		ieSrc.WithDefaultComparer(nil)
-		ieSecond.WithDefaultComparer(nil)
+		ieSrc := NewIEnumerable[int](5, 2, 2, 6).WithDefaultComparer(nil)
+		ieSecond := NewIEnumerable[int](1, 2, 2, 3).WithDefaultComparer(nil)
 
 		bSource := backupForAssetUnchanged(ieSrc)
 		bSecond := backupForAssetUnchanged(ieSecond)
@@ -201,18 +234,6 @@ func Test_enumerable_Union_UnionBy_UnionByComparer(t *testing.T) {
 
 		// UnionBy
 		ieGot = ieSrc.UnionBy(ieSecond, nil)
-		assert.Equal(t, 5, ieGot.Count())
-		assert.Equal(t, 5, ieGot.ToArray()[0])
-		assert.Equal(t, 2, ieGot.ToArray()[1])
-		assert.Equal(t, 6, ieGot.ToArray()[2])
-		assert.Equal(t, 1, ieGot.ToArray()[3])
-		assert.Equal(t, 3, ieGot.ToArray()[4])
-
-		bSource.assertUnchanged(t, ieSrc)
-		bSecond.assertUnchanged(t, ieSecond)
-
-		// UnionByComparer
-		ieGot = ieSrc.UnionByComparer(ieSecond, nil)
 		assert.Equal(t, 5, ieGot.Count())
 		assert.Equal(t, 5, ieGot.ToArray()[0])
 		assert.Equal(t, 2, ieGot.ToArray()[1])
@@ -224,70 +245,48 @@ func Test_enumerable_Union_UnionBy_UnionByComparer(t *testing.T) {
 		bSecond.assertUnchanged(t, ieSecond)
 	})
 
-	t.Run("union returns distinct", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](5, 2, 2, 6)
-		ieSecond := NewIEnumerable[int](1, 2, 2, 3)
-		bSource := backupForAssetUnchanged(ieSrc)
-		bSecond := backupForAssetUnchanged(ieSecond)
+	t.Run("panic if no default resolver (Union)", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
 
-		// Union
-		ieGot := ieSrc.Union(ieSecond)
-		assert.Equal(t, 5, ieGot.Count())
-		assert.Equal(t, 5, ieGot.ToArray()[0])
-		assert.Equal(t, 2, ieGot.ToArray()[1])
-		assert.Equal(t, 6, ieGot.ToArray()[2])
-		assert.Equal(t, 1, ieGot.ToArray()[3])
-		assert.Equal(t, 3, ieGot.ToArray()[4])
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
-		bSource.assertUnchanged(t, ieSrc)
-		bSecond.assertUnchanged(t, ieSecond)
+		ieSrc.Union(ieSrc)
+	})
 
-		// UnionBy
-		ieGot = ieSrc.UnionBy(ieSecond, nil)
-		assert.Equal(t, 5, ieGot.Count())
-		assert.Equal(t, 5, ieGot.ToArray()[0])
-		assert.Equal(t, 2, ieGot.ToArray()[1])
-		assert.Equal(t, 6, ieGot.ToArray()[2])
-		assert.Equal(t, 1, ieGot.ToArray()[3])
-		assert.Equal(t, 3, ieGot.ToArray()[4])
+	t.Run("panic if no default resolver (UnionBy)", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
 
-		bSource.assertUnchanged(t, ieSrc)
-		bSecond.assertUnchanged(t, ieSecond)
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
-		ieGot = ieSrc.UnionBy(ieSecond, func(v1, v2 int) bool {
-			return v1 == v2
-		})
-		assert.Equal(t, 5, ieGot.Count())
-		assert.Equal(t, 5, ieGot.ToArray()[0])
-		assert.Equal(t, 2, ieGot.ToArray()[1])
-		assert.Equal(t, 6, ieGot.ToArray()[2])
-		assert.Equal(t, 1, ieGot.ToArray()[3])
-		assert.Equal(t, 3, ieGot.ToArray()[4])
+		ieSrc.UnionBy(ieSrc, nil)
+	})
 
-		bSource.assertUnchanged(t, ieSrc)
-		bSecond.assertUnchanged(t, ieSecond)
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int]()
 
-		// UnionByComparer
-		ieGot = ieSrc.UnionByComparer(ieSecond, nil)
-		assert.Equal(t, 5, ieGot.Count())
-		assert.Equal(t, 5, ieGot.ToArray()[0])
-		assert.Equal(t, 2, ieGot.ToArray()[1])
-		assert.Equal(t, 6, ieGot.ToArray()[2])
-		assert.Equal(t, 1, ieGot.ToArray()[3])
-		assert.Equal(t, 3, ieGot.ToArray()[4])
+		defer deferExpectPanicContains(t, "comparer must be", true)
 
-		bSource.assertUnchanged(t, ieSrc)
-		bSecond.assertUnchanged(t, ieSecond)
+		var badFunc func(v int) bool
+		ieSrc.UnionBy(ieSrc, badFunc)
+	})
 
-		ieGot = ieSrc.UnionByComparer(ieSecond, comparers.IntComparer)
-		assert.Equal(t, 5, ieGot.Count())
-		assert.Equal(t, 5, ieGot.ToArray()[0])
-		assert.Equal(t, 2, ieGot.ToArray()[1])
-		assert.Equal(t, 6, ieGot.ToArray()[2])
-		assert.Equal(t, 1, ieGot.ToArray()[3])
-		assert.Equal(t, 3, ieGot.ToArray()[4])
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
 
-		bSource.assertUnchanged(t, ieSrc)
-		bSecond.assertUnchanged(t, ieSecond)
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc LessFunc[int]
+		ieSrc.UnionBy(ieSrc, badFunc)
+	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc GreaterFunc[int]
+		ieSrc.UnionBy(ieSrc, badFunc)
 	})
 }

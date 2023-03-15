@@ -263,12 +263,48 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 		bSecond.assertUnchanged(t, ieSecond)
 	})
 
+	t.Run("panic if no default resolver (Intersect)", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
+
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
+
+		ieSrc.Intersect(ieSrc)
+	})
+
+	t.Run("panic if no default resolver (IntersectBy)", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64]()
+
+		defer deferExpectPanicContains(t, "no default comparer registered", true)
+
+		ieSrc.IntersectBy(ieSrc, nil)
+	})
+
 	t.Run("panic if not supported comparer", func(t *testing.T) {
 		ieSrc := NewIEnumerable[int]()
 
 		defer deferExpectPanicContains(t, "comparer must be", true)
 
 		var badFunc func(v int) bool
+		ieSrc.IntersectBy(ieSrc, badFunc)
+	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc LessFunc[int]
+		ieSrc.IntersectBy(ieSrc, badFunc)
+	})
+
+	t.Run("panic if not supported comparer", func(t *testing.T) {
+		ieSrc := NewIEnumerable[int](1)
+
+		defer deferExpectPanicContains(t, "comparer must be", true)
+
+		var badFunc GreaterFunc[int]
 		ieSrc.IntersectBy(ieSrc, badFunc)
 	})
 }

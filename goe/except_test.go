@@ -205,12 +205,10 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 	}
 
 	t.Run("auto-resolve comparer if default comparer not set", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](5, 2, 2, 6)
+		ieSrc := NewIEnumerable[int](5, 2, 2, 6).
+			WithDefaultComparer(nil)
 		ieSecond := NewIEnumerable[int](5, 6, 7, 8)
 		ieWant := NewIEnumerable[int](2)
-
-		eSrc := e[int](ieSrc)
-		eSrc.defaultComparer = nil
 
 		bSrc := backupForAssetUnchanged(ieSrc)
 
@@ -236,6 +234,8 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		bSrc.assertUnchanged(t, ieSrc)
+
+		assert.Nil(t, e[int](ieSrc).defaultComparer)
 	})
 
 	t.Run("panic if no default resolver (Except)", func(t *testing.T) {

@@ -113,11 +113,9 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 	}
 
 	t.Run("auto-resolve comparer if default comparer not set", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4)
+		ieSrc := NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4).
+			WithDefaultComparer(nil)
 		ieWant := NewIEnumerable[int](1, 2, 3, 6, 5, 4)
-
-		eSrc := e[int](ieSrc)
-		eSrc.defaultComparer = nil
 
 		bSrc := backupForAssetUnchanged(ieSrc)
 
@@ -144,6 +142,8 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 		var comparer comparers.IComparer[int]
 		got = ieSrc.DistinctBy(comparer)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
+
+		assert.Nil(t, e[int](ieSrc).defaultComparer)
 
 		bSrc.assertUnchanged(t, ieSrc)
 	})
