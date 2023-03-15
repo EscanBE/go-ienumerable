@@ -68,10 +68,15 @@ func (i int8Comparer) ComparePointerMode(x, y any) int {
 
 // AnyPointerToType convert *T or *any (*interface{}) into T, otherwise panic
 func AnyPointerToType[T any](p any) T {
-	if pT, ok := p.(*T); ok {
+	if pT, ok1 := p.(*T); ok1 {
 		return *pT
 	}
-	return (*p.(*any)).(T)
+
+	if pA, ok2 := p.(*any); ok2 {
+		return (*pA).(T)
+	}
+
+	return p.(T)
 }
 
 type uint8Comparer struct {

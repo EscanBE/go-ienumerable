@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math"
+	"math/big"
 	"testing"
 	"time"
 )
@@ -1202,4 +1203,53 @@ func testCompareBothModeFor[T any](t *testing.T, small, big T) {
 	assert.Equal(t, 1, comparer.ComparePointerMode(&small, nil))
 	assert.Equal(t, 0, comparer.ComparePointerMode(&small, &small))
 	assert.Equal(t, 0, comparer.ComparePointerMode(&big, &big))
+}
+
+func TestAnyPointerToPointerType(t *testing.T) {
+	iBi1 := new(big.Int)
+	iBi1.SetInt64(1)
+	testAnyPointerToPointerType(t, iBi1, 1, func(o *big.Int) interface{} {
+		return int(o.Int64())
+	})
+
+	iBf1 := new(big.Float)
+	iBf1.SetFloat64(1.1)
+	testAnyPointerToPointerType(t, iBf1, 1.1, func(o *big.Float) interface{} {
+		f, _ := o.Float64()
+		return f
+	})
+
+	testAnyPointerToPointerType(t, 99, 99, func(o int) interface{} {
+		return o
+	})
+
+	testAnyPointerToPointerType(t, "99", "99", func(o string) interface{} {
+		return o
+	})
+
+	testAnyPointerToPointerType(t, true, true, func(o bool) interface{} {
+		return o
+	})
+
+	testAnyPointerToPointerType(t, uint32(99), uint32(99), func(o uint32) interface{} {
+		return o
+	})
+}
+
+func testAnyPointerToPointerType[T any](t *testing.T, input T, expectInnerValue interface{}, innerValueExtractor func(output T) interface{}) {
+	// keep type as-is
+	output := AnyPointerToType[T](input)
+	assert.Equal(t, input, output)
+	assert.Equal(t, expectInnerValue, innerValueExtractor(output))
+
+	// cast type to any
+	anyInput := any(input)
+	output = AnyPointerToType[T](anyInput)
+	assert.Equal(t, input, output)
+	assert.Equal(t, expectInnerValue, innerValueExtractor(output))
+
+	// cast type to pointer of any
+	output = AnyPointerToType[T](&anyInput)
+	assert.Equal(t, input, output)
+	assert.Equal(t, expectInnerValue, innerValueExtractor(output))
 }
