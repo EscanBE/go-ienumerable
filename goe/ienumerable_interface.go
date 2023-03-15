@@ -285,14 +285,10 @@ type IEnumerable[T any] interface {
 	// MinBy returns the minimum value in a sequence
 	// according to the provided less-than-comparer to compare values.
 	//
-	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
-	MinBy(lessComparer func(left, right T) bool) T
-
-	// MinByComparer returns the minimum value in a sequence
-	// according to the provided comparers.IComparer[T] to compare values.
+	// Comparer must be: LessFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MinByComparer(comparer comparers.IComparer[T]) T
+	MinBy(lessThanOrComparer interface{}) T
 
 	// Max returns the greatest value in a sequence.
 	//

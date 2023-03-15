@@ -129,3 +129,7 @@ func getErrorNoMatch() error {
 func getErrorComparerMustBeEqualsFuncOrIComparer() error {
 	return fmt.Errorf("comparer must be\n- equals function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
 }
+
+func getErrorComparerMustBeLessThanFuncOrIComparer() error {
+	return fmt.Errorf("comparer must be\n- less-than function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
+}
