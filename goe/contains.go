@@ -1,6 +1,8 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers"
+import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
+)
 
 func (src *enumerable[T]) Contains(value T) bool {
 	src.assertSrcNonNil()
@@ -23,16 +25,50 @@ func (src *enumerable[T]) Contains(value T) bool {
 	return false
 }
 
-func (src *enumerable[T]) ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool {
+func (src *enumerable[T]) ContainsBy(value T, comparer interface{}) bool {
 	src.assertSrcNonNil()
 
+	var equalityComparer EqualsFunc[T]
+
+	if comparer != nil {
+		if eff, okEff := comparer.(func(v1, v2 T) bool); okEff {
+			if eff != nil {
+				equalityComparer = eff
+			}
+		} else if eft, okEft := comparer.(EqualsFunc[T]); okEft {
+			if eft != nil {
+				equalityComparer = eft
+			}
+		} else if cff, okCff := comparer.(func(v1, v2 T) int); okCff {
+			if cff != nil {
+				equalityComparer = func(v1, v2 T) bool {
+					return cff(v1, v2) == 0
+				}
+			}
+		} else if cft, okCft := comparer.(CompareFunc[T]); okCft {
+			if cft != nil {
+				equalityComparer = func(v1, v2 T) bool {
+					return cft(v1, v2) == 0
+				}
+			}
+		} else if cpr, okCpr := comparer.(comparers.IComparer[T]); okCpr {
+			if cpr != nil {
+				equalityComparer = func(v1, v2 T) bool {
+					return cpr.Compare(v1, v2) == 0
+				}
+			}
+		} else {
+			panic(getErrorComparerMustBeEqualsFuncOrIComparer())
+		}
+	}
+
 	if equalityComparer == nil {
-		comparer := src.defaultComparer
-		if comparer == nil {
-			comparer = src.findDefaultComparer()
+		defaultComparer := src.defaultComparer
+		if defaultComparer == nil {
+			defaultComparer = src.findDefaultComparer()
 		}
 		equalityComparer = func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) == 0
+			return defaultComparer.Compare(v1, v2) == 0
 		}
 	}
 
@@ -47,23 +83,4 @@ func (src *enumerable[T]) ContainsBy(value T, equalityComparer func(v1, v2 T) bo
 	}
 
 	return false
-}
-
-func (src *enumerable[T]) ContainsByComparer(value T, comparer comparers.IComparer[T]) bool {
-	src.assertSrcNonNil()
-
-	if comparer != nil {
-		return src.ContainsBy(value, func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) == 0
-		})
-	}
-
-	defaultComparer := src.defaultComparer
-	if defaultComparer == nil {
-		defaultComparer = src.findDefaultComparer()
-	}
-
-	return src.ContainsBy(value, func(v1, v2 T) bool {
-		return defaultComparer.Compare(v1, v2) == 0
-	})
 }

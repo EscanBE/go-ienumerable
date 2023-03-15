@@ -125,3 +125,7 @@ func getErrorMoreThanOneMatch() error {
 func getErrorNoMatch() error {
 	return fmt.Errorf("no element satisfies the condition in predicate")
 }
+
+func getErrorComparerMustBeEqualsFuncOrIComparer() error {
+	return fmt.Errorf("comparer must be\n- equals function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
+}

@@ -130,18 +130,14 @@ type IEnumerable[T any] interface {
 	Contains(value T) bool
 
 	// ContainsBy determines whether a sequence contains a specified element
-	// by using the specified equality comparer to compare values.
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
+	// by using the specified comparer to compare values.
 	//
-	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
-	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
-
-	// ContainsByComparer determines whether a sequence contains a specified element
-	// by using the specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
-	ContainsByComparer(value T, comparer comparers.IComparer[T]) bool
+	ContainsBy(value T, comparer interface{}) bool
 
 	// Count returns the number of elements in a sequence.
 	Count() int
