@@ -184,7 +184,7 @@ func Test_enumerable_ContainsBy(t *testing.T) {
 		ieSrc.ContainsBy(MyInt64{}, nil)
 	})
 
-	t.Run("panic if not supported input", func(t *testing.T) {
+	t.Run("panic if not supported comparer", func(t *testing.T) {
 		ieSrc := NewIEnumerable[int]()
 
 		defer deferExpectPanicContains(t, "comparer must be", true)

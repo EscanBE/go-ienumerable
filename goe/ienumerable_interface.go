@@ -204,14 +204,10 @@ type IEnumerable[T any] interface {
 	// ExceptBy produces the set difference of two sequences by using the
 	// specified equality comparer to compare values.
 	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	ExceptBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
-
-	// ExceptByComparer produces the set difference of two sequences by using the
-	// specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	ExceptByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
+	ExceptBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
 
 	// First returns the first element of a sequence
 	First() T

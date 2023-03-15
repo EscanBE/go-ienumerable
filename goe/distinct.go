@@ -16,6 +16,8 @@ func (src *enumerable[T]) Distinct() IEnumerable[T] {
 }
 
 func (src *enumerable[T]) DistinctBy(equalityOrComparer interface{}) IEnumerable[T] {
+	src.assertSrcNonNil()
+
 	var isEquals EqualsFunc[T]
 
 	if equalityOrComparer != nil {

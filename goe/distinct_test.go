@@ -185,7 +185,7 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 		ieSrc.DistinctBy(nil)
 	})
 
-	t.Run("panic if not supported input", func(t *testing.T) {
+	t.Run("panic if not supported comparer", func(t *testing.T) {
 		ieSrc := NewIEnumerable[int]()
 
 		defer deferExpectPanicContains(t, "comparer must be", true)
