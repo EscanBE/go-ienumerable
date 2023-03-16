@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math"
+	"reflect"
 	"testing"
 )
 
@@ -297,7 +298,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int8 (expect: int8) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int8 cannot be casted to byte")
 		}()
 
 		eI8.unboxAnyAsByte(int8(-1))
@@ -311,7 +312,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 (expect: int16) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 cannot be casted to byte")
 		}()
 
 		eI16.unboxAnyAsByte(int16(math.MaxUint8 + 1))
@@ -325,7 +326,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 (expect: int16) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int16 cannot be casted to byte")
 		}()
 
 		eI16.unboxAnyAsByte(int16(-1))
@@ -339,7 +340,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint16 (expect: uint16) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint16 cannot be casted to byte")
 		}()
 
 		eU16.unboxAnyAsByte(uint16(math.MaxUint8 + 1))
@@ -353,7 +354,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 (expect: int32) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 cannot be casted to byte")
 		}()
 
 		eI32.unboxAnyAsByte(int32(math.MaxUint8 + 1))
@@ -367,7 +368,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 (expect: int32) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int32 cannot be casted to byte")
 		}()
 
 		eI32.unboxAnyAsByte(int32(-1))
@@ -381,7 +382,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 (expect: uint32) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 cannot be casted to byte")
 		}()
 
 		eU32.unboxAnyAsByte(uint32(math.MaxUint8 + 1))
@@ -395,7 +396,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to byte")
 		}()
 
 		eI64.unboxAnyAsByte(int64(math.MaxUint8 + 1))
@@ -409,7 +410,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to byte")
 		}()
 
 		eI64.unboxAnyAsByte(int64(-1))
@@ -423,7 +424,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to byte")
 		}()
 
 		eU64.unboxAnyAsByte(uint64(math.MaxUint8 + 1))
@@ -437,7 +438,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int (expect: int) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int cannot be casted to byte")
 		}()
 
 		//goland:noinspection GoRedundantConversion
@@ -452,7 +453,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int (expect: int) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int cannot be casted to byte")
 		}()
 
 		//goland:noinspection GoRedundantConversion
@@ -467,7 +468,7 @@ func Test_enumerable_unboxAnyAsByte_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to byte")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to byte")
 		}()
 
 		eU.unboxAnyAsByte(uint(math.MaxUint8 + 1))
@@ -689,7 +690,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 (expect: uint32) cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint32 cannot be casted to int32")
 		}()
 
 		eU32.unboxAnyAsInt32(uint32(math.MaxInt32 + 1))
@@ -703,7 +704,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to int32")
 		}()
 
 		eI64.unboxAnyAsInt32(int64(math.MaxInt32 + 1))
@@ -717,7 +718,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 (expect: int64) cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int64 cannot be casted to int32")
 		}()
 
 		eI64.unboxAnyAsInt32(int64(math.MinInt32 - 1))
@@ -731,7 +732,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to int32")
 		}()
 
 		eU64.unboxAnyAsInt32(uint64(math.MaxInt32 + 1))
@@ -750,7 +751,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type int (expect: int) cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type int cannot be casted to int32")
 		}()
 
 		//goland:noinspection GoRedundantConversion
@@ -769,7 +770,7 @@ func Test_enumerable_unboxAnyAsInt32_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to int32")
 		}()
 
 		eU.unboxAnyAsInt32(uint(math.MaxInt32 + 1))
@@ -939,7 +940,7 @@ func Test_enumerable_unboxAnyAsInt64_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to int64")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to int64")
 		}()
 
 		eU64.unboxAnyAsInt64(uint64(math.MaxInt64 + 1))
@@ -957,7 +958,7 @@ func Test_enumerable_unboxAnyAsInt64_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to int64")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to int64")
 		}()
 
 		eU.unboxAnyAsInt64(uint(math.MaxInt64 + 1))
@@ -1225,7 +1226,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 (expect: uint64) cannot be casted to int")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint64 cannot be casted to int")
 		}()
 
 		eU64.unboxAnyAsInt(uint64(math.MaxInt + 1))
@@ -1239,7 +1240,7 @@ func Test_enumerable_unboxAnyAsInt_specific(t *testing.T) {
 				return
 			}
 
-			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint (expect: uint) cannot be casted to int")
+			assert.Contains(t, fmt.Sprintf("%v", err), "of type uint cannot be casted to int")
 		}()
 
 		eU.unboxAnyAsInt(uint(math.MaxInt + 1))
@@ -1540,4 +1541,173 @@ func Test_enumerable_unboxAnyAsFloat64OrInt64OrInt64_specific(t *testing.T) {
 
 		e[string](NewIEnumerable[string]()).unboxAnyAsFloat64OrInt64(str)
 	})
+}
+
+func Test_enumerable_unboxAnyAsX(t *testing.T) {
+	t.Run("unbox any byte & pointer", func(t *testing.T) {
+		e := e[any](NewIEnumerable[any]())
+		var b int8 = 3
+		var ab = any(b)
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(b))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(ab))
+
+		var pb *int8
+		assert.Equal(t, 0, int(e.unboxAnyAsByte(pb)))
+
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&b))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&ab))
+
+		var pab any = any(&ab)
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(pab))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&pab))
+
+		var papab any = any(&pab)
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(papab))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&papab))
+
+		var pstr *string
+		assert.Equal(t, 0, int(e.unboxAnyAsByte(pstr)))
+	})
+
+	t.Run("unbox any int32 & pointer", func(t *testing.T) {
+		e := e[any](NewIEnumerable[any]())
+		var b int32 = 3
+		var ab = any(b)
+		assert.Equal(t, b, e.unboxAnyAsInt32(b))
+		assert.Equal(t, b, e.unboxAnyAsInt32(ab))
+
+		var pb *int32
+		assert.Equal(t, 0, int(e.unboxAnyAsInt32(pb)))
+
+		assert.Equal(t, b, e.unboxAnyAsInt32(&b))
+		assert.Equal(t, b, e.unboxAnyAsInt32(&ab))
+
+		var pab any = any(&ab)
+		assert.Equal(t, b, e.unboxAnyAsInt32(pab))
+		assert.Equal(t, b, e.unboxAnyAsInt32(&pab))
+
+		var papab any = any(&pab)
+		assert.Equal(t, b, e.unboxAnyAsInt32(papab))
+		assert.Equal(t, b, e.unboxAnyAsInt32(&papab))
+	})
+
+	t.Run("unbox any int64 & pointer", func(t *testing.T) {
+		e := e[any](NewIEnumerable[any]())
+		var b int64 = 3
+		var ab = any(b)
+		assert.Equal(t, b, e.unboxAnyAsInt64(b))
+		assert.Equal(t, b, e.unboxAnyAsInt64(ab))
+
+		var pb *int64
+		assert.Equal(t, 0, int(e.unboxAnyAsInt64(pb)))
+
+		assert.Equal(t, b, e.unboxAnyAsInt64(&b))
+		assert.Equal(t, b, e.unboxAnyAsInt64(&ab))
+
+		var pab any = any(&ab)
+		assert.Equal(t, b, e.unboxAnyAsInt64(pab))
+		assert.Equal(t, b, e.unboxAnyAsInt64(&pab))
+
+		var papab any = any(&pab)
+		assert.Equal(t, b, e.unboxAnyAsInt64(papab))
+		assert.Equal(t, b, e.unboxAnyAsInt64(&papab))
+	})
+
+	t.Run("unbox any int & pointer", func(t *testing.T) {
+		e := e[any](NewIEnumerable[any]())
+		var b int = 3
+		var ab = any(b)
+		assert.Equal(t, b, e.unboxAnyAsInt(b))
+		assert.Equal(t, b, e.unboxAnyAsInt(ab))
+
+		var pb *int
+		assert.Equal(t, 0, int(e.unboxAnyAsInt(pb)))
+
+		assert.Equal(t, b, e.unboxAnyAsInt(&b))
+		assert.Equal(t, b, e.unboxAnyAsInt(&ab))
+
+		var pab any = any(&ab)
+		assert.Equal(t, b, e.unboxAnyAsInt(pab))
+		assert.Equal(t, b, e.unboxAnyAsInt(&pab))
+
+		var papab any = any(&pab)
+		assert.Equal(t, b, e.unboxAnyAsInt(papab))
+		assert.Equal(t, b, e.unboxAnyAsInt(&papab))
+	})
+}
+
+func testEnumerable_unboxAnyAsX[T any](t *testing.T, fUnbox func(v any) T) {
+	t.Run("unbox any byte & pointer", func(t *testing.T) {
+		e := e[any](NewIEnumerable[any]())
+		var b int8 = 3
+		var ab = any(b)
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(b))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(ab))
+
+		var pb *int8
+		assert.Equal(t, 0, int(e.unboxAnyAsByte(pb)))
+
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&b))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&ab))
+
+		var pab any = any(&ab)
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(pab))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&pab))
+
+		var papab any = any(&pab)
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(papab))
+		assert.Equal(t, byte(b), e.unboxAnyAsByte(&papab))
+	})
+
+	t.Run("unbox any int32 & pointer", func(t *testing.T) {
+		e := e[any](NewIEnumerable[any]())
+		var b int32 = 3
+		var ab = any(b)
+		assert.Equal(t, b, e.unboxAnyAsInt32(b))
+		assert.Equal(t, b, e.unboxAnyAsInt32(ab))
+
+		var pb *int32
+		assert.Equal(t, 0, int(e.unboxAnyAsInt32(pb)))
+
+		assert.Equal(t, b, e.unboxAnyAsInt32(&b))
+		assert.Equal(t, b, e.unboxAnyAsInt32(&ab))
+
+		var pab any = any(&ab)
+		assert.Equal(t, b, e.unboxAnyAsInt32(pab))
+		assert.Equal(t, b, e.unboxAnyAsInt32(&pab))
+
+		var papab any = any(&pab)
+		assert.Equal(t, b, e.unboxAnyAsInt32(papab))
+		assert.Equal(t, b, e.unboxAnyAsInt32(&papab))
+	})
+}
+
+func Test_enumerable_unboxUsingReflecting(t *testing.T) {
+	var i8 int8 = 1
+	infoOf[int8](i8)
+	infoOf[*int8](&i8)
+}
+
+func infoOf[T any](v T) {
+	vo := reflect.ValueOf(v)
+	fmt.Printf("\n\n========================\n\nInfo of %s(%v) %v\n", vo.Type().String(), vo.Type().Kind(), v)
+	//fmt.Printf("Nil: %t", vo.IsNil())
+	fmt.Printf("Kind: %v\n", vo.Kind())
+	fmt.Printf("\nIs Zero: %t", vo.IsZero())
+	fmt.Printf("\nCan Int: %t", vo.CanInt())
+	if vo.CanInt() {
+		fmt.Printf(" = %d", vo.Int())
+	}
+	fmt.Printf("\nCan Uint: %t", vo.CanUint())
+	if vo.CanUint() {
+		fmt.Printf(" = %d", vo.Uint())
+	}
+	fmt.Printf("\nCan Float: %t", vo.CanFloat())
+	if vo.CanUint() {
+		fmt.Printf(" = %f", vo.Float())
+	}
+	fmt.Printf("\nCan Complex: %t", vo.CanComplex())
+	if vo.CanUint() {
+		fmt.Printf(" = %f", vo.Complex())
+	}
 }
