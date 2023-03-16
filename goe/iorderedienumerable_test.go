@@ -295,6 +295,13 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		_ = newIOrderedEnumerable(eSrc, comparers.IntComparer, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
+
+	t.Run("compare using IComparer", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+		_ = newIOrderedEnumerable(eSrc, comparers.GetDefaultComparer[int](), CLC_ASC).GetOrderedEnumerable()
+		bSrc.assertUnchanged(t, eSrc)
+	})
 }
 
 func Test_IOrderedIEnumerable4_panic(t *testing.T) {

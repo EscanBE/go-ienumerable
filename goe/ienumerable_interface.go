@@ -307,15 +307,19 @@ type IEnumerable[T any] interface {
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	//
 	// Require: type must be registered for default comparer
 	// or already set via WithDefaultComparer or WithComparerFrom,
 	// otherwise panic.
-	Order() IEnumerable[T]
+	Order() IOrderedEnumerable[T]
 
 	// OrderBy sorts the elements of a sequence in ascending order
 	// according to the provided less-than-comparer to compare values.
 	//
-	// Comparer must be: LessFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// Comparer must be either: CompareFunc[T] or comparers.IComparer[T].
 	//
 	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
@@ -328,10 +332,14 @@ type IEnumerable[T any] interface {
 
 	// OrderByDescending sorts the elements of a sequence in descending order.
 	//
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	//
 	// Require: type must be registered for default comparer
 	// or already set via WithDefaultComparer or WithComparerFrom,
 	// otherwise panic.
-	OrderByDescending() IEnumerable[T]
+	OrderByDescending() IOrderedEnumerable[T]
 
 	// OrderByDescendingBy sorts the elements of a sequence in descending order
 	// according to the provided greater-than-comparer to compare values.

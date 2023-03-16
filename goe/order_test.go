@@ -52,7 +52,7 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 		t.Run(fmt.Sprintf("Order_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			got := tt.source.Order()
+			got := tt.source.Order().GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -66,7 +66,7 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
-			got = cpSrc.Order()
+			got = cpSrc.Order().GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -204,7 +204,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 		t.Run(fmt.Sprintf("OrderByDescending_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			got := tt.source.OrderByDescending()
+			got := tt.source.OrderByDescending().GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -218,7 +218,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
-			got = cpSrc.OrderByDescending()
+			got = cpSrc.OrderByDescending().GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -289,7 +289,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 
 		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
-		ieSrc.OrderByDescending()
+		ieSrc.OrderByDescending().GetOrderedEnumerable()
 	})
 
 	t.Run("panic if no default resolver", func(t *testing.T) {

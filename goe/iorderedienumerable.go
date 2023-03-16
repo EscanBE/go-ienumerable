@@ -112,6 +112,15 @@ func (o *orderedEnumerable[T]) chainMoreComparer(compareFuncOrComparer interface
 		compareFunc = func(v1, v2 T) int {
 			return cpr.Compare(v1, v2)
 		}
+	} else if cprA, okCprA := compareFuncOrComparer.(comparers.IComparer[any]); okCprA {
+		/* This will never reach since comparers.IComparer[T] is an interface and there is a nil check above
+		if cpr == nil {
+			panic(getErrorNilComparer())
+		}
+		*/
+		compareFunc = func(v1, v2 T) int {
+			return cprA.Compare(v1, v2)
+		}
 	} else {
 		panic(getErrorComparerMustBeCompareFuncOrIComparer())
 	}
