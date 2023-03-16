@@ -2,6 +2,7 @@ package goe
 
 import (
 	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
 	"math"
 	"math/big"
 )
@@ -15,6 +16,8 @@ func (src *enumerable[T]) SumInt32() int32 {
 			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint":
 			return 0
+		case "*int8", "*uint8", "*int16", "*uint16", "*int32", "*uint32", "*int64", "*uint64", "*int", "*uint":
+			return 0
 		default:
 			panic(fmt.Errorf("type %s cannot be tried to cast to int32", src.dataType))
 		}
@@ -23,7 +26,7 @@ func (src *enumerable[T]) SumInt32() int32 {
 	var sum int64 = 0
 
 	for _, d := range src.data {
-		i32 := src.unboxAnyAsInt32(d)
+		i32 := reflection.UnboxAnyAsInt32(d)
 		sum = add64p(sum, int64(i32))
 	}
 
@@ -43,6 +46,8 @@ func (src *enumerable[T]) SumInt() int {
 			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint":
 			return 0
+		case "*int8", "*uint8", "*int16", "*uint16", "*int32", "*uint32", "*int64", "*uint64", "*int", "*uint":
+			return 0
 		default:
 			panic(fmt.Errorf("type %s cannot be tried to cast to int", src.dataType))
 		}
@@ -51,7 +56,7 @@ func (src *enumerable[T]) SumInt() int {
 	sum := new(big.Int)
 
 	for _, d := range src.data {
-		i64 := int64(src.unboxAnyAsInt(d))
+		i64 := int64(reflection.UnboxAnyAsInt(d))
 		sum = sum.Add(sum, big.NewInt(i64))
 	}
 
@@ -77,6 +82,8 @@ func (src *enumerable[T]) SumInt64() int64 {
 			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint":
 			return 0
+		case "*int8", "*uint8", "*int16", "*uint16", "*int32", "*uint32", "*int64", "*uint64", "*int", "*uint":
+			return 0
 		default:
 			panic(fmt.Errorf("type %s cannot be tried to cast to int64", src.dataType))
 		}
@@ -85,7 +92,7 @@ func (src *enumerable[T]) SumInt64() int64 {
 	sum := new(big.Int)
 
 	for _, d := range src.data {
-		i64 := src.unboxAnyAsInt64(d)
+		i64 := reflection.UnboxAnyAsInt64(d)
 		sum = sum.Add(sum, big.NewInt(i64))
 	}
 
@@ -105,6 +112,8 @@ func (src *enumerable[T]) SumFloat64() float64 {
 			return 0
 		case "int8", "uint8", "int16", "uint16", "int32", "uint32", "int64", "uint64", "int", "uint", "float32", "float64":
 			return 0
+		case "*int8", "*uint8", "*int16", "*uint16", "*int32", "*uint32", "*int64", "*uint64", "*int", "*uint", "*float32", "*float64":
+			return 0
 		default:
 			panic(fmt.Errorf("type %s cannot be tried to cast to float64", src.dataType))
 		}
@@ -114,10 +123,10 @@ func (src *enumerable[T]) SumFloat64() float64 {
 	sumBf := new(big.Float)
 
 	for _, d := range src.data {
-		rf, ri, dt := src.unboxAnyAsFloat64OrInt64(d)
-		if dt == UF64_TYPE_INT64 {
+		ri, rf, dt := reflection.UnboxAnyAsInt64OrFloat64(d)
+		if dt == reflection.UF64_TYPE_INT64 {
 			sumBi = sumBi.Add(sumBi, big.NewInt(ri))
-		} else if dt == UF64_TYPE_FLOAT64 {
+		} else if dt == reflection.UF64_TYPE_FLOAT64 {
 			sumBf = sumBf.Add(sumBf, big.NewFloat(rf))
 		}
 	}

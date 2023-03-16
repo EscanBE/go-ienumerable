@@ -104,7 +104,7 @@ func Test_enumerable_SumInt32(t *testing.T) {
 				return
 			}
 			errStr := fmt.Sprintf("%v", err)
-			if strings.Contains(errStr, "value 9223372036854775807 of type int cannot be casted to int32") {
+			if strings.Contains(errStr, "value 9223372036854775807 of type int is over range of int32") {
 				// ok (x64)
 			} else {
 				t.Errorf("un-wanted error: %s", errStr)
@@ -123,7 +123,7 @@ func Test_enumerable_SumInt32(t *testing.T) {
 				return
 			}
 			errStr := fmt.Sprintf("%v", err)
-			if strings.Contains(errStr, "value 9223372036854775807 of type int64 cannot be casted to int32") {
+			if strings.Contains(errStr, "value 9223372036854775807 of type int64 is over range of int32") {
 				// ok (x64)
 			} else {
 				t.Errorf("un-wanted error: %s", errStr)
@@ -143,7 +143,7 @@ func Test_enumerable_SumInt32(t *testing.T) {
 				t.Errorf("expect error")
 				return
 			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "value 4294967295 of type uint32 cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "value 4294967295 of type uint32 is over range of int32")
 		}()
 		eSrc := NewIEnumerable[any](u)
 		eSrc.SumInt32()
@@ -158,7 +158,7 @@ func Test_enumerable_SumInt32(t *testing.T) {
 				t.Errorf("expect error")
 				return
 			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 cannot be casted to int32")
+			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 is over range of int32")
 		}()
 		eSrc := NewIEnumerable[any](u)
 		eSrc.SumInt32()
@@ -174,9 +174,9 @@ func Test_enumerable_SumInt32(t *testing.T) {
 				return
 			}
 			errStr := fmt.Sprintf("%v", err)
-			if strings.Contains(errStr, "value 18446744073709551615 of type uint cannot be casted to int32") {
+			if strings.Contains(errStr, "value 18446744073709551615 of type uint is over range of int32") {
 				// ok (x64)
-			} else if strings.Contains(errStr, "value 4294967295 of type uint cannot be casted to int32") {
+			} else if strings.Contains(errStr, "value 4294967295 of type uint is over range of int32") {
 				// ok (x86)
 			} else {
 				t.Errorf("un-wanted error: %s", errStr)
@@ -306,7 +306,7 @@ func Test_enumerable_SumInt(t *testing.T) {
 				return
 			}
 			errStr := fmt.Sprintf("%v", err)
-			if strings.Contains(errStr, "value 9223372036854775807 of type int64 cannot be casted to int") {
+			if strings.Contains(errStr, "value 9223372036854775807 of type int64 is over range of int") {
 				// ok (x64)
 			} else {
 				t.Errorf("un-wanted error: %s", errStr)
@@ -330,7 +330,7 @@ func Test_enumerable_SumInt(t *testing.T) {
 				t.Errorf("expect error")
 				return
 			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "value 4294967295 of type uint32 cannot be casted to int")
+			assert.Contains(t, fmt.Sprintf("%v", err), "value 4294967295 of type uint32 is over range of int")
 		}()
 		eSrc := NewIEnumerable[any](u)
 		eSrc.SumInt()
@@ -345,7 +345,7 @@ func Test_enumerable_SumInt(t *testing.T) {
 				t.Errorf("expect error")
 				return
 			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 cannot be casted to int")
+			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 is over range of int")
 		}()
 		eSrc := NewIEnumerable[any](u)
 		eSrc.SumInt()
@@ -361,9 +361,9 @@ func Test_enumerable_SumInt(t *testing.T) {
 				return
 			}
 			errStr := fmt.Sprintf("%v", err)
-			if strings.Contains(errStr, "value 18446744073709551615 of type uint cannot be casted to int") {
+			if strings.Contains(errStr, "value 18446744073709551615 of type uint is over range of int") {
 				// ok (x64)
-			} else if strings.Contains(errStr, "value 4294967295 of type uint cannot be casted to int") {
+			} else if strings.Contains(errStr, "value 4294967295 of type uint is over range of int") {
 				// ok (x86)
 			} else {
 				t.Errorf("un-wanted error: %s", errStr)
@@ -510,7 +510,7 @@ func Test_enumerable_SumInt64(t *testing.T) {
 				t.Errorf("expect error")
 				return
 			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 cannot be casted to int64")
+			assert.Contains(t, fmt.Sprintf("%v", err), "value 18446744073709551615 of type uint64 is over range of int64")
 		}()
 		eSrc := NewIEnumerable[any](u)
 		eSrc.SumInt64()
@@ -529,7 +529,7 @@ func Test_enumerable_SumInt64(t *testing.T) {
 				return
 			}
 			errStr := fmt.Sprintf("%v", err)
-			if strings.Contains(errStr, "value 18446744073709551615 of type uint cannot be casted to int64") {
+			if strings.Contains(errStr, "value 18446744073709551615 of type uint is over range of int64") {
 				// ok (x64)
 			} else {
 				t.Errorf("un-wanted error: %s", errStr)
