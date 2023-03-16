@@ -80,6 +80,66 @@ func AnyPointerToType[T any](p any) T {
 	return p.(T)
 }
 
+/*
+type numberComparer struct {
+}
+
+func (i numberComparer) Compare(x, y any) int {
+	xi64, xf64, tx64, sx64 := reflection.TryUnboxAnyAsInt64OrFloat64(x)
+	if sx64 == reflection.UNBOX_FAILED {
+		panic(fmt.Errorf("%v of type %T can not be casted to number", x, x))
+	}
+
+	yi64, yf64, ty64, sy64 := reflection.TryUnboxAnyAsInt64OrFloat64(y)
+	if sy64 == reflection.UNBOX_FAILED {
+		panic(fmt.Errorf("%v of type %T can not be casted to number", y, y))
+	}
+
+	if sx64 == reflection.UNBOX_NIL && sy64 == reflection.UNBOX_NIL {
+		return 0
+	}
+
+	if sx64 == reflection.UNBOX_NIL {
+		return -1
+	}
+
+	if sy64 == reflection.UNBOX_NIL {
+		return 1
+	}
+
+	sx64.AssertIsSuccess()
+	sy64.AssertIsSuccess()
+	tx64.AssertHasNonNilResult()
+	ty64.AssertHasNonNilResult()
+
+	if tx64 == reflection.UF64_TYPE_INT64 && ty64 == reflection.UF64_TYPE_INT64 {
+		if xi64 < yi64 {
+			return -1
+		} else if xi64 > yi64 {
+			return 1
+		} else {
+			return 0
+		}
+	}
+
+	if tx64 == reflection.UF64_TYPE_INT64 {
+		xf64 = float64(xi64)
+	}
+
+	if ty64 == reflection.UF64_TYPE_INT64 {
+		yf64 = float64(yi64)
+	}
+
+	if xf64 < yf64 {
+		return -1
+	} else if xf64 > yf64 {
+		return 1
+	} else {
+		return 0
+	}
+}
+*/
+
 type uint8Comparer struct {
 }
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestUnboxAnyAsInt64(t *testing.T) {
+func TestTryUnboxAnyAsInt64(t *testing.T) {
 	//goland:noinspection GoRedundantConversion
 	tests := []struct {
 		name       string
@@ -254,7 +254,7 @@ func TestUnboxAnyAsInt64(t *testing.T) {
 	}
 }
 
-func TestUnboxAnyAsInt32(t *testing.T) {
+func TestTryUnboxAnyAsInt32(t *testing.T) {
 	//goland:noinspection GoRedundantConversion
 	tests := []struct {
 		name       string
@@ -498,7 +498,7 @@ func TestUnboxAnyAsInt32(t *testing.T) {
 	}
 }
 
-func TestUnboxAnyAsInt(t *testing.T) {
+func TestTryUnboxAnyAsInt(t *testing.T) {
 	//goland:noinspection GoRedundantConversion
 	tests := []struct {
 		name       string
@@ -747,7 +747,7 @@ func TestUnboxAnyAsInt(t *testing.T) {
 	}
 }
 
-func TestUnboxAnyAsByte(t *testing.T) {
+func TestTryUnboxAnyAsByte(t *testing.T) {
 	//goland:noinspection GoRedundantConversion
 	tests := []struct {
 		name       string
@@ -993,7 +993,7 @@ func TestUnboxAnyAsByte(t *testing.T) {
 	}
 }
 
-func TestUnboxAnyAsInt64OrFloat64(t *testing.T) {
+func TestTryUnboxAnyAsInt64OrFloat64(t *testing.T) {
 	//goland:noinspection GoRedundantConversion
 	tests := []struct {
 		name               string

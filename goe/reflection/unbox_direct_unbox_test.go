@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_enumerable_UnboxAnyAsByte(t *testing.T) {
+func TestUnboxAnyAsByte(t *testing.T) {
 	t.Run("in range", func(t *testing.T) {
 		UnboxAnyAsByte(int8(0))
 		UnboxAnyAsByte(int8(math.MaxInt8))
@@ -235,7 +235,7 @@ func Test_enumerable_UnboxAnyAsByte(t *testing.T) {
 	})
 }
 
-func Test_enumerable_UnboxAnyAsInt32(t *testing.T) {
+func TestUnboxAnyAsInt32(t *testing.T) {
 	t.Run("in range", func(t *testing.T) {
 		UnboxAnyAsInt32(int8(math.MinInt8))
 		UnboxAnyAsInt32(int8(math.MaxInt8))
@@ -372,7 +372,7 @@ func Test_enumerable_UnboxAnyAsInt32(t *testing.T) {
 	})
 }
 
-func Test_enumerable_UnboxAnyAsInt64(t *testing.T) {
+func TestUnboxAnyAsInt64(t *testing.T) {
 
 	x64 := math.MaxInt > math.MaxInt32
 
@@ -452,7 +452,7 @@ func Test_enumerable_UnboxAnyAsInt64(t *testing.T) {
 	})
 }
 
-func Test_enumerable_UnboxAnyAsInt(t *testing.T) {
+func TestUnboxAnyAsInt(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
 
 	t.Run("in range", func(t *testing.T) {
@@ -580,7 +580,7 @@ func Test_enumerable_UnboxAnyAsInt(t *testing.T) {
 }
 
 //goland:noinspection GoRedundantConversion
-func Test_enumerable_UnboxAnyAsFloat64OrInt64OrInt64(t *testing.T) {
+func TestUnboxAnyAsFloat64OrInt64OrInt64(t *testing.T) {
 	x64 := math.MaxInt > math.MaxInt32
 
 	t.Run("int64 or float64 depends value", func(t *testing.T) {
