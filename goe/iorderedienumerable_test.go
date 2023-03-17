@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strings"
@@ -144,7 +144,7 @@ func Test_IOrderedIEnumerable(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			eGot := tt.ordered.GetEnumerable()
+			eGot := tt.ordered.GetOrderedEnumerable()
 
 			assert.Truef(t, reflect.DeepEqual(tt.want.ToArray(), eGot.ToArray()), "got %v, want %v", eGot.ToArray(), tt.want.ToArray())
 
@@ -208,7 +208,7 @@ func Test_IOrderedIEnumerable2(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			eGot := tt.ordered.GetEnumerable()
+			eGot := tt.ordered.GetOrderedEnumerable()
 
 			assert.Truef(t, reflect.DeepEqual(tt.want.ToArray(), eGot.ToArray()), "got %v, want %v", eGot.ToArray(), tt.want.ToArray())
 
@@ -275,57 +275,102 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		bSrc := backupForAssetUnchanged(eSrc)
 		_ = newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
 			return 0
-		}, CLC_ASC).GetEnumerable()
+		}, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
-	t.Run("when src nil", func(t *testing.T) {
+	t.Run("compare using compare func", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-
-		defer func() {
-			bSrc.assertUnchanged(t, eSrc)
-		}()
-
-		oe := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+		f := func(v1, v2 int) int {
 			return 0
-		}, CLC_ASC).(*orderedEnumerable[int])
-
-		oe = nil
-
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "source is nil")
-		}()
-
-		_ = oe.GetEnumerable()
+		}
+		_ = newIOrderedEnumerable(eSrc, CompareFunc[int](f), CLC_ASC).GetOrderedEnumerable()
+		bSrc.assertUnchanged(t, eSrc)
 	})
 
-	t.Run("when comparer nil", func(t *testing.T) {
+	t.Run("compare using IComparer", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
+		_ = newIOrderedEnumerable(eSrc, comparers.IntComparer, CLC_ASC).GetOrderedEnumerable()
+		bSrc.assertUnchanged(t, eSrc)
+	})
 
+	t.Run("compare using IComparer", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+		_ = newIOrderedEnumerable(eSrc, comparers.GetDefaultComparer[int](), CLC_ASC).GetOrderedEnumerable()
+		bSrc.assertUnchanged(t, eSrc)
+	})
+}
+
+func Test_IOrderedIEnumerable4_panic(t *testing.T) {
+	eSrc := NewIEnumerable[int](3, 1, 1, 2)
+	bSrc := backupForAssetUnchanged(eSrc)
+
+	oe := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+		return 0
+	}, CLC_ASC).(*orderedEnumerable[int])
+
+	t.Run("panic when src nil", func(t *testing.T) {
 		defer func() {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		oe := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
+		oe2 := newIOrderedEnumerable(eSrc, func(v1, v2 int) int {
 			return 0
 		}, CLC_ASC).(*orderedEnumerable[int])
 
+		oe2 = nil
+
+		defer deferExpectPanicContains(t, getErrorSourceIsNil().Error(), true)
+
+		_ = oe2.GetOrderedEnumerable()
+	})
+
+	t.Run("panic when comparer nil", func(t *testing.T) {
 		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), "comparer is nil")
+			bSrc.assertUnchanged(t, eSrc)
 		}()
 
+		defer deferExpectPanicContains(t, getErrorNilComparer().Error(), true)
+
 		_ = oe.ThenBy(nil)
+	})
+
+	t.Run("panic when comparer nil", func(t *testing.T) {
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		var f func(i1, i2 int) int
+
+		defer deferExpectPanicContains(t, getErrorNilComparer().Error(), true)
+
+		_ = oe.ThenBy(f)
+	})
+
+	t.Run("panic when comparer nil", func(t *testing.T) {
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		var f func(i1, i2 int) int
+
+		defer deferExpectPanicContains(t, getErrorNilComparer().Error(), true)
+
+		_ = oe.ThenBy(CompareFunc[int](f))
+	})
+
+	t.Run("panic when bad comparer", func(t *testing.T) {
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		defer deferExpectPanicContains(t, getErrorComparerMustBeCompareFuncOrIComparer().Error(), true)
+
+		_ = oe.ThenBy(func(_, _, _ int) int {
+			return 0
+		})
 	})
 }

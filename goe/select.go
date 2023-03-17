@@ -36,6 +36,27 @@ func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 	return result
 }
 
+func (src *enumerable[T]) SelectNewValue(selector func(v T) T) IEnumerable[T] {
+	src.assertSrcNonNil()
+	src.assertSelectorSameNonNil(selector)
+
+	result := src.copyExceptData()
+
+	if len(src.data) < 1 {
+		result = result.withEmptyData()
+	} else {
+		newData := make([]T, len(src.data))
+
+		for i, d := range src.data {
+			newData[i] = selector(d)
+		}
+
+		result = result.withData(newData)
+	}
+
+	return result
+}
+
 func (src *enumerable[T]) SelectWithSampleValueOfResult(selector func(v T) any, notNilSampleResultValue any) IEnumerable[any] {
 	src.assertSrcNonNil()
 	src.assertSelectorNonNil(selector)

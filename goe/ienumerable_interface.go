@@ -130,18 +130,14 @@ type IEnumerable[T any] interface {
 	Contains(value T) bool
 
 	// ContainsBy determines whether a sequence contains a specified element
-	// by using the specified equality comparer to compare values.
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
+	// by using the specified comparer to compare values.
 	//
-	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
-	ContainsBy(value T, equalityComparer func(v1, v2 T) bool) bool
-
-	// ContainsByComparer determines whether a sequence contains a specified element
-	// by using the specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
 	//
 	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
-	ContainsByComparer(value T, comparer comparers.IComparer[T]) bool
+	ContainsBy(value T, equalityOrComparer interface{}) bool
 
 	// Count returns the number of elements in a sequence.
 	Count() int
@@ -167,14 +163,10 @@ type IEnumerable[T any] interface {
 	// DistinctBy returns distinct elements from a sequence by using the
 	// specified equality comparer to compare values.
 	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	DistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T]
-
-	// DistinctByComparer returns distinct elements from a sequence by using the
-	// specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	DistinctByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
+	DistinctBy(equalityOrComparer interface{}) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
@@ -212,14 +204,10 @@ type IEnumerable[T any] interface {
 	// ExceptBy produces the set difference of two sequences by using the
 	// specified equality comparer to compare values.
 	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	ExceptBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
-
-	// ExceptByComparer produces the set difference of two sequences by using the
-	// specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	ExceptByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
+	ExceptBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
 
 	// First returns the first element of a sequence
 	First() T
@@ -254,14 +242,10 @@ type IEnumerable[T any] interface {
 	// IntersectBy produces the set intersection of two sequences by using the
 	// specified equality comparer to compare values.
 	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	IntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T]
-
-	// IntersectByComparer produces the set intersection of two sequences by using the
-	// specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	IntersectByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
+	IntersectBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
 
 	// Last returns the last element of a sequence
 	Last() T
@@ -301,14 +285,10 @@ type IEnumerable[T any] interface {
 	// MinBy returns the minimum value in a sequence
 	// according to the provided less-than-comparer to compare values.
 	//
-	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
-	MinBy(lessComparer func(left, right T) bool) T
-
-	// MinByComparer returns the minimum value in a sequence
-	// according to the provided comparers.IComparer[T] to compare values.
+	// Comparer must be: LessFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MinByComparer(comparer comparers.IComparer[T]) T
+	MinBy(lessThanOrComparer interface{}) T
 
 	// Max returns the greatest value in a sequence.
 	//
@@ -320,24 +300,26 @@ type IEnumerable[T any] interface {
 	// MaxBy returns the greatest value in a sequence
 	// according to the provided greater-than-comparer to compare values.
 	//
-	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
-	MaxBy(greaterComparer func(left, right T) bool) T
-
-	// MaxByComparer returns the greatest value in a sequence
-	// according to the provided comparers.IComparer[T] to compare values.
+	// Comparer must be: GreaterFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
 	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MaxByComparer(comparer comparers.IComparer[T]) T
+	MaxBy(greaterThanOrComparer interface{}) T
 
 	// Order sorts the elements of a sequence in ascending order.
+	//
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
 	//
 	// Require: type must be registered for default comparer
 	// or already set via WithDefaultComparer or WithComparerFrom,
 	// otherwise panic.
-	Order() IEnumerable[T]
+	Order() IOrderedEnumerable[T]
 
 	// OrderBy sorts the elements of a sequence in ascending order
 	// according to the provided less-than-comparer to compare values.
+	//
+	// Comparer must be either: CompareFunc[T] or comparers.IComparer[T].
 	//
 	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
 	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
@@ -350,10 +332,14 @@ type IEnumerable[T any] interface {
 
 	// OrderByDescending sorts the elements of a sequence in descending order.
 	//
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	//
 	// Require: type must be registered for default comparer
 	// or already set via WithDefaultComparer or WithComparerFrom,
 	// otherwise panic.
-	OrderByDescending() IEnumerable[T]
+	OrderByDescending() IOrderedEnumerable[T]
 
 	// OrderByDescendingBy sorts the elements of a sequence in descending order
 	// according to the provided greater-than-comparer to compare values.
@@ -378,7 +364,8 @@ type IEnumerable[T any] interface {
 	// Reverse inverts the order of the elements in a sequence.
 	Reverse() IEnumerable[T]
 
-	// Select projects each element of a sequence into a new form.
+	// Select projects each element of a sequence into a new form,
+	// if want to keep original data type, use SelectNewValue instead.
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types might be required.
@@ -398,15 +385,20 @@ type IEnumerable[T any] interface {
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
 	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
-	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
+
+	// SelectNewValue projects each element of a sequence into a new value , keep the original type.
+	//
+	// Notice: Existing comparer from source will be brought along with the new IEnumerable[T].
+	SelectNewValue(selector func(v T) T) IEnumerable[T]
 
 	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
 	//
 	// The sample result value parameter is used to automatically detect comparer for type of result
 	// and must be the same type with every value yields from selector,
 	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
-	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// thus panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types might be required.
@@ -444,7 +436,7 @@ type IEnumerable[T any] interface {
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
 	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
-	// otherwise there is panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
@@ -455,7 +447,7 @@ type IEnumerable[T any] interface {
 	// The sample result value parameter is used to automatically detect comparer for type of result
 	// and must be the same type with every value yields from selector,
 	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
-	// thus panic when you invoke methods where comparer is needed, like Distinct, Order,...
+	// thus panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// Due to limitation of current Go, there is no way to directly cast into target type
 	// in just one command, so additional transform from 'any' to target types might be required.
@@ -511,13 +503,9 @@ type IEnumerable[T any] interface {
 	SkipLast(count int) IEnumerable[T]
 
 	// SkipWhile bypasses elements in a sequence as long as a specified condition is true
-	// and then returns the remaining elements.
-	SkipWhile(predicate func(value T) bool) IEnumerable[T]
-
-	// SkipWhileWidx bypasses elements in a sequence as long as a specified condition is true
-	// and then returns the remaining elements.
-	// The element's index is used in the logic of the predicate function.
-	SkipWhileWidx(predicate func(value T, index int) bool) IEnumerable[T]
+	//
+	// The predicate param is required, must be either: Predicate[T] or PredicateWithIndex[T].
+	SkipWhile(predicate interface{}) IEnumerable[T]
 
 	// SumInt32 computes the sum of a sequence of integer values.
 	//
@@ -525,8 +513,9 @@ type IEnumerable[T any] interface {
 	//
 	// Notice 2: will panic if during sum, value is overflow int64
 	//
-	// Notice 3: will panic if element in array is not integer or is integer but overflow int32
-	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
+	// Notice 3: will panic if element in sequence is not integer or is integer but overflow int32
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64).
+	// But if sequence is empty, returns 0.
 	SumInt32() int32
 
 	// SumInt computes the sum of a sequence of integer values.
@@ -535,24 +524,27 @@ type IEnumerable[T any] interface {
 	//
 	// Notice 2: will panic if during sum, value is overflow int64
 	//
-	// Notice 3: will panic if element in array is not integer or is integer but overflow int
-	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
+	// Notice 3: will panic if element in sequence is not integer or is integer but overflow int
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64).
+	// But if sequence is empty, returns 0.
 	SumInt() int
 
 	// SumInt64 computes the sum of a sequence of integer values.
 	//
 	// Notice 1: will panic if sum is overflow int64
 	//
-	// Notice 2: will panic if element in array is not integer
-	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64)
+	// Notice 2: will panic if element in sequence is not integer
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64).
+	// But if sequence is empty, returns 0.
 	SumInt64() int64
 
 	// SumFloat64 computes the sum of a sequence of integer/float values.
 	//
 	// Notice 1: will panic if sum is overflow float64
 	//
-	// Notice 2: will panic if element in array is not integer/float or is integer/float but overflow float64
-	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64 + accepted floats: float32/64)
+	// Notice 2: will panic if element in sequence is not integer/float or is integer/float but overflow float64
+	// (accepted integers: int or int8/16/32/64, uint or uint/8/16/32/64 + accepted floats: float32/64).
+	// But if sequence is empty, returns 0.
 	SumFloat64() float64
 
 	// Take returns a specified number of contiguous elements from the start of a sequence.
@@ -562,11 +554,9 @@ type IEnumerable[T any] interface {
 	TakeLast(count int) IEnumerable[T]
 
 	// TakeWhile returns elements from a sequence as long as a specified condition is true.
-	TakeWhile(predicate func(value T) bool) IEnumerable[T]
-
-	// TakeWhileWidx returns elements from a sequence as long as a specified condition is true.
-	// The element's index is used in the logic of the predicate function.
-	TakeWhileWidx(predicate func(value T, index int) bool) IEnumerable[T]
+	//
+	// The predicate param is required, must be either: Predicate[T] or PredicateWithIndex[T].
+	TakeWhile(predicate interface{}) IEnumerable[T]
 
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
@@ -581,14 +571,10 @@ type IEnumerable[T any] interface {
 	// UnionBy produces the set union of two sequences by using the
 	// specified equality-comparer to compare values.
 	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	UnionBy(second IEnumerable[T], equalsComparer func(v1, v2 T) bool) IEnumerable[T]
-
-	// UnionByComparer produces the set union of two sequences by using the
-	// specified comparers.IComparer[T] to compare values.
+	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	UnionByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T]
+	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
+	UnionBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]

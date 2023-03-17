@@ -200,23 +200,15 @@ func Test_enumerable_Cast(t *testing.T) {
 		}).CastBool()
 	})
 
-	t.Run("panic message when nil value", func(t *testing.T) {
-		eSrc := NewIEnumerable[int32](2, 3)
+	t.Run("no panic message when nil value", func(t *testing.T) {
+		eSrc := createRandomIntEnumerable(30)
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect panic but not panicked")
-				return
-			}
+		got := eSrc.Select(func(v int) any {
+			var p *string
+			return p
+		}).CastInt64().SumInt()
 
-			errMsg := fmt.Sprintf("%v", err)
-			assert.Contains(t, errMsg, "value <nil> of type <nil> cannot be casted to int64")
-		}()
-
-		eSrc.Select(func(v int32) any {
-			return nil
-		}).CastInt64()
+		assert.Zero(t, got)
 	})
 
 	testCastCorrectDataTypeAndComparer[byte](t, func(eAny IEnumerable[any]) IEnumerable[byte] {

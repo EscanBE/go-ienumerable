@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func (src *enumerable[T]) Order() IEnumerable[T] {
+func (src *enumerable[T]) Order() IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
 
 	comparer := src.defaultComparer
@@ -13,9 +13,7 @@ func (src *enumerable[T]) Order() IEnumerable[T] {
 		comparer = src.findDefaultComparer()
 	}
 
-	return src.internalOrderBy(func(v1, v2 T) bool {
-		return comparer.Compare(v1, v2) < 0
-	})
+	return newIOrderedEnumerable[T](src, comparer, CLC_ASC)
 }
 
 func (src *enumerable[T]) OrderBy(lessComparer func(left, right T) bool) IEnumerable[T] {
@@ -70,7 +68,7 @@ func (src *enumerable[T]) internalOrderBy(lessComparer func(left, right T) bool)
 	return src.copyExceptData().withData(copied)
 }
 
-func (src *enumerable[T]) OrderByDescending() IEnumerable[T] {
+func (src *enumerable[T]) OrderByDescending() IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
 
 	comparer := src.defaultComparer
@@ -78,9 +76,7 @@ func (src *enumerable[T]) OrderByDescending() IEnumerable[T] {
 		comparer = src.findDefaultComparer()
 	}
 
-	return src.internalOrderByDescendingBy(func(v1, v2 T) bool {
-		return comparer.Compare(v1, v2) > 0
-	})
+	return newIOrderedEnumerable[T](src, comparer, CLC_DESC)
 }
 
 func (src *enumerable[T]) OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T] {

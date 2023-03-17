@@ -91,3 +91,48 @@ func Test_enumerable_assertComparerNonNil(t *testing.T) {
 		e.assertComparerNonNil(nil)
 	})
 }
+
+func Test_enumerable_assertPredicateNonNil1(t *testing.T) {
+	var fPredicate1 func(v int) bool
+	var fPredicate2 Predicate[int]
+	var fPredicate3 func(v int, i int) bool
+	var fPredicate4 PredicateWithIndex[int]
+	tests := []struct {
+		name      string
+		predicate interface{}
+	}{
+		{
+			name:      "nil",
+			predicate: nil,
+		},
+		{
+			name:      "nil",
+			predicate: fPredicate1,
+		},
+		{
+			name:      "nil",
+			predicate: fPredicate2,
+		},
+		{
+			name:      "nil",
+			predicate: fPredicate3,
+		},
+		{
+			name:      "nil",
+			predicate: fPredicate4,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			defer deferExpectPanicContains(t, getErrorNilPredicate().Error(), true)
+			e[int](createEmptyIntEnumerable()).assertPredicateNonNil(tt.predicate)
+		})
+	}
+
+	t.Run("not a valid predicate", func(t *testing.T) {
+		defer deferExpectPanicContains(t, getErrorPredicateMustBePredicate().Error(), true)
+		e[int](createEmptyIntEnumerable()).assertPredicateNonNil(func(v1, v2 int) int {
+			return v1 * v2
+		})
+	})
+}

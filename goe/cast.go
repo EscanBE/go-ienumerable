@@ -1,13 +1,16 @@
 package goe
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
+)
 
 func (src *enumerable[T]) CastByte() IEnumerable[byte] {
 	size := len(src.data)
 	result := make([]byte, size)
 	if size > 0 {
 		for i, v := range src.data {
-			result[i] = src.unboxAnyAsByte(v)
+			result[i] = reflection.UnboxAnyAsByte(v)
 		}
 	}
 
@@ -19,7 +22,7 @@ func (src *enumerable[T]) CastInt32() IEnumerable[int32] {
 	result := make([]int32, size)
 	if size > 0 {
 		for i, v := range src.data {
-			result[i] = src.unboxAnyAsInt32(v)
+			result[i] = reflection.UnboxAnyAsInt32(v)
 		}
 	}
 
@@ -31,7 +34,7 @@ func (src *enumerable[T]) CastInt64() IEnumerable[int64] {
 	result := make([]int64, size)
 	if size > 0 {
 		for i, v := range src.data {
-			result[i] = src.unboxAnyAsInt64(v)
+			result[i] = reflection.UnboxAnyAsInt64(v)
 		}
 	}
 
@@ -43,7 +46,7 @@ func (src *enumerable[T]) CastInt() IEnumerable[int] {
 	result := make([]int, size)
 	if size > 0 {
 		for i, v := range src.data {
-			result[i] = src.unboxAnyAsInt(v)
+			result[i] = reflection.UnboxAnyAsInt(v)
 		}
 	}
 
@@ -55,10 +58,10 @@ func (src *enumerable[T]) CastFloat64() IEnumerable[float64] {
 	result := make([]float64, size)
 	if size > 0 {
 		for i, v := range src.data {
-			vf, vi, dt := src.unboxAnyAsFloat64OrInt64(v)
-			if dt == UF64_TYPE_FLOAT64 {
+			vi, vf, dt := reflection.UnboxAnyAsInt64OrFloat64(v)
+			if dt == reflection.UF64_TYPE_FLOAT64 {
 				result[i] = vf
-			} else if dt == UF64_TYPE_INT64 {
+			} else if dt == reflection.UF64_TYPE_INT64 {
 				result[i] = float64(vi)
 			}
 		}
@@ -100,8 +103,4 @@ func (src *enumerable[T]) CastBool() IEnumerable[bool] {
 
 func makeCastError(v any, t string) error {
 	return fmt.Errorf("value %v of type %T cannot be casted to %s", v, v, t)
-}
-
-func makeCastError2(v any, t, et string) error {
-	return fmt.Errorf("value %v of type %T (expect: %s) cannot be casted to %s", v, v, et, t)
 }

@@ -16,41 +16,55 @@ func (src *enumerable[T]) Intersect(second IEnumerable[T]) IEnumerable[T] {
 	})
 }
 
-func (src *enumerable[T]) IntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
+func (src *enumerable[T]) IntersectBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T] {
 	src.assertSrcNonNil()
 	src.assertSecondIEnumerableNonNil(second)
 
-	if equalityComparer == nil {
-		comparer := src.defaultComparer
-		if comparer == nil {
-			comparer = src.findDefaultComparer()
+	var isEquals EqualsFunc[T]
+
+	if equalityOrComparer != nil {
+		if eff, okEff := equalityOrComparer.(func(v1, v2 T) bool); okEff {
+			if eff != nil {
+				isEquals = eff
+			}
+		} else if eft, okEft := equalityOrComparer.(EqualsFunc[T]); okEft {
+			if eft != nil {
+				isEquals = eft
+			}
+		} else if cff, okCff := equalityOrComparer.(func(v1, v2 T) int); okCff {
+			if cff != nil {
+				isEquals = func(v1, v2 T) bool {
+					return cff(v1, v2) == 0
+				}
+			}
+		} else if cft, okCft := equalityOrComparer.(CompareFunc[T]); okCft {
+			if cft != nil {
+				isEquals = func(v1, v2 T) bool {
+					return cft(v1, v2) == 0
+				}
+			}
+		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
+			if cpr != nil {
+				isEquals = func(v1, v2 T) bool {
+					return cpr.Compare(v1, v2) == 0
+				}
+			}
+		} else {
+			panic(getErrorComparerMustBeEqualsFuncOrIComparer())
 		}
-		equalityComparer = func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) == 0
+	}
+
+	if isEquals == nil {
+		defaultComparer := src.defaultComparer
+		if defaultComparer == nil {
+			defaultComparer = src.findDefaultComparer()
+		}
+		isEquals = func(v1, v2 T) bool {
+			return defaultComparer.Compare(v1, v2) == 0
 		}
 	}
 
-	return src.internalIntersectBy(second, equalityComparer)
-}
-
-func (src *enumerable[T]) IntersectByComparer(second IEnumerable[T], comparer comparers.IComparer[T]) IEnumerable[T] {
-	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
-
-	if comparer != nil {
-		return src.internalIntersectBy(second, func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) == 0
-		})
-	}
-
-	defaultComparer := src.defaultComparer
-	if defaultComparer == nil {
-		defaultComparer = src.findDefaultComparer()
-	}
-
-	return src.internalIntersectBy(second, func(v1, v2 T) bool {
-		return defaultComparer.Compare(v1, v2) == 0
-	})
+	return src.internalIntersectBy(second, isEquals)
 }
 
 func (src *enumerable[T]) internalIntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
