@@ -27,7 +27,6 @@ func TestRootValueExtractor(t *testing.T) {
 		wantKind     reflect.Kind
 		wantNil      nilResultType
 		wantZero     bool
-		wantOk       bool
 		notSupported bool
 		valueVerify  func(reflect.Value) bool
 	}{
@@ -35,7 +34,6 @@ func TestRootValueExtractor(t *testing.T) {
 			name:    "nil",
 			input:   nil,
 			wantNil: nilResult,
-			wantOk:  true,
 		},
 		{
 			name: "nil interface",
@@ -45,7 +43,6 @@ func TestRootValueExtractor(t *testing.T) {
 			}(),
 			wantNil:  nilResult,
 			wantZero: true,
-			wantOk:   true,
 		},
 		{
 			name: "non-nil interface",
@@ -57,7 +54,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Int64,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(int64) == int64(200)
 			},
@@ -69,7 +65,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Int,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(int) == 6
 			},
@@ -84,7 +79,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Int,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(int) == 6
 			},
@@ -99,7 +93,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Int,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 		},
 		{
 			name:     "string",
@@ -108,7 +101,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.String,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(string) == "6"
 			},
@@ -120,7 +112,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.String,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(string) == ""
 			},
@@ -135,7 +126,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Pointer,
 			wantNil:  nilValue,
 			wantZero: true,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(*string) == nil
 			},
@@ -147,7 +137,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Slice,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().([]string) != nil
 			},
@@ -162,7 +151,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Slice,
 			wantNil:  nilValue,
 			wantZero: true,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().([]string) == nil
 			},
@@ -174,7 +162,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Slice,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().([]string)[1] == "2"
 			},
@@ -186,7 +173,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Array,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 		},
 		{
 			name:     "non-empty array",
@@ -195,7 +181,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Array,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().([2]string)[1] == "2"
 			},
@@ -207,7 +192,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Int8,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(nilResultType) == notNil
 			},
@@ -221,7 +205,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 		},
 		{
 			name:     "empty struct",
@@ -230,7 +213,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(MyStruct).x == ""
 			},
@@ -244,7 +226,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(MyStruct).x == "a"
 			},
@@ -256,7 +237,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(MyStruct).x == ""
 			},
@@ -270,7 +250,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(MyStruct).x == "a"
 			},
@@ -282,7 +261,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Func,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(func(x, y int) int)(2, 3) == 5
 			},
@@ -294,7 +272,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Chan,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 		},
 		{
 			name: "map",
@@ -305,7 +282,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Map,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(map[string]bool)["a"]
 			},
@@ -317,7 +293,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Complex128,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return imag(value.Interface().(complex128)) == 3
 			},
@@ -329,7 +304,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Complex128,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 		},
 		{
 			name:     "bool",
@@ -338,7 +312,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Bool,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				return value.Interface().(bool) == true
 			},
@@ -350,7 +323,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Bool,
 			wantNil:  notNil,
 			wantZero: true,
-			wantOk:   true,
 		},
 		{
 			name: "*big.Int",
@@ -363,7 +335,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				bi := value.Interface().(big.Int)
 				return bi.Int64() == int64(99)
@@ -380,7 +351,6 @@ func TestRootValueExtractor(t *testing.T) {
 			wantKind: reflect.Struct,
 			wantNil:  notNil,
 			wantZero: false,
-			wantOk:   true,
 			valueVerify: func(value reflect.Value) bool {
 				bf := value.Interface().(big.Float)
 				f, _ := bf.Float64()
@@ -402,12 +372,11 @@ func TestRootValueExtractor(t *testing.T) {
 			defer deferExpectPanicContains(t, "not yet supported kind unsafe.Pointer", tt.notSupported)
 
 			var gotValue *reflect.Value
-			var isNil, gotOk bool
+			var isNil bool
 			var testName string
 
 			assertResult := func() {
 				fmt.Println(testName, "of", tt.name)
-				assert.Equalf(t, tt.wantOk, gotOk, "[ok] expect %t, got %t", tt.wantOk, gotOk)
 
 				if tt.wantNil == nilResult {
 					assert.Nil(t, gotValue)
@@ -429,56 +398,54 @@ func TestRootValueExtractor(t *testing.T) {
 					assert.Equalf(t, tt.wantType, gotValue.Type(), "[type] expect %v, got %v", tt.wantType, gotValue.Type())
 					assert.Equalf(t, tt.wantKind, gotValue.Kind(), "[kind] expect %v, got %v", tt.wantKind, gotValue.Kind())
 
-					if gotOk {
-						if !gotValue.IsValid() {
-							t.Errorf("got ok but value is not valid")
-						}
+					if !gotValue.IsValid() {
+						t.Errorf("value is not valid")
+					}
 
-						if tt.valueVerify != nil {
-							assert.Truef(t, tt.valueVerify(*gotValue), "value verifier rejected value")
-						}
+					if tt.valueVerify != nil {
+						assert.Truef(t, tt.valueVerify(*gotValue), "value verifier rejected value")
 					}
 				}
 			}
 
 			testName = "L0"
-			gotValue, isNil, gotOk = RootValueExtractor(tt.input)
+			gotValue, isNil = RootValueExtractor(tt.input)
 			assertResult()
 
 			testName = "L1 (pointer of input)"
 			var pointerOfInput *any
 			pointerOfInput = &tt.input
-			gotValue, isNil, gotOk = RootValueExtractor(pointerOfInput)
+			gotValue, isNil = RootValueExtractor(pointerOfInput)
 			assertResult()
 
 			testName = "L2-1 (any of pointer of input)"
 			var anyOfPointerOfInput any
 			anyOfPointerOfInput = any(pointerOfInput)
-			gotValue, isNil, gotOk = RootValueExtractor(anyOfPointerOfInput)
+			gotValue, isNil = RootValueExtractor(anyOfPointerOfInput)
 			assertResult()
 
 			testName = "L2-2 (pointer of pointer of input)"
 			var pointerOfPointerOfInput **any
 			pointerOfPointerOfInput = &pointerOfInput
-			gotValue, isNil, gotOk = RootValueExtractor(pointerOfPointerOfInput)
+			gotValue, isNil = RootValueExtractor(pointerOfPointerOfInput)
 			assertResult()
 
 			testName = "L3-1-1 (pointer of any of pointer of input)"
 			var pointerOfAnyOfPointerOfInput any
 			pointerOfAnyOfPointerOfInput = &anyOfPointerOfInput
-			gotValue, isNil, gotOk = RootValueExtractor(pointerOfAnyOfPointerOfInput)
+			gotValue, isNil = RootValueExtractor(pointerOfAnyOfPointerOfInput)
 			assertResult()
 
 			testName = "L3-2-1 (any of pointer of pointer of input)"
 			var anyOfPointerOfPointerOfInput any
 			anyOfPointerOfPointerOfInput = any(pointerOfPointerOfInput)
-			gotValue, isNil, gotOk = RootValueExtractor(anyOfPointerOfPointerOfInput)
+			gotValue, isNil = RootValueExtractor(anyOfPointerOfPointerOfInput)
 			assertResult()
 
 			testName = "L3-2-2 (pointer of pointer of pointer of input)"
 			var pointerOfPointerOfPointerOfInput ***any
 			pointerOfPointerOfPointerOfInput = &pointerOfPointerOfInput
-			gotValue, isNil, gotOk = RootValueExtractor(pointerOfPointerOfPointerOfInput)
+			gotValue, isNil = RootValueExtractor(pointerOfPointerOfPointerOfInput)
 			assertResult()
 		})
 	}

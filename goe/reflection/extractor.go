@@ -5,11 +5,10 @@ import (
 	"reflect"
 )
 
-func RootValueExtractor(v any) (value *reflect.Value, isNil bool, ok bool) {
+func RootValueExtractor(v any) (value *reflect.Value, isNil bool) {
 	if v == nil {
 		value = nil
 		isNil = true
-		ok = true
 		return
 	}
 
@@ -33,7 +32,6 @@ func RootValueExtractor(v any) (value *reflect.Value, isNil bool, ok bool) {
 		switch vo.Kind() {
 		case reflect.Invalid:
 			value = nil
-			ok = true
 			return
 		case reflect.Bool,
 			reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
@@ -44,7 +42,6 @@ func RootValueExtractor(v any) (value *reflect.Value, isNil bool, ok bool) {
 			reflect.Chan,
 			reflect.Func:
 			value = &vo
-			ok = true
 			return
 		case reflect.Interface:
 			vo = vo.Elem()
@@ -52,13 +49,11 @@ func RootValueExtractor(v any) (value *reflect.Value, isNil bool, ok bool) {
 		case reflect.Map:
 			value = &vo
 			isNil = vo.IsNil()
-			ok = true
 			return
 		case reflect.Pointer:
 			if vo.IsNil() {
 				value = &vo
 				isNil = true
-				ok = true
 				return
 			}
 
@@ -66,7 +61,6 @@ func RootValueExtractor(v any) (value *reflect.Value, isNil bool, ok bool) {
 			continue
 		case reflect.Slice, reflect.String, reflect.Struct:
 			value = &vo
-			ok = true
 			return
 		//case reflect.UnsafePointer: fall down
 		default:
