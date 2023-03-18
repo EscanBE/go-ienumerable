@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"math"
+	"math/big"
 	"math/rand"
 	"reflect"
 	"testing"
@@ -300,5 +301,35 @@ func Test_numericComparer_CompareTyped_CompareAny(t *testing.T) {
 		assert.Equal(t, 1, NumericComparer.CompareAny(anyF6, &anyI8))
 		assert.Equal(t, -1, NumericComparer.CompareAny(&anyI8, &anyF6))
 		assert.Equal(t, 1, NumericComparer.CompareAny(&anyF6, &anyI8))
+	})
+}
+
+func Test_assertExactOneParamNotNil(t *testing.T) {
+	t.Run("zero of all", func(t *testing.T) {
+		var i *int64
+		var bf *big.Float
+		var c *complex128
+		defer deferExpectPanicContains(t, "expect exactly one param not nil, found 0/3", true)
+		assertExactOneValueNotNil(i, bf, c)
+	})
+	t.Run("one of all", func(t *testing.T) {
+		var i int64 = 1
+		var bf *big.Float
+		var c *complex128
+		assertExactOneValueNotNil(&i, bf, c)
+	})
+	t.Run("two of all", func(t *testing.T) {
+		var i int64 = 1
+		var bf = new(big.Float).SetInt64(1)
+		var c *complex128
+		defer deferExpectPanicContains(t, "expect exactly one param not nil, found 2/3", true)
+		assertExactOneValueNotNil(&i, bf, c)
+	})
+	t.Run("all", func(t *testing.T) {
+		var i int64 = 1
+		var bf = new(big.Float).SetInt64(1)
+		var c = complex(1, 2)
+		defer deferExpectPanicContains(t, "expect exactly one param not nil, found 3/3", true)
+		assertExactOneValueNotNil(&i, bf, &c)
 	})
 }
