@@ -167,6 +167,11 @@ func Test_numericComparer_CompareAny(t *testing.T) {
 		defer deferExpectPanicContains(t, "can not be cast to a number", true)
 		NumericComparer.CompareAny(nil, "")
 	})
+	t.Run("nil pointer", func(t *testing.T) {
+		var i16 *int8
+		var f32 *float32
+		assert.Zero(t, NumericComparer.CompareAny(i16, f32))
+	})
 	t.Run("monkey test", func(t *testing.T) {
 		report := make(map[int]int)
 		radFuncSize := len(randomFuncsGenerateNumericTest)

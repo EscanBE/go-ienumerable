@@ -95,6 +95,20 @@ func TestRootValueExtractor(t *testing.T) {
 			wantZero: true,
 		},
 		{
+			name: "nil *int",
+			input: func() *int {
+				var i *int
+				return i
+			}(),
+			wantType: func() reflect.Type {
+				i := rand.Int()
+				return reflect.TypeOf(&i)
+			}(),
+			wantKind: reflect.Pointer,
+			wantNil:  nilValue,
+			wantZero: true,
+		},
+		{
 			name:     "string",
 			input:    "6",
 			wantType: reflect.TypeOf("6"),
