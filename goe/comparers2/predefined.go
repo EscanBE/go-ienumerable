@@ -1,6 +1,7 @@
 package comparers
 
 import (
+	"math/big"
 	"time"
 )
 
@@ -56,3 +57,33 @@ var BoolComparer IComparer[bool] = NewBoolComparer()
 //
 //goland:noinspection GoVarAndConstTypeMayBeOmitted
 var TimeComparer IComparer[time.Time] = NewTimeComparer()
+
+// BigIntComparer implements IComparer[*big.Int], this compares the real value of 2 *big.Int struct.
+//
+// If x before y, returns -1. If x after y, returns 1. Otherwise, returns 0.
+//
+// _______________
+//
+// Wrapped as interface or pointer are all accepted by compare using `CompareAny` method.
+//
+// > Eg 2: CompareAny(*big.Int vs *(big.Int)), CompareAny(*big.Int, *any(*big.Int)).
+//
+// Panic if the final value detected is not big.Int struct.
+//
+//goland:noinspection GoVarAndConstTypeMayBeOmitted
+var BigIntComparer IComparer[*big.Int] = NewBigIntComparer()
+
+// BigFloatComparer implements IComparer[*big.Float], this compares the real value of 2 *big.Float struct.
+//
+// If x before y, returns -1. If x after y, returns 1. Otherwise, returns 0.
+//
+// _______________
+//
+// Wrapped as interface or pointer are all accepted by compare using `CompareAny` method.
+//
+// > Eg 2: CompareAny(*big.Float vs *(big.Float)), CompareAny(*big.Float, *any(*big.Float)).
+//
+// Panic if the final value detected is not big.Float struct.
+//
+//goland:noinspection GoVarAndConstTypeMayBeOmitted
+var BigFloatComparer IComparer[*big.Float] = NewBigFloatComparer()

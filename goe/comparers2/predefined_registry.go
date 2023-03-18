@@ -3,11 +3,12 @@ package comparers
 import (
 	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe/reflection"
+	"math/big"
 	"reflect"
 	"time"
 )
 
-// TODO implement comparer for big.Int, big.Float
+// TODO embed big.Int, big.Float into numeric comparer
 
 //goland:noinspection GoRedundantConversion
 var mappedDefaultComparers = map[reflect.Type]IComparer[any]{
@@ -25,6 +26,8 @@ var mappedDefaultComparers = map[reflect.Type]IComparer[any]{
 	getDefaultComparerKeyFromSampleValue(float64(1.0)):                        NewNumericComparer(),
 	getDefaultComparerKeyFromSampleValue(complex(float32(1.0), float32(1.0))): NewNumericComparer(),
 	getDefaultComparerKeyFromSampleValue(complex(float64(1.0), float64(1.0))): NewNumericComparer(),
+	getDefaultComparerKeyFromSampleValue(new(big.Int).SetInt64(1)):            ConvertFromComparerIntoDefaultComparer[*big.Int](NewBigIntComparer()),
+	getDefaultComparerKeyFromSampleValue(new(big.Float).SetInt64(1)):          ConvertFromComparerIntoDefaultComparer[*big.Float](NewBigFloatComparer()),
 	getDefaultComparerKeyFromSampleValue("string"):                            ConvertFromComparerIntoDefaultComparer[string](NewStringComparer()),
 	getDefaultComparerKeyFromSampleValue(true):                                ConvertFromComparerIntoDefaultComparer[bool](NewBoolComparer()),
 	getDefaultComparerKeyFromSampleValue(time.Now()):                          ConvertFromComparerIntoDefaultComparer[time.Time](NewTimeComparer()),
