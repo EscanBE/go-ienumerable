@@ -7,15 +7,10 @@ import (
 	"time"
 )
 
-type DefaultComparerKey struct {
-	Kind reflect.Kind
-	Type reflect.Type
-}
-
 // TODO implement comparer for big.Int, big.Float
 
 //goland:noinspection GoRedundantConversion
-var mappedDefaultComparers = map[DefaultComparerKey]IComparer[any]{
+var mappedDefaultComparers = map[reflect.Type]IComparer[any]{
 	getDefaultComparerKeyFromSampleValue(int8(1)):                             NewNumericComparer(),
 	getDefaultComparerKeyFromSampleValue(int16(1)):                            NewNumericComparer(),
 	getDefaultComparerKeyFromSampleValue(int32(1)):                            NewNumericComparer(),
@@ -35,7 +30,7 @@ var mappedDefaultComparers = map[DefaultComparerKey]IComparer[any]{
 	getDefaultComparerKeyFromSampleValue(time.Now()):                          ConvertFromComparerIntoDefaultComparer[time.Time](NewTimeComparer()),
 }
 
-func getDefaultComparerKeyFromSampleValue(sampleValue any) DefaultComparerKey {
+func getDefaultComparerKeyFromSampleValue(sampleValue any) reflect.Type {
 	key, err := tryGetDefaultComparerKeyFromSampleValue(sampleValue)
 	if err != nil {
 		panic(err.Error())
@@ -43,31 +38,37 @@ func getDefaultComparerKeyFromSampleValue(sampleValue any) DefaultComparerKey {
 	return key
 }
 
-func tryGetDefaultComparerKeyFromSampleValue(sampleValue any) (key DefaultComparerKey, err error) {
+func tryGetDefaultComparerKeyFromSampleValue(sampleValue any) (key reflect.Type, err error) {
 	value, isNil := reflection.RootValueExtractor(sampleValue)
 
 	if isNil || !value.IsValid() {
+		to := reflect.TypeOf(sampleValue)
+		if to != nil {
+			if to.Kind() == reflect.Pointer {
+				key = to.Elem()
+				return
+			}
+		}
 		err = fmt.Errorf("sample value can not be nil or invalid")
 		return
 	}
 
-	key = DefaultComparerKey{
-		Kind: value.Kind(),
-		Type: value.Type(),
-	}
+	key = value.Type()
 	return
 }
 
 func TryGetDefaultComparer[T any]() (comparer IComparer[any], ok bool) {
-	defer func() {
-		err := recover()
-		if err != nil {
-			ok = false
-			// silent error
-		}
-	}()
+	key, _ := tryGetDefaultComparerKeyFromSampleValue(*new(T))
+	comparer, ok = mappedDefaultComparers[key]
+	return
+}
 
-	key := getDefaultComparerKeyFromSampleValue(*new(T))
+func TryGetDefaultComparerFromValue(sampleValue any) (comparer IComparer[any], ok bool) {
+	key, err := tryGetDefaultComparerKeyFromSampleValue(sampleValue)
+	if err != nil {
+		return
+	}
+
 	comparer, ok = mappedDefaultComparers[key]
 	return
 }
