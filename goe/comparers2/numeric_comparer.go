@@ -13,13 +13,17 @@ var _ IComparer[any] = numericComparer{}
 type numericComparer struct {
 }
 
+func NewNumericComparer() IComparer[any] {
+	return numericComparer{}
+}
+
 func (n numericComparer) CompareTyped(x, y any) int {
 	if x == nil || y == nil {
 		panic("nil can not be cast to a number")
 	}
 
-	ix, bfx, cx := extractValueFromReflectValue(reflect.ValueOf(x))
-	iy, bfy, cy := extractValueFromReflectValue(reflect.ValueOf(y))
+	ix, bfx, cx := extractNumericValueFromReflectValue(reflect.ValueOf(x))
+	iy, bfy, cy := extractNumericValueFromReflectValue(reflect.ValueOf(y))
 
 	assertExactOneValueNotNil(ix, bfx, cx)
 	assertExactOneValueNotNil(iy, bfy, cy)
@@ -104,8 +108,8 @@ func (n numericComparer) CompareAny(x, y any) int {
 		panic(fmt.Sprintf("%s %s can not be cast to a number", vox.Kind().String(), vox.Type().String()))
 	}
 
-	ix, bfx, cx := extractValueFromReflectValue(*vox)
-	iy, bfy, cy := extractValueFromReflectValue(*voy)
+	ix, bfx, cx := extractNumericValueFromReflectValue(*vox)
+	iy, bfy, cy := extractNumericValueFromReflectValue(*voy)
 
 	assertExactOneValueNotNil(ix, bfx, cx)
 	assertExactOneValueNotNil(iy, bfy, cy)
@@ -215,7 +219,7 @@ func (n numericComparer) internalCompareTyped(x, y any, mode unsafeCompareTypedM
 	return 0
 }
 
-func extractValueFromReflectValue(voi reflect.Value) (iv *int64, bfv *big.Float, cv *complex128) {
+func extractNumericValueFromReflectValue(voi reflect.Value) (iv *int64, bfv *big.Float, cv *complex128) {
 	switch voi.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
 		i64 := voi.Int()
