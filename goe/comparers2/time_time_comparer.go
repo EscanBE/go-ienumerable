@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+// ensure implementation
 var _ IComparer[time.Time] = timeTimeComparer{}
 
 type timeTimeComparer struct {

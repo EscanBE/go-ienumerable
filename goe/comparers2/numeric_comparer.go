@@ -8,6 +8,7 @@ import (
 	"reflect"
 )
 
+// ensure implementation
 var _ IComparer[any] = numericComparer{}
 
 type numericComparer struct {

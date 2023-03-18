@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"reflect"
 	"testing"
+	"time"
 )
 
 type randomFunc func() any
@@ -301,6 +302,11 @@ func Test_numericComparer_CompareTyped_CompareAny(t *testing.T) {
 		assert.Equal(t, 1, NumericComparer.CompareAny(anyF6, &anyI8))
 		assert.Equal(t, -1, NumericComparer.CompareAny(&anyI8, &anyF6))
 		assert.Equal(t, 1, NumericComparer.CompareAny(&anyF6, &anyI8))
+	})
+
+	t.Run("accept type which defined on top of numeric type", func(t *testing.T) {
+		assert.Zero(t, NumericComparer.CompareAny(time.Minute, time.Minute))
+		assert.Zero(t, NumericComparer.CompareAny(_USCTM_COMPLEX128, _USCTM_COMPLEX128))
 	})
 }
 
