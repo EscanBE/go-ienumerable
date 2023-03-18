@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -13,14 +13,14 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 		return v1 == v2
 	}
 	fCompare := func(v1, v2 int) int {
-		return comparers.IntComparer.Compare(v1, v2)
+		return comparers.NumericComparer.CompareAny(v1, v2)
 	}
 	var tests = []struct {
 		name     string
 		source   IEnumerable[int]
 		fEquals  func(t1, t2 int) bool
 		fCompare func(t1, t2 int) int
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		want     IEnumerable[int]
 	}{
 		{
@@ -28,7 +28,7 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 			source:   createEmptyIntEnumerable(),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     createEmptyIntEnumerable(),
 		},
 		{
@@ -36,7 +36,7 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 			source:   NewIEnumerable[int](2),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](2),
 		},
 		{
@@ -44,7 +44,7 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 			source:   NewIEnumerable[int](2, 2),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](2),
 		},
 		{
@@ -60,7 +60,7 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](1, 2, 3, 6, 5, 4),
 		},
 	}

@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 )
 
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {
@@ -42,7 +42,7 @@ func copySlice[T any](src []T) []T {
 
 func getMapKeys[T comparable](m map[T]bool) []T {
 	keys := make([]T, 0)
-	for k, _ := range m {
+	for k := range m {
 		keys = append(keys, k)
 	}
 	return keys
@@ -58,12 +58,6 @@ func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
 }
 
 func (src *enumerable[T]) tryFindDefaultComparer() (comparers.IComparer[any], bool) {
-	if len(src.dataType) > 0 {
-		if comparer, found := comparers.TryGetDefaultComparerByTypeName(src.dataType); found {
-			return comparer, true
-		}
-	}
-
 	if comparer, found := comparers.TryGetDefaultComparer[T](); found {
 		return comparer, true
 	}

@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 )
 
 // ensure implementation

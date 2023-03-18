@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -12,7 +12,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		return i1 == i2
 	}
 	fCompare := func(i1, i2 int) int {
-		return comparers.IntComparer.Compare(i1, i2)
+		return comparers.NumericComparer.CompareTyped(i1, i2)
 	}
 
 	tests := []struct {
@@ -22,7 +22,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		want     IEnumerable[int]
 		fEquals  func(int, int) bool
 		fCompare func(int, int) int
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		panic    bool
 	}{
 		{
@@ -32,7 +32,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "returns distinct",
@@ -41,7 +41,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](2),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "except all",
@@ -68,7 +68,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "except some",
@@ -77,7 +77,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "except when source empty",
@@ -86,7 +86,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "except when second empty",
@@ -95,7 +95,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "panic with nil src",
@@ -104,7 +104,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 		{
@@ -114,7 +114,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 		{
@@ -124,7 +124,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 	}

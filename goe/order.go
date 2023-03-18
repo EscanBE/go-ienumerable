@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"sort"
 )
 
@@ -25,7 +25,7 @@ func (src *enumerable[T]) OrderBy(lessComparer func(left, right T) bool) IEnumer
 			comparer = src.findDefaultComparer()
 		}
 		lessComparer = func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) < 0
+			return comparer.CompareAny(v1, v2) < 0
 		}
 	}
 
@@ -37,7 +37,7 @@ func (src *enumerable[T]) OrderByComparer(comparer comparers.IComparer[T]) IEnum
 
 	if comparer != nil {
 		return src.internalOrderBy(func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) < 0
+			return comparer.CompareAny(v1, v2) < 0
 		})
 	}
 
@@ -47,7 +47,7 @@ func (src *enumerable[T]) OrderByComparer(comparer comparers.IComparer[T]) IEnum
 	}
 
 	return src.internalOrderBy(func(v1, v2 T) bool {
-		return defaultComparer.Compare(v1, v2) < 0
+		return defaultComparer.CompareAny(v1, v2) < 0
 	})
 }
 
@@ -88,7 +88,7 @@ func (src *enumerable[T]) OrderByDescendingBy(lessComparer func(left, right T) b
 			comparer = src.findDefaultComparer()
 		}
 		lessComparer = func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) > 0
+			return comparer.CompareAny(v1, v2) > 0
 		}
 	}
 
@@ -100,7 +100,7 @@ func (src *enumerable[T]) OrderByDescendingByComparer(comparer comparers.ICompar
 
 	if comparer != nil {
 		return src.internalOrderByDescendingBy(func(v1, v2 T) bool {
-			return comparer.Compare(v1, v2) > 0
+			return comparer.CompareAny(v1, v2) > 0
 		})
 	}
 
@@ -110,7 +110,7 @@ func (src *enumerable[T]) OrderByDescendingByComparer(comparer comparers.ICompar
 	}
 
 	return src.internalOrderByDescendingBy(func(v1, v2 T) bool {
-		return defaultComparer.Compare(v1, v2) > 0
+		return defaultComparer.CompareAny(v1, v2) > 0
 	})
 }
 

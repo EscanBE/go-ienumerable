@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -12,7 +12,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 		return i1 == i2
 	}
 	fCompare := func(v1, v2 int) int {
-		return comparers.IntComparer.Compare(v1, v2)
+		return comparers.NumericComparer.CompareAny(v1, v2)
 	}
 	tests := []struct {
 		name     string
@@ -21,7 +21,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 		want     IEnumerable[int]
 		fEquals  func(int, int) bool
 		fCompare func(int, int) int
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		panic    bool
 	}{
 		{
@@ -31,7 +31,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3, 4, 5, 6, 7),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union returns distinct",
@@ -40,7 +40,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](5, 2, 6, 1, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union with duplicated",
@@ -49,7 +49,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "no comparer",
@@ -67,7 +67,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](1),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union some",
@@ -76,7 +76,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](2, 3, 1),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union all",
@@ -85,7 +85,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3, 5, 6),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union when source empty",
@@ -94,7 +94,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](4, 5, 6, 7),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union when second empty",
@@ -103,7 +103,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "union when both empty",
@@ -112,7 +112,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "panic with nil src",
@@ -121,7 +121,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 		{
@@ -131,7 +131,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 		{
@@ -141,7 +141,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 	}

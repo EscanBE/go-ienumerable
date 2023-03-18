@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -16,28 +16,28 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 		name     string
 		source   IEnumerable[int]
 		fLess    func(t1, t2 int) bool
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		want     IEnumerable[int]
 	}{
 		{
 			name:     "empty source returns empty",
 			source:   createEmptyIntEnumerable(),
 			fLess:    fLess,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     createEmptyIntEnumerable(),
 		},
 		{
 			name:     "not distinct (1)",
 			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
 			fLess:    fLess,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](1, 2, 2, 3, 3, 4, 4, 5, 6, 6, 6),
 		},
 		{
 			name:     "not distinct (2)",
 			source:   NewIEnumerable[int](2, 2),
 			fLess:    fLess,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](2, 2),
 		},
 		{
@@ -168,28 +168,28 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 		name     string
 		source   IEnumerable[int]
 		fGreater func(t1, t2 int) bool
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		want     IEnumerable[int]
 	}{
 		{
 			name:     "empty source returns empty",
 			source:   createEmptyIntEnumerable(),
 			fGreater: fGreater,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     createEmptyIntEnumerable(),
 		},
 		{
 			name:     "not distinct (1)",
 			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
 			fGreater: fGreater,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](6, 6, 6, 5, 4, 4, 3, 3, 2, 2, 1),
 		},
 		{
 			name:     "not distinct (2)",
 			source:   NewIEnumerable[int](2, 2),
 			fGreater: fGreater,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     NewIEnumerable[int](2, 2),
 		},
 		{

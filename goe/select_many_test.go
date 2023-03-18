@@ -88,10 +88,10 @@ func Test_enumerable_SelectMany(t *testing.T) {
 		eGot := e[any](ieGot)
 		assert.Equal(t, "time.Duration", eGot.dataType)
 		assert.NotNil(t, eGot.defaultComparer)
-		assert.Equal(t, 1, eGot.defaultComparer.Compare(gotArray[0], gotArray[1]))
-		assert.Equal(t, -1, eGot.defaultComparer.Compare(gotArray[1], gotArray[0]))
-		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[0], 3*time.Minute))
-		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[1], 1*time.Minute))
+		assert.Equal(t, 1, eGot.defaultComparer.CompareAny(gotArray[0], gotArray[1]))
+		assert.Equal(t, -1, eGot.defaultComparer.CompareAny(gotArray[1], gotArray[0]))
+		assert.Zero(t, eGot.defaultComparer.CompareAny(gotArray[0], 3*time.Minute))
+		assert.Zero(t, eGot.defaultComparer.CompareAny(gotArray[1], 1*time.Minute))
 	})
 
 	t.Run("panic nil value as result of selector", func(t *testing.T) {
@@ -246,10 +246,10 @@ func Test_enumerable_SelectManyWithSampleValueOfResult(t *testing.T) {
 		eGot := e[any](ieGot)
 		assert.Equal(t, "time.Duration", eGot.dataType)
 		assert.NotNil(t, eGot.defaultComparer)
-		assert.Equal(t, 1, eGot.defaultComparer.Compare(gotArray[0], gotArray[1]))
-		assert.Equal(t, -1, eGot.defaultComparer.Compare(gotArray[1], gotArray[0]))
-		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[0], 3*time.Minute))
-		assert.Zero(t, eGot.defaultComparer.Compare(gotArray[1], 1*time.Minute))
+		assert.Equal(t, 1, eGot.defaultComparer.CompareAny(gotArray[0], gotArray[1]))
+		assert.Equal(t, -1, eGot.defaultComparer.CompareAny(gotArray[1], gotArray[0]))
+		assert.Zero(t, eGot.defaultComparer.CompareAny(gotArray[0], 3*time.Minute))
+		assert.Zero(t, eGot.defaultComparer.CompareAny(gotArray[1], 1*time.Minute))
 	})
 
 	t.Run("panic nil value as result of selector", func(t *testing.T) {
@@ -278,8 +278,8 @@ func Test_enumerable_SelectManyWithSampleValueOfResult(t *testing.T) {
 		eGot := e[any](ieGot)
 		assert.Equal(t, "time.Duration", eGot.dataType)
 		assert.NotNil(t, eGot.defaultComparer)
-		assert.Equal(t, 1, eGot.defaultComparer.Compare(time.Minute, time.Second))
-		assert.Equal(t, -1, eGot.defaultComparer.Compare(time.Second, time.Minute))
+		assert.Equal(t, 1, eGot.defaultComparer.CompareAny(time.Minute, time.Second))
+		assert.Equal(t, -1, eGot.defaultComparer.CompareAny(time.Second, time.Minute))
 	})
 
 	t.Run("not panic if not able to detect comparer", func(t *testing.T) {

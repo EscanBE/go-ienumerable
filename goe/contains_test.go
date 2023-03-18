@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -11,7 +11,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 		return l == r
 	}
 	fCompare := func(l, r int) int {
-		return comparers.IntComparer.Compare(l, r)
+		return comparers.NumericComparer.CompareAny(l, r)
 	}
 	var tests = []struct {
 		name     string
@@ -19,7 +19,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 		check    int
 		fEquals  func(t1, t2 int) bool
 		fCompare func(v1, v2 int) int
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		want     bool
 	}{
 		{
@@ -27,7 +27,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 			source:   createEmptyIntEnumerable(),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     false,
 		},
 		{
@@ -36,7 +36,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 			check:    1,
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     false,
 		},
 		{
@@ -45,7 +45,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 			check:    2,
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     true,
 		},
 		{
@@ -54,7 +54,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 			check:    99,
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     false,
 		},
 		{
@@ -63,7 +63,7 @@ func Test_enumerable_Contains_ContainsBy(t *testing.T) {
 			check:    -4,
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			want:     true,
 		},
 		{

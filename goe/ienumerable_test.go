@@ -75,14 +75,14 @@ func testInitWithCorrectDataTypeAndComparer[T any](t *testing.T, lessValue, grea
 		assert.Equal(t, dataType, eSrc.dataType)
 		assert.NotNil(t, eSrc.defaultComparer)
 
-		assert.Equal(t, -1, eSrc.defaultComparer.Compare(lessValue, greaterValue))
-		assert.Equal(t, 0, eSrc.defaultComparer.Compare(lessValue, lessValue))
-		assert.Equal(t, 0, eSrc.defaultComparer.Compare(greaterValue, greaterValue))
-		assert.Equal(t, 1, eSrc.defaultComparer.Compare(greaterValue, lessValue))
+		assert.Equal(t, -1, eSrc.defaultComparer.CompareAny(lessValue, greaterValue))
+		assert.Equal(t, 0, eSrc.defaultComparer.CompareAny(lessValue, lessValue))
+		assert.Equal(t, 0, eSrc.defaultComparer.CompareAny(greaterValue, greaterValue))
+		assert.Equal(t, 1, eSrc.defaultComparer.CompareAny(greaterValue, lessValue))
 
-		assert.Equal(t, -1, eSrc.defaultComparer.Compare(any(lessValue), any(greaterValue)))
-		assert.Equal(t, 0, eSrc.defaultComparer.Compare(any(lessValue), any(lessValue)))
-		assert.Equal(t, 0, eSrc.defaultComparer.Compare(any(greaterValue), any(greaterValue)))
-		assert.Equal(t, 1, eSrc.defaultComparer.Compare(any(greaterValue), any(lessValue)))
+		assert.Equal(t, -1, eSrc.defaultComparer.CompareAny(any(lessValue), any(greaterValue)))
+		assert.Equal(t, 0, eSrc.defaultComparer.CompareAny(any(lessValue), any(lessValue)))
+		assert.Equal(t, 0, eSrc.defaultComparer.CompareAny(any(greaterValue), any(greaterValue)))
+		assert.Equal(t, 1, eSrc.defaultComparer.CompareAny(any(greaterValue), any(lessValue)))
 	})
 }

@@ -189,3 +189,91 @@ func TestTryGetDefaultComparerFromValue(t *testing.T) {
 		assert.False(t, c1 == c5)
 	})
 }
+
+func TestGetDefaultComparer(t *testing.T) {
+	t.Run("int64", func(t *testing.T) {
+		gotComparer := GetDefaultComparer[int64]()
+		assert.NotNil(t, gotComparer)
+		assert.Equal(t, 1, gotComparer.CompareAny(1.1, 1))
+	})
+	t.Run("pointer int64", func(t *testing.T) {
+		gotComparer := GetDefaultComparer[*int64]()
+		assert.NotNil(t, gotComparer)
+		assert.Equal(t, 1, gotComparer.CompareAny(1.1, 1))
+	})
+	t.Run("pointer time.Time", func(t *testing.T) {
+		gotComparer := GetDefaultComparer[*time.Time]()
+		assert.NotNil(t, gotComparer)
+		assert.Equal(t, 1, gotComparer.CompareAny(time.Now().Add(time.Hour), time.Now()))
+	})
+	t.Run("not supported type", func(t *testing.T) {
+		type myType struct{}
+		defer deferExpectPanicContains(t, "not found any default comparer for", true)
+		_ = GetDefaultComparer[myType]()
+	})
+	t.Run("numeric same comparer", func(t *testing.T) {
+		c1 := GetDefaultComparer[int]()
+		assert.NotNil(t, c1)
+		c2 := GetDefaultComparer[*uint16]()
+		assert.NotNil(t, c2)
+		c3 := GetDefaultComparer[float64]()
+		assert.NotNil(t, c3)
+		c4 := GetDefaultComparer[*complex128]()
+		assert.NotNil(t, c4)
+		assert.True(t, c1 == c2)
+		assert.True(t, c1 == c3)
+		assert.True(t, c1 == c4)
+		c5 := GetDefaultComparer[time.Time]()
+		assert.False(t, c1 == c5)
+	})
+}
+
+type wrappedInt32 struct {
+	value int32
+}
+
+var _ IComparer[wrappedInt32] = wrappedInt32Comparer{}
+
+// Create a custom comparer for a type
+type wrappedInt32Comparer struct {
+}
+
+func (i wrappedInt32Comparer) CompareTyped(x, y wrappedInt32) int {
+	if x.value < y.value {
+		return -1
+	}
+
+	if x.value > y.value {
+		return 1
+	}
+
+	return 0
+}
+
+func (i wrappedInt32Comparer) CompareAny(any, any) int {
+	panic("not implemented")
+	return 0
+}
+
+func TestRegisterDefaultComparer(t *testing.T) {
+	// This example shows how register and resolve default comparer for type wrappedInt32
+
+	// register for auto resolve, run once at app boots up
+	RegisterDefaultComparer[wrappedInt32](wrappedInt32Comparer{})
+
+	// resolve
+	comparer := GetDefaultComparer[wrappedInt32]()
+
+	var big, small wrappedInt32
+	big = wrappedInt32{
+		value: 9,
+	}
+	small = wrappedInt32{
+		value: 3,
+	}
+
+	assert.Equal(t, 0, comparer.CompareTyped(small, small))
+	assert.Equal(t, 0, comparer.CompareTyped(big, big))
+	assert.Equal(t, 1, comparer.CompareTyped(big, small))
+	assert.Equal(t, -1, comparer.CompareTyped(small, big))
+}

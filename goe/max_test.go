@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -11,7 +11,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 		return l > r
 	}
 	fCompare := func(l, r int) int {
-		return comparers.IntComparer.Compare(l, r)
+		return comparers.NumericComparer.CompareAny(l, r)
 	}
 
 	var tests = []struct {
@@ -20,7 +20,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 		want     int
 		fGreater func(t1, t2 int) bool
 		fCompare func(v1, v2 int) int
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 	}{
 		{
 			name:     "single",
@@ -28,7 +28,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 			want:     2,
 			fGreater: fGreater,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "single but duplicated",
@@ -36,7 +36,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 			want:     2,
 			fGreater: fGreater,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "many",
@@ -44,7 +44,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 			want:     6,
 			fGreater: fGreater,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "negative",
@@ -52,7 +52,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 			want:     -1,
 			fGreater: fGreater,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "no equality comparer still ok since int has default comparer",

@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 )
 
 func (src *enumerable[T]) WithComparerFrom(another IEnumerable[T]) IEnumerable[T] {
@@ -16,7 +16,7 @@ func (src *enumerable[T]) WithDefaultComparer(comparer comparers.IComparer[T]) I
 	if comparer == nil {
 		src.defaultComparer = nil
 	} else {
-		src.defaultComparer = comparers.ConvertToDefaultComparer[T](comparer)
+		src.defaultComparer = comparers.ConvertFromComparerIntoDefaultComparer[T](comparer)
 	}
 	return src
 }

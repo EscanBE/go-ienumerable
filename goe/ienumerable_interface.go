@@ -1,6 +1,6 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers"
+import "github.com/EscanBE/go-ienumerable/goe/comparers2"
 
 type IEnumerable[T any] interface {
 	// C#

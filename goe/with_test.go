@@ -1,7 +1,6 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -50,7 +49,10 @@ func Test_enumerable_WithDefaultComparer(t *testing.T) {
 		assert.Nil(t, e.defaultComparer)
 
 		// replace
-		eSrc.WithDefaultComparer(comparers.IntComparer)
+
+		// eSrc.WithDefaultComparer(comparers.NumericComparer)
+		panic("re-implement")
+
 		assert.NotNil(t, e.defaultComparer)
 
 		// eraser if input nil

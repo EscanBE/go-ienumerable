@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"strings"
@@ -292,7 +292,7 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 	t.Run("compare using IComparer", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-		_ = newIOrderedEnumerable(eSrc, comparers.IntComparer, CLC_ASC).GetOrderedEnumerable()
+		_ = newIOrderedEnumerable(eSrc, comparers.NumericComparer, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
 

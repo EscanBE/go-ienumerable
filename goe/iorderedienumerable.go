@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"sort"
 )
 
@@ -110,7 +110,7 @@ func (o *orderedEnumerable[T]) chainMoreComparer(compareFuncOrComparer interface
 		}
 		*/
 		compareFunc = func(v1, v2 T) int {
-			return cpr.Compare(v1, v2)
+			return cpr.CompareAny(v1, v2)
 		}
 	} else if cprA, okCprA := compareFuncOrComparer.(comparers.IComparer[any]); okCprA {
 		/* This will never reach since comparers.IComparer[T] is an interface and there is a nil check above
@@ -119,7 +119,7 @@ func (o *orderedEnumerable[T]) chainMoreComparer(compareFuncOrComparer interface
 		}
 		*/
 		compareFunc = func(v1, v2 T) int {
-			return cprA.Compare(v1, v2)
+			return cprA.CompareAny(v1, v2)
 		}
 	} else {
 		panic(getErrorComparerMustBeCompareFuncOrIComparer())

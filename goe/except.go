@@ -1,6 +1,6 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers"
+import "github.com/EscanBE/go-ienumerable/goe/comparers2"
 
 func (src *enumerable[T]) Except(second IEnumerable[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
@@ -12,7 +12,7 @@ func (src *enumerable[T]) Except(second IEnumerable[T]) IEnumerable[T] {
 	}
 
 	return src.internalExceptBy(second, func(v1, v2 T) bool {
-		return comparer.Compare(v1, v2) == 0
+		return comparer.CompareAny(v1, v2) == 0
 	})
 }
 
@@ -45,7 +45,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityOrComparer int
 		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
 			if cpr != nil {
 				isEquals = func(v1, v2 T) bool {
-					return cpr.Compare(v1, v2) == 0
+					return cpr.CompareAny(v1, v2) == 0
 				}
 			}
 		} else {
@@ -59,7 +59,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityOrComparer int
 			defaultComparer = src.findDefaultComparer()
 		}
 		isEquals = func(v1, v2 T) bool {
-			return defaultComparer.Compare(v1, v2) == 0
+			return defaultComparer.CompareAny(v1, v2) == 0
 		}
 	}
 

@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"
@@ -12,7 +12,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 		return v1 == v2
 	}
 	fCompare := func(v1, v2 int) int {
-		return comparers.IntComparer.Compare(v1, v2)
+		return comparers.NumericComparer.CompareAny(v1, v2)
 	}
 
 	tests := []struct {
@@ -22,7 +22,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 		want     IEnumerable[int]
 		fEquals  func(int, int) bool
 		fCompare func(int, int) int
-		comparer comparers.IComparer[int]
+		comparer comparers.IComparer[any]
 		panic    bool
 	}{
 		{
@@ -32,7 +32,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "no comparer",
@@ -50,7 +50,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](4),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "intersect some",
@@ -59,7 +59,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](5, 6),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "intersect all",
@@ -68,7 +68,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](1, 2, 3, 5, 6),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "intersect when source empty",
@@ -77,7 +77,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "intersect when second empty",
@@ -86,7 +86,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "intersect when both empty",
@@ -95,7 +95,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 		},
 		{
 			name:     "panic with nil src",
@@ -104,7 +104,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 		{
@@ -114,7 +114,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 		{
@@ -124,7 +124,7 @@ func Test_enumerable_Intersect_IntersectBy(t *testing.T) {
 			want:     NewIEnumerable[int](),
 			fEquals:  fEquals,
 			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			comparer: comparers.NumericComparer,
 			panic:    true,
 		},
 	}

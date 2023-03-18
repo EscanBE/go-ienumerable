@@ -1,7 +1,7 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers2"
 )
 
 func (src *enumerable[T]) Contains(value T) bool {
@@ -17,7 +17,7 @@ func (src *enumerable[T]) Contains(value T) bool {
 	}
 
 	for _, d := range src.data {
-		if comparer.Compare(value, d) == 0 {
+		if comparer.CompareAny(value, d) == 0 {
 			return true
 		}
 	}
@@ -54,7 +54,7 @@ func (src *enumerable[T]) ContainsBy(value T, equalityOrComparer interface{}) bo
 		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
 			if cpr != nil {
 				isEquals = func(v1, v2 T) bool {
-					return cpr.Compare(v1, v2) == 0
+					return cpr.CompareAny(v1, v2) == 0
 				}
 			}
 		} else {
@@ -68,7 +68,7 @@ func (src *enumerable[T]) ContainsBy(value T, equalityOrComparer interface{}) bo
 			defaultComparer = src.findDefaultComparer()
 		}
 		isEquals = func(v1, v2 T) bool {
-			return defaultComparer.Compare(v1, v2) == 0
+			return defaultComparer.CompareAny(v1, v2) == 0
 		}
 	}
 
