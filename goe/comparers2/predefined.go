@@ -45,3 +45,14 @@ var TimeComparer IComparer[time.Time] = NewTimeComparer()
 //
 //goland:noinspection GoVarAndConstTypeMayBeOmitted
 var StringComparer IComparer[string] = NewStringComparer()
+
+// BoolComparer implements IComparer[bool], this compares the real value of 2 boolean with contract: false < true.
+//
+// Wrapped as interface or pointer are all accepted by compare using `CompareAny` method.
+//
+// > Eg 2: CompareAny(*bool vs bool), CompareAny(bool, *any(*bool)).
+//
+// Panic if the final value detected is not a boolean.
+//
+//goland:noinspection GoVarAndConstTypeMayBeOmitted
+var BoolComparer IComparer[bool] = NewBoolComparer()
