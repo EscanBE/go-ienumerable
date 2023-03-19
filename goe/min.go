@@ -1,6 +1,6 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers2"
+import comparers "github.com/EscanBE/go-ienumerable/goe/comparers2"
 
 func (src *enumerable[T]) Min() T {
 	src.assertSrcNonNil()
@@ -11,75 +11,49 @@ func (src *enumerable[T]) Min() T {
 		comparer = src.findDefaultComparer()
 	}
 
-	return src.internalMinBy(func(v1, v2 T) bool {
+	greaterComparer := func(v1, v2 T) bool {
 		return comparer.CompareAny(v1, v2) < 0
-	})
-}
-
-func (src *enumerable[T]) MinBy(lessThanOrComparer interface{}) T {
-	src.assertSrcNonNil()
-	src.assertSrcNonEmpty()
-
-	var isLessThan LessFunc[T]
-
-	if lessThanOrComparer != nil {
-		if lff, okLff := lessThanOrComparer.(func(v1, v2 T) bool); okLff {
-			if lff != nil {
-				isLessThan = lff
-			}
-		} else if lft, okLft := lessThanOrComparer.(LessFunc[T]); okLft {
-			if lft != nil {
-				isLessThan = lft
-			}
-		} else if cff, okCff := lessThanOrComparer.(func(v1, v2 T) int); okCff {
-			if cff != nil {
-				isLessThan = func(v1, v2 T) bool {
-					return cff(v1, v2) < 0
-				}
-			}
-		} else if cft, okCft := lessThanOrComparer.(CompareFunc[T]); okCft {
-			if cft != nil {
-				isLessThan = func(v1, v2 T) bool {
-					return cft(v1, v2) < 0
-				}
-			}
-		} else if cpr, okCpr := lessThanOrComparer.(comparers.IComparer[T]); okCpr {
-			if cpr != nil {
-				isLessThan = func(v1, v2 T) bool {
-					return cpr.CompareAny(v1, v2) < 0
-				}
-			}
-		} else {
-			panic(getErrorComparerMustBeLessThanFuncOrIComparer())
-		}
 	}
 
-	if isLessThan == nil {
-		defaultComparer := src.defaultComparer
-		if defaultComparer == nil {
-			defaultComparer = src.findDefaultComparer()
-		}
-		isLessThan = func(v1, v2 T) bool {
-			return defaultComparer.CompareAny(v1, v2) < 0
-		}
-	}
-
-	return src.internalMinBy(isLessThan)
-}
-
-func (src *enumerable[T]) internalMinBy(lessComparer func(left, right T) bool) T {
-	src.assertSrcNonNil()
-	src.assertSrcNonEmpty()
-	src.assertComparerNonNil(lessComparer)
-
-	min := src.data[0]
+	minIdx := 0
 
 	for i := 1; i < len(src.data); i++ {
-		ele := src.data[i]
-		if lessComparer(ele, min) {
-			min = ele
+		if greaterComparer(src.data[i], src.data[minIdx]) {
+			minIdx = i
 		}
 	}
 
-	return min
+	return src.data[minIdx]
+}
+
+func (src *enumerable[T]) MinBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) T {
+	src.assertSrcNonNil()
+	src.assertSrcNonEmpty()
+	assertKeySelectorNonNil(keySelector)
+
+	keys := make([]any, len(src.data))
+	for i, t := range src.data {
+		keys[i] = keySelector(t)
+		if compareFunc == nil {
+			comparer, found := comparers.TryGetDefaultComparerFromValue(keys[i])
+			if found {
+				compareFunc = func(v1, v2 any) int {
+					return comparer.CompareAny(v1, v2)
+				}
+			}
+		}
+	}
+
+	if compareFunc == nil {
+		panic(getErrorFailedCompare2ElementsInArray())
+	}
+
+	keyIdx := 0
+	for i := 1; i < len(src.data); i++ {
+		if compareFunc(keys[i], keys[keyIdx]) < 0 {
+			keyIdx = i
+		}
+	}
+
+	return src.data[keyIdx]
 }

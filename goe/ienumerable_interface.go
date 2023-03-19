@@ -282,13 +282,16 @@ type IEnumerable[T any] interface {
 	// otherwise panic.
 	Min() T
 
-	// MinBy returns the minimum value in a sequence
-	// according to the provided less-than-comparer to compare values.
+	// MinBy returns the minimum value in a generic sequence according to a specified key selector function
+	// and key comparer.
 	//
-	// Comparer must be: LessFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// ________
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MinBy(lessThanOrComparer interface{}) T
+	// keySelector is required, compareFunc is optional.
+	//
+	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
+	MinBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) T
 
 	// Max returns the greatest value in a sequence.
 	//
