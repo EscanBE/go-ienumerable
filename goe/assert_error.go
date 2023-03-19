@@ -178,3 +178,7 @@ func assertKeySelectorNonNil[T any](keySelector KeySelector[T]) {
 func getErrorKeySelectorNotNil() error {
 	return fmt.Errorf("key selector must not be nil")
 }
+
+func getErrorFailedCompare2ElementsInArray() error {
+	return fmt.Errorf("failed to compare two elements in the array, at least one object must have registered default comparer")
+}

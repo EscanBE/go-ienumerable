@@ -3,9 +3,16 @@ package goe
 func (src *enumerable[T]) Order() IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
 
+	comparer := src.defaultComparer
+	if comparer == nil {
+		comparer = src.findDefaultComparer()
+	}
+
 	return newIOrderedEnumerable[T](src, func(ele T) any {
 		return ele
-	}, nil, CLC_ASC)
+	}, func(v1, v2 any) int {
+		return comparer.CompareAny(v1, v2)
+	}, CLC_ASC)
 }
 
 func (src *enumerable[T]) OrderBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
@@ -18,9 +25,16 @@ func (src *enumerable[T]) OrderBy(keySelector KeySelector[T], compareFunc Compar
 func (src *enumerable[T]) OrderByDescending() IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
 
+	comparer := src.defaultComparer
+	if comparer == nil {
+		comparer = src.findDefaultComparer()
+	}
+
 	return newIOrderedEnumerable[T](src, func(ele T) any {
 		return ele
-	}, nil, CLC_DESC)
+	}, func(v1, v2 any) int {
+		return comparer.CompareAny(v1, v2)
+	}, CLC_DESC)
 }
 
 func (src *enumerable[T]) OrderByDescendingBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {

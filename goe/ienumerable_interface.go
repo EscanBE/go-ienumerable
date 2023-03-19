@@ -297,13 +297,16 @@ type IEnumerable[T any] interface {
 	// otherwise panic.
 	Max() T
 
-	// MaxBy returns the greatest value in a sequence
-	// according to the provided greater-than-comparer to compare values.
+	// MaxBy returns the maximum value in a generic sequence according to a specified key selector function
+	// and key comparer.
 	//
-	// Comparer must be: GreaterFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// ________
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MaxBy(greaterThanOrComparer interface{}) T
+	// keySelector is required, compareFunc is optional.
+	//
+	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
+	MaxBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
