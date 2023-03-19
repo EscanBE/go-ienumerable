@@ -304,7 +304,31 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 	})
 }
 
-func Test_IOrderedIEnumerable4_panic(t *testing.T) {
+func Test_IOrderedIEnumerable4(t *testing.T) {
+	t.Run("use compare func if exists", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+		output := e[int](newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(x, y any) int {
+			return comparers.NumericComparer.CompareAny(x, y) * -1
+		}, CLC_ASC).GetOrderedEnumerable())
+		assert.Len(t, output.data, 4)
+		assert.Equal(t, 3, output.data[0])
+		assert.Equal(t, 2, output.data[1])
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("save & re-use use cached compare func, rather than resolve everytime", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+		output := e[int](newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), nil, CLC_ASC).GetOrderedEnumerable())
+		assert.Len(t, output.data, 4)
+		assert.Equal(t, 1, output.data[0])
+		assert.Equal(t, 1, output.data[1])
+		bSrc.assertUnchanged(t, eSrc)
+	})
+}
+
+func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 	eSrc := NewIEnumerable[int](3, 1, 1, 2)
 	bSrc := backupForAssetUnchanged(eSrc)
 

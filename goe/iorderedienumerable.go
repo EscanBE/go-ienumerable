@@ -31,6 +31,11 @@ const (
 
 // newIOrderedEnumerable returns a new IOrderedEnumerable with the same type as data elements
 func newIOrderedEnumerable[T any](src IEnumerable[T], keySelector KeySelector[T], compareFunc CompareFunc[any], orderType chainableComparerOrderType) IOrderedEnumerable[T] {
+	if keySelector == nil {
+		keySelector = func(src T) any {
+			return src
+		}
+	}
 	return (&orderedEnumerable[T]{
 		sourceIEnumerable: src,
 	}).chainMoreComparer(keySelector, compareFunc, orderType)
@@ -55,7 +60,7 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 		copied := copySlice(e.data)
 
 		sort.SliceStable(copied, func(i, j int) bool {
-			for _, comparer := range o.chainableComparers {
+			for i2, comparer := range o.chainableComparers {
 				var v1, v2 T
 
 				if comparer.orderType == CLC_ASC {
@@ -76,49 +81,57 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 					k2 = v2
 				}
 
-				isNil1 := k1 == nil
-				isNil2 := k2 == nil
+				if comparer.compareFunc == nil {
+					isNil1 := k1 == nil
+					isNil2 := k2 == nil
 
-				if !isNil1 {
-					_, isNil1 = reflection.RootValueExtractor(k1)
-				}
-				if !isNil2 {
-					_, isNil2 = reflection.RootValueExtractor(k2)
+					if !isNil1 {
+						_, isNil1 = reflection.RootValueExtractor(k1)
+					}
+					if !isNil2 {
+						_, isNil2 = reflection.RootValueExtractor(k2)
+					}
+
+					if isNil1 && isNil2 {
+						continue // next comparer
+					}
+
+					if isNil1 {
+						k1 = nil
+					}
+					if isNil2 {
+						k2 = nil
+					}
+
+					var defaultComparer comparers.IComparer[any]
+					var foundDefaultCompare bool
+
+					if k1 != nil {
+						defaultComparer, foundDefaultCompare = comparers.TryGetDefaultComparerFromValue(k1)
+					}
+
+					if !foundDefaultCompare && k2 != nil {
+						defaultComparer, foundDefaultCompare = comparers.TryGetDefaultComparerFromValue(k2)
+					}
+
+					if !foundDefaultCompare {
+						panic(fmt.Sprintf("no default comparer found for %T", func() any {
+							if k1 == nil {
+								return k2
+							} else {
+								return k1
+							}
+						}()))
+					}
+
+					comparer.compareFunc = defaultComparer.CompareAny
+					o.chainableComparers[i2] = comparer
+					//fmt.Println("Cached")
+				} else {
+					// fmt.Println("Re-use")
 				}
 
-				if isNil1 && isNil2 {
-					continue // next comparer
-				}
-
-				if isNil1 {
-					k1 = nil
-				}
-				if isNil2 {
-					k2 = nil
-				}
-
-				var defaultComparer comparers.IComparer[any]
-				var foundDefaultCompare bool
-
-				if k1 != nil {
-					defaultComparer, foundDefaultCompare = comparers.TryGetDefaultComparerFromValue(k1)
-				}
-
-				if !foundDefaultCompare && k2 != nil {
-					defaultComparer, foundDefaultCompare = comparers.TryGetDefaultComparerFromValue(k2)
-				}
-
-				if !foundDefaultCompare {
-					panic(fmt.Sprintf("no default comparer found for %T", func() any {
-						if k1 == nil {
-							return k2
-						} else {
-							return k1
-						}
-					}()))
-				}
-
-				compareResult := defaultComparer.CompareAny(k1, k2)
+				compareResult := comparer.compareFunc(k1, k2)
 				if compareResult < 0 {
 					return true
 				}
