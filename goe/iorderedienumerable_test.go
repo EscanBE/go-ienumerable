@@ -284,6 +284,14 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
+	t.Run("when single element", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3)
+		bSrc := backupForAssetUnchanged(eSrc)
+		got := eSrc.Order().GetOrderedEnumerable()
+		assert.Len(t, got.ToArray(), 1)
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
 	t.Run("compare using compare func", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
@@ -335,6 +343,38 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 	oe := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
 		return 0
 	}, CLC_ASC).(*orderedEnumerable[int])
+
+	t.Run("panic when src nil", func(t *testing.T) {
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+
+		oe2 := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+			return 0
+		}, CLC_ASC).(*orderedEnumerable[int])
+
+		oe2 = nil
+
+		defer deferExpectPanicContains(t, getErrorSourceIsNil().Error(), true)
+
+		_ = oe2.GetOrderedEnumerable()
+	})
+
+	t.Run("panic when no default comparer", func(t *testing.T) {
+		type MyStruct struct{}
+		eSrc2 := NewIEnumerable[MyStruct](MyStruct{}, MyStruct{})
+		bSrc2 := backupForAssetUnchanged(eSrc2)
+
+		defer func() {
+			bSrc2.assertUnchanged(t, eSrc2)
+		}()
+
+		oe2 := eSrc2.Order()
+
+		defer deferExpectPanicContains(t, "no default comparer found for MyStruct", true)
+
+		_ = oe2.GetOrderedEnumerable()
+	})
 
 	t.Run("panic when src nil", func(t *testing.T) {
 		defer func() {

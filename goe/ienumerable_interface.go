@@ -310,48 +310,45 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
 	Order() IOrderedEnumerable[T]
 
 	// OrderBy sorts the elements of a sequence in ascending order
-	// according to the provided less-than-comparer to compare values.
+	// according to the selected key.
 	//
-	// Comparer must be either: CompareFunc[T] or comparers.IComparer[T].
+	// ________
 	//
-	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
-	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
-
-	// OrderByComparer sorts the elements of a sequence in ascending order
-	// according to the provided comparers.IComparer[T] to compare values.
+	// keySelector is required, compareFunc is optional.
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	OrderByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
-
-	// OrderByDescending sorts the elements of a sequence in descending order.
+	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
 	//
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	OrderBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T]
+
+	// OrderByDescending sorts the elements of a sequence in descending order
+	// according to the selected key.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
 	OrderByDescending() IOrderedEnumerable[T]
 
 	// OrderByDescendingBy sorts the elements of a sequence in descending order
-	// according to the provided greater-than-comparer to compare values.
+	// according to the selected key.
 	//
-	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
-	OrderByDescendingBy(greaterComparer func(left, right T) bool) IEnumerable[T]
-
-	// OrderByDescendingByComparer sorts the elements of a sequence in descending order
-	// according to the provided comparers.IComparer[T] to compare values.
+	// ________
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	OrderByDescendingByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
+	// keySelector is required, compareFunc is optional.
+	//
+	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
+	//
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	OrderByDescendingBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]

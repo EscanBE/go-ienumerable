@@ -2,6 +2,7 @@ package examples
 
 import (
 	"github.com/EscanBE/go-ienumerable/goe/comparers2"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -53,7 +54,18 @@ func (i wrappedInt32Comparer) CompareTyped(x, y wrappedInt32) int {
 }
 
 func (i wrappedInt32Comparer) CompareAny(x, y any) int {
-	return i.CompareAny(x, y)
+	vox, isNilX := reflection.RootValueExtractor(x)
+	voy, isNilY := reflection.RootValueExtractor(y)
+	if isNilX && isNilY {
+		return 0
+	}
+	if isNilX {
+		return -1
+	}
+	if isNilY {
+		return 1
+	}
+	return comparers.NumericComparer.CompareAny(vox.Interface().(wrappedInt32).value, voy.Interface().(wrappedInt32).value)
 }
 
 // ensure implementation

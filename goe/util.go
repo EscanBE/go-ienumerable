@@ -48,6 +48,7 @@ func getMapKeys[T comparable](m map[T]bool) []T {
 	return keys
 }
 
+// TODO remove
 func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
 	comparer, found := src.tryFindDefaultComparer()
 	if found {
