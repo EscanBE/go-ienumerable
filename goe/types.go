@@ -11,9 +11,9 @@ type EqualsFunc[T any] func(left, right T) bool
 
 // CompareFunc is function:
 //
-// returns 0 when left == right
-//
 // returns -1 when left < right
+//
+// returns 0 when left == right
 //
 // returns 1 when left > right
 type CompareFunc[T any] func(left, right T) int
@@ -25,3 +25,6 @@ type Predicate[T any] func(value T) bool
 // PredicateWithIndex is function that receives a value as input, along with an index value and returns boolean as output.
 // Usually used as filters.
 type PredicateWithIndex[T any] func(value T, index int) bool
+
+// KeySelector is function that specify key that to be used for comparing elements within a collection.
+type KeySelector[T any] func(value T) any

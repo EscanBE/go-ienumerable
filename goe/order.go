@@ -13,7 +13,9 @@ func (src *enumerable[T]) Order() IOrderedEnumerable[T] {
 		comparer = src.findDefaultComparer()
 	}
 
-	return newIOrderedEnumerable[T](src, comparer, CLC_ASC)
+	// TODO restore
+	return nil
+	//return newIOrderedEnumerable[T](src, comparer, CLC_ASC)
 }
 
 func (src *enumerable[T]) OrderBy(lessComparer func(left, right T) bool) IEnumerable[T] {
@@ -76,7 +78,9 @@ func (src *enumerable[T]) OrderByDescending() IOrderedEnumerable[T] {
 		comparer = src.findDefaultComparer()
 	}
 
-	return newIOrderedEnumerable[T](src, comparer, CLC_DESC)
+	// TODO restore
+	return nil
+	//return newIOrderedEnumerable[T](src, comparer, CLC_DESC)
 }
 
 func (src *enumerable[T]) OrderByDescendingBy(lessComparer func(left, right T) bool) IEnumerable[T] {

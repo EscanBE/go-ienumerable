@@ -163,12 +163,18 @@ func getErrorPredicateMustBePredicate() error {
 	return fmt.Errorf("predicate must be\n- single predicate function: func(value T) bool\n- or predicate with index: func(value T, index int) bool")
 }
 
-func getErrorComparerMustBeCompareFuncOrIComparer() error {
-	return fmt.Errorf("comparer must be\n- compare function: func(left, right T) int\n- or comparer: IComparer[T]")
-}
-
 func (o *orderedEnumerable[T]) assertSrcNonNil() {
 	if o == nil {
 		panic(getErrorSourceIsNil())
 	}
+}
+
+func assertKeySelectorNonNil[T any](keySelector KeySelector[T]) {
+	if keySelector == nil {
+		panic(getErrorKeySelectorNotNil())
+	}
+}
+
+func getErrorKeySelectorNotNil() error {
+	return fmt.Errorf("key selector must not be nil")
 }

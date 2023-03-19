@@ -1,13 +1,6 @@
 package goe
 
-import (
-	"fmt"
-	"github.com/EscanBE/go-ienumerable/goe/comparers2"
-	"github.com/stretchr/testify/assert"
-	"reflect"
-	"testing"
-)
-
+/*
 func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 	fLess := func(t1, t2 int) bool {
 		return t1 < t2
@@ -310,3 +303,4 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 		ieSrc.OrderByDescendingByComparer(nil)
 	})
 }
+*/

@@ -1,7 +1,9 @@
 package goe
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers2"
+	"fmt"
+	comparers "github.com/EscanBE/go-ienumerable/goe/comparers2"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
 	"sort"
 )
 
@@ -14,7 +16,8 @@ type orderedEnumerable[T any] struct {
 }
 
 type chainableComparer[T any] struct {
-	compareFunc CompareFunc[T]
+	keySelector KeySelector[T]
+	compareFunc CompareFunc[any]
 	orderType   chainableComparerOrderType
 }
 
@@ -27,22 +30,18 @@ const (
 )
 
 // newIOrderedEnumerable returns a new IOrderedEnumerable with the same type as data elements
-func newIOrderedEnumerable[T any](src IEnumerable[T], compareFuncOrComparer interface{}, orderType chainableComparerOrderType) IOrderedEnumerable[T] {
+func newIOrderedEnumerable[T any](src IEnumerable[T], keySelector KeySelector[T], compareFunc CompareFunc[any], orderType chainableComparerOrderType) IOrderedEnumerable[T] {
 	return (&orderedEnumerable[T]{
 		sourceIEnumerable: src,
-	}).chainMoreComparer(compareFuncOrComparer, orderType)
+	}).chainMoreComparer(keySelector, compareFunc, orderType)
 }
 
-func (o *orderedEnumerable[T]) ThenBy(compareFuncOrComparer interface{}) IOrderedEnumerable[T] {
-	o.assertSrcNonNil()
-
-	return o.chainMoreComparer(compareFuncOrComparer, CLC_ASC)
+func (o *orderedEnumerable[T]) ThenBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
+	return o.chainMoreComparer(keySelector, compareFunc, CLC_ASC)
 }
 
-func (o *orderedEnumerable[T]) ThenByDescending(compareFuncOrComparer interface{}) IOrderedEnumerable[T] {
-	o.assertSrcNonNil()
-
-	return o.chainMoreComparer(compareFuncOrComparer, CLC_DESC)
+func (o *orderedEnumerable[T]) ThenByDescending(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
+	return o.chainMoreComparer(keySelector, compareFunc, CLC_DESC)
 }
 
 func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
@@ -67,7 +66,59 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 					v2 = copied[i]
 				}
 
-				compareResult := comparer.compareFunc(v1, v2)
+				var k1, k2 any
+
+				if comparer.keySelector != nil {
+					k1 = comparer.keySelector(v1)
+					k2 = comparer.keySelector(v2)
+				} else {
+					k1 = v1
+					k2 = v2
+				}
+
+				isNil1 := k1 == nil
+				isNil2 := k2 == nil
+
+				if !isNil1 {
+					_, isNil1 = reflection.RootValueExtractor(k1)
+				}
+				if !isNil2 {
+					_, isNil2 = reflection.RootValueExtractor(k2)
+				}
+
+				if isNil1 && isNil2 {
+					continue // next comparer
+				}
+
+				if isNil1 {
+					k1 = nil
+				}
+				if isNil2 {
+					k2 = nil
+				}
+
+				var defaultComparer comparers.IComparer[any]
+				var foundDefaultCompare bool
+
+				if k1 != nil {
+					defaultComparer, foundDefaultCompare = comparers.TryGetDefaultComparerFromValue(k1)
+				}
+
+				if !foundDefaultCompare && k2 != nil {
+					defaultComparer, foundDefaultCompare = comparers.TryGetDefaultComparerFromValue(k2)
+				}
+
+				if !foundDefaultCompare {
+					panic(fmt.Sprintf("no default comparer found for %T", func() any {
+						if k1 == nil {
+							return k2
+						} else {
+							return k1
+						}
+					}()))
+				}
+
+				compareResult := defaultComparer.CompareAny(k1, k2)
 				if compareResult < 0 {
 					return true
 				}
@@ -86,48 +137,14 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 	return result
 }
 
-func (o *orderedEnumerable[T]) chainMoreComparer(compareFuncOrComparer interface{}, orderType chainableComparerOrderType) *orderedEnumerable[T] {
-	var compareFunc CompareFunc[T]
-
-	if compareFuncOrComparer == nil {
-		panic(getErrorNilComparer())
-	} else if cff, okCff := compareFuncOrComparer.(func(v1, v2 T) int); okCff {
-		if cff == nil {
-			panic(getErrorNilComparer())
-		}
-
-		compareFunc = cff
-	} else if cft, okCft := compareFuncOrComparer.(CompareFunc[T]); okCft {
-		if cft == nil {
-			panic(getErrorNilComparer())
-		}
-
-		compareFunc = cft
-	} else if cpr, okCpr := compareFuncOrComparer.(comparers.IComparer[T]); okCpr {
-		/* This will never reach since comparers.IComparer[T] is an interface and there is a nil check above
-		if cpr == nil {
-			panic(getErrorNilComparer())
-		}
-		*/
-		compareFunc = func(v1, v2 T) int {
-			return cpr.CompareAny(v1, v2)
-		}
-	} else if cprA, okCprA := compareFuncOrComparer.(comparers.IComparer[any]); okCprA {
-		/* This will never reach since comparers.IComparer[T] is an interface and there is a nil check above
-		if cpr == nil {
-			panic(getErrorNilComparer())
-		}
-		*/
-		compareFunc = func(v1, v2 T) int {
-			return cprA.CompareAny(v1, v2)
-		}
-	} else {
-		panic(getErrorComparerMustBeCompareFuncOrIComparer())
-	}
+func (o *orderedEnumerable[T]) chainMoreComparer(keySelector KeySelector[T], compareFunc CompareFunc[any], orderType chainableComparerOrderType) *orderedEnumerable[T] {
+	o.assertSrcNonNil()
+	assertKeySelectorNonNil[T](keySelector)
 
 	return &orderedEnumerable[T]{
 		sourceIEnumerable: o.sourceIEnumerable,
 		chainableComparers: append(copySlice(o.chainableComparers), chainableComparer[T]{
+			keySelector: keySelector,
 			compareFunc: compareFunc,
 			orderType:   orderType,
 		}),
