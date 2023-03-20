@@ -5,12 +5,12 @@ import (
 	"testing"
 )
 
-func Test_enumerable_Count_CountBy(t *testing.T) {
+func Test_enumerable_Count_LongCount(t *testing.T) {
 	tests := []struct {
 		name        string
 		src         IEnumerable[any]
 		wantCount   int
-		countBy     func(any any) bool
+		countBy     OptionalPredicate[any]
 		wantCountBy int
 	}{
 		{
@@ -52,18 +52,10 @@ func Test_enumerable_Count_CountBy(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.wantCount, tt.src.Count(), "Count()")
-			assert.Equalf(t, int64(tt.wantCount), tt.src.LongCount(), "LongCount()")
-			assert.Equalf(t, tt.wantCountBy, tt.src.CountBy(tt.countBy), "CountBy()")
-			assert.Equalf(t, int64(tt.wantCountBy), tt.src.LongCountBy(tt.countBy), "LongCountBy()")
+			assert.Equalf(t, tt.wantCount, tt.src.Count(nil), "Count(nil)")
+			assert.Equalf(t, int64(tt.wantCount), tt.src.LongCount(nil), "LongCount(nil)")
+			assert.Equalf(t, tt.wantCountBy, tt.src.Count(tt.countBy), "Count(predicate)")
+			assert.Equalf(t, int64(tt.wantCountBy), tt.src.LongCount(tt.countBy), "LongCount(predicate)")
 		})
 	}
-
-	i1 := createRandomIntEnumerable(5)
-	bi1 := backupForAssetUnchanged(i1)
-	assert.Equalf(t, 5, i1.Count(), "Count()")
-	assert.Equalf(t, 5, i1.CountBy(func(i int) bool {
-		return i >= 0
-	}), "CountBy()")
-	bi1.assertUnchanged(t, i1)
 }

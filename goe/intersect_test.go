@@ -141,7 +141,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 
 		// Intersect
 		ieGot := ieSrc.Intersect(ieSecond, nil)
-		assert.Equal(t, 1, ieGot.Count())
+		assert.Equal(t, 1, ieGot.Count(nil))
 		assert.Equal(t, 2, ieGot.ToArray()[0])
 
 		bSource.assertUnchanged(t, ieSrc)
@@ -156,7 +156,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 
 		// Intersect
 		ieGot := ieSrc.Intersect(ieSecond, nil)
-		assert.Equal(t, 1, ieGot.Count())
+		assert.Equal(t, 1, ieGot.Count(nil))
 		assert.Equal(t, 2, ieGot.ToArray()[0])
 
 		bSource.assertUnchanged(t, ieSrc)

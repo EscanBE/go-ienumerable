@@ -125,11 +125,8 @@ type IEnumerable[T any] interface {
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
 	Contains(value T, optionalEqualsFunc OptionalEqualsFunc[T]) bool
 
-	// Count returns the number of elements in a sequence.
-	Count() int
-
-	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
-	CountBy(predicate func(T) bool) int
+	// Count returns a number that represents how many elements in the specified sequence satisfy a condition.
+	Count(optionalPredicate OptionalPredicate[T]) int
 
 	// DefaultIfEmpty returns the elements of the specified sequence
 	// or the type parameter's default value in a singleton collection if the sequence is empty.
@@ -226,15 +223,10 @@ type IEnumerable[T any] interface {
 	// If omitted the optional default value param, default value of T will be returned.
 	LastOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
-	// LongCount returns an int64 that represents the number of elements in a sequence.
+	// LongCount returns an int64 that represents how many elements in the specified sequence satisfy an optional condition.
 	//
 	// This method is meaning-less in Go because the Count method returns an int already has max value of int64 in x64 machines
-	LongCount() int64
-
-	// LongCountBy returns an int64 that represents how many elements in the specified sequence satisfy a condition.
-	//
-	// This method is meaning-less in Go because the CountBy method returns an int already has max value of int64 in x64 machines
-	LongCountBy(predicate func(T) bool) int64
+	LongCount(optionalPredicate OptionalPredicate[T]) int64
 
 	// Min returns the minimum value in a sequence.
 	//

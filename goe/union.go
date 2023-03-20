@@ -74,7 +74,7 @@ func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityCompare
 
 	result := src.copyExceptData()
 
-	if len(src.data) < 1 && second.Count() < 1 {
+	if len(src.data) < 1 && second.Count(nil) < 1 {
 		return result.withEmptyData()
 	}
 

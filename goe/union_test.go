@@ -222,7 +222,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 
 		// Union
 		ieGot := ieSrc.Union(ieSecond)
-		assert.Equal(t, 5, ieGot.Count())
+		assert.Equal(t, 5, ieGot.Count(nil))
 		assert.Equal(t, 5, ieGot.ToArray()[0])
 		assert.Equal(t, 2, ieGot.ToArray()[1])
 		assert.Equal(t, 6, ieGot.ToArray()[2])
@@ -234,7 +234,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 
 		// UnionBy
 		ieGot = ieSrc.UnionBy(ieSecond, nil)
-		assert.Equal(t, 5, ieGot.Count())
+		assert.Equal(t, 5, ieGot.Count(nil))
 		assert.Equal(t, 5, ieGot.ToArray()[0])
 		assert.Equal(t, 2, ieGot.ToArray()[1])
 		assert.Equal(t, 6, ieGot.ToArray()[2])

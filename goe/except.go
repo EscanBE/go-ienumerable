@@ -19,7 +19,7 @@ func (src *enumerable[T]) Except(second IEnumerable[T], optionalEqualsFunc Optio
 		isEquals = EqualsFunc[T](optionalEqualsFunc)
 	}
 
-	if second.Count() < 1 {
+	if second.Count(nil) < 1 {
 		return src.copyExceptData().withData(distinct(copySlice(src.data), OptionalEqualsFunc[T](isEquals)))
 	}
 
