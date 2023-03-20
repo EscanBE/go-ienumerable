@@ -3,7 +3,7 @@
 
 # go-ienumerable [![GoDoc](https://godoc.org/github.com/EscanBE/go-ienumerable?status.svg)](https://godoc.org/github.com/EscanBE/go-ienumerable) [![Go Report Card](https://goreportcard.com/badge/github.com/EscanBE/go-ienumerable)](https://goreportcard.com/report/github.com/EscanBE/go-ienumerable)
 
-> Code coverage: 100% files, 99.5% statements covered by 11k+ lines of test over 4k+ lines of code
+> Code coverage: 100%
 
 > Require: Go 1.18+
 

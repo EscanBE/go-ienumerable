@@ -198,3 +198,13 @@ func Test_enumerable_withEmptyData(t *testing.T) {
 		assert.Nil(t, copied)
 	})
 }
+
+func Test_firstNotNil(t *testing.T) {
+	var nilString *string
+	t.Run("first not nil", func(t *testing.T) {
+		assert.Equal(t, "a", firstNotNil(nil, nilString, "a", nil))
+	})
+	t.Run("first not nil when all nil", func(t *testing.T) {
+		assert.Nil(t, firstNotNil(nil, nilString, nilString, nil))
+	})
+}

@@ -73,15 +73,8 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 					v2 = copied[i]
 				}
 
-				var k1, k2 any
-
-				if comparer.keySelector != nil {
-					k1 = comparer.keySelector(v1)
-					k2 = comparer.keySelector(v2)
-				} else {
-					k1 = v1
-					k2 = v2
-				}
+				k1 := comparer.keySelector(v1)
+				k2 := comparer.keySelector(v2)
 
 				var compareFunc CompareFunc[any]
 
@@ -119,13 +112,7 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 					}
 
 					if !foundDefaultCompare {
-						panic(fmt.Sprintf("no default comparer found for %T", func() any {
-							if k1 == nil {
-								return k2
-							} else {
-								return k1
-							}
-						}()))
+						panic(fmt.Sprintf("no default comparer found for %T", firstNotNil(k1, k2)))
 					}
 
 					comparer.optionalCompareFunc = defaultComparer.CompareAny

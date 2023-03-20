@@ -3,6 +3,7 @@ package goe
 import (
 	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
 )
 
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {
@@ -63,6 +64,16 @@ func (src *enumerable[T]) injectDefaultComparer() IEnumerable[T] {
 	}
 
 	return src
+}
+
+func firstNotNil(values ...any) any {
+	for _, value := range values {
+		_, isNil := reflection.RootValueExtractor(value)
+		if !isNil {
+			return value
+		}
+	}
+	return nil
 }
 
 // cast IEnumerable back to *enumerable for accessing private fields.

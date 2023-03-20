@@ -118,32 +118,32 @@ func Test_IOrderedIEnumerable1(t *testing.T) {
 	}{
 		{
 			name:    "asc-asc-asc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_ASC).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
+			ordered: eSrc.OrderBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
 			want:    NewIEnumerable[s1](v1530, v2160, v2420, v2430, v3530, v3990, v4530),
 		},
 		{
 			name:    "asc-asc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_ASC).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[s1](v1530, v2160, v2430, v2420, v3530, v3990, v4530),
 		},
 		{
 			name:    "asc-desc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_ASC).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderBy(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[s1](v1530, v2430, v2420, v2160, v3990, v3530, v4530),
 		},
 		{
 			name:    "desc-desc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_DESC).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[s1](v4530, v3990, v3530, v2430, v2420, v2160, v1530),
 		},
 		{
 			name:    "desc-asc-asc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_DESC).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
+			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
 			want:    NewIEnumerable[s1](v4530, v3530, v3990, v2160, v2420, v2430, v1530),
 		},
 		{
 			name:    "desc-asc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_DESC).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[s1](v4530, v3530, v3990, v2160, v2430, v2420, v1530),
 		},
 	}
@@ -182,32 +182,32 @@ func Test_IOrderedIEnumerable2(t *testing.T) {
 	}{
 		{
 			name:    "asc-asc-asc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_ASC).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
+			ordered: eSrc.OrderBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
 			want:    NewIEnumerable[string]("v1530", "v2160", "v2420", "v2430", "v3530", "v3990", "v4530"),
 		},
 		{
 			name:    "asc-asc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_ASC).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[string]("v1530", "v2160", "v2430", "v2420", "v3530", "v3990", "v4530"),
 		},
 		{
 			name:    "asc-desc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_ASC).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderBy(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[string]("v1530", "v2430", "v2420", "v2160", "v3990", "v3530", "v4530"),
 		},
 		{
 			name:    "desc-desc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_DESC).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[string]("v4530", "v3990", "v3530", "v2430", "v2420", "v2160", "v1530"),
 		},
 		{
 			name:    "desc-asc-asc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_DESC).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
+			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
 			want:    NewIEnumerable[string]("v4530", "v3530", "v3990", "v2160", "v2420", "v2430", "v1530"),
 		},
 		{
 			name:    "desc-asc-desc",
-			ordered: newIOrderedEnumerable(eSrc, keySelector1, nil, CLC_DESC).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[string]("v4530", "v3530", "v3990", "v2160", "v2430", "v2420", "v1530"),
 		},
 	}
@@ -228,9 +228,9 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		eSrc := createRandomIntEnumerable(3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		oe0 := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+		oe0 := eSrc.OrderBy(test_getSelfSelector[int](), func(_, _ any) int {
 			return 0
-		}, CLC_ASC)
+		})
 
 		_oe0 := oe0.(*orderedEnumerable[int])
 		_oe1 := _oe0.ThenByDescending(test_getSelfSelector[int](), func(_, _ any) int {
@@ -251,9 +251,9 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		eSrc := createRandomIntEnumerable(3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		oe0 := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+		oe0 := eSrc.OrderBy(test_getSelfSelector[int](), func(_, _ any) int {
 			return 0
-		}, CLC_ASC)
+		})
 
 		_oe0 := oe0.(*orderedEnumerable[int])
 		_oe1 := _oe0.ThenByDescending(test_getSelfSelector[int](), func(_, _ any) int {
@@ -275,12 +275,12 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
-	t.Run("when all same", func(t *testing.T) {
+	t.Run("keep same", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-		_ = newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+		_ = eSrc.OrderBy(test_getSelfSelector[int](), func(_, _ any) int {
 			return 0
-		}, CLC_ASC).GetOrderedEnumerable()
+		}).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
@@ -299,6 +299,16 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 			return 0
 		}
 		_ = newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), f, CLC_ASC).GetOrderedEnumerable()
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("call newIOrderedEnumerable with nil key selector", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](3, 1, 1, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+		f := func(v1, v2 any) int {
+			return 0
+		}
+		_ = newIOrderedEnumerable(eSrc, nil, f, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
@@ -332,6 +342,38 @@ func Test_IOrderedIEnumerable4(t *testing.T) {
 		assert.Len(t, output.data, 4)
 		assert.Equal(t, 1, output.data[0])
 		assert.Equal(t, 1, output.data[1])
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("find comparer within collection with multiple nil values", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](9, 8, 7, 6, 5, 4, 3, 2, 1)
+		bSrc := backupForAssetUnchanged(eSrc)
+		output := e[int](newIOrderedEnumerable(eSrc, func(i int) any {
+			if i >= 5 {
+				return nil
+			} else {
+				return i
+			}
+		}, nil, CLC_DESC).GetOrderedEnumerable())
+		assert.Len(t, output.data, 9)
+		assert.Equal(t, 4, output.data[0])
+		assert.Equal(t, 3, output.data[1])
+		bSrc.assertUnchanged(t, eSrc)
+	})
+
+	t.Run("find comparer within collection with multiple nil values", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+		bSrc := backupForAssetUnchanged(eSrc)
+		output := e[int](newIOrderedEnumerable(eSrc, func(i int) any {
+			if i%2 == 0 {
+				return nil
+			} else {
+				return i
+			}
+		}, nil, CLC_DESC).GetOrderedEnumerable())
+		assert.Len(t, output.data, 10)
+		assert.Equal(t, 9, output.data[0])
+		assert.Equal(t, 7, output.data[1])
 		bSrc.assertUnchanged(t, eSrc)
 	})
 }
