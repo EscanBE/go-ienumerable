@@ -26,7 +26,7 @@ func (src *enumerable[T]) Min() T {
 	return src.data[minIdx]
 }
 
-func (src *enumerable[T]) MinBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T {
+func (src *enumerable[T]) MinBy(requiredKeySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
 	assertKeySelectorNonNil(requiredKeySelector)

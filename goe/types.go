@@ -26,6 +26,17 @@ type RequiredEqualsFunc[T any] EqualsFunc[T]
 // returns 1 when left > right
 type CompareFunc[T any] func(left, right T) int
 
+// OptionalCompareFunc is function:
+//
+// returns -1 when left < right
+//
+// returns 0 when left == right
+//
+// returns 1 when left > right
+//
+// This compare function is optional and will be resolved at runtime or using defined default comparer if not provided.
+type OptionalCompareFunc[T any] func(left, right T) int
+
 // Predicate is function that receives a value as input and returns boolean as output.
 // Usually used as filters.
 type Predicate[T any] func(value T) bool

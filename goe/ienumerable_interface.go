@@ -240,7 +240,7 @@ type IEnumerable[T any] interface {
 	//
 	// If omitted the compareFunc, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
-	MinBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
+	MinBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
 
 	// Max returns the greatest value in a sequence.
 	//
@@ -254,7 +254,7 @@ type IEnumerable[T any] interface {
 	//
 	// If omitted the compare func, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
-	MaxBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
+	MaxBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//

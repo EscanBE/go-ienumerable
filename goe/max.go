@@ -26,7 +26,7 @@ func (src *enumerable[T]) Max() T {
 	return src.data[maxIdx]
 }
 
-func (src *enumerable[T]) MaxBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T {
+func (src *enumerable[T]) MaxBy(requiredKeySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
 	assertKeySelectorNonNil(requiredKeySelector)
