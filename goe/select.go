@@ -1,6 +1,9 @@
 package goe
 
-import "fmt"
+import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
+)
 
 func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 	src.assertSrcNonNil()
@@ -12,24 +15,47 @@ func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 
 	newData := make([]any, len(src.data))
 
-	trackerTypes := make(map[string]bool)
-
 	for i, d := range src.data {
 		v := selector(d)
 		newData[i] = v
-		trackerTypes[fmt.Sprintf("%T", v)] = true
 	}
-
-	uniqueTypes := getMapKeys(trackerTypes)
 
 	result := NewIEnumerable[any](newData...)
 
-	if len(uniqueTypes) == 1 {
-		dataType := uniqueTypes[0]
-		if len(dataType) > 0 {
-			eResult := e[any](result)
-			eResult.dataType = dataType
-			eResult.injectDefaultComparer()
+	if len(newData) > 0 {
+		var nextDefaultComparer comparers.IComparer[any]
+		var nextDateType string
+
+		for _, d := range newData {
+			if d == nil {
+				continue
+			}
+
+			if nextDefaultComparer != nil && len(nextDateType) > 0 {
+				break
+			}
+
+			if nextDefaultComparer == nil {
+				comparer, found := comparers.TryGetDefaultComparerFromValue(d)
+				if found {
+					nextDefaultComparer = comparer
+				}
+			}
+
+			if len(nextDateType) < 1 {
+				vo, isNil := reflection.RootValueExtractor(d)
+				if !isNil {
+					nextDateType = vo.Type().String()
+				}
+			}
+		}
+
+		eResult := e[any](result)
+		if nextDefaultComparer != nil {
+			eResult.defaultComparer = nextDefaultComparer
+		}
+		if len(nextDateType) > 0 {
+			eResult.dataType = nextDateType
 		}
 	}
 
@@ -53,40 +79,6 @@ func (src *enumerable[T]) SelectNewValue(selector func(v T) T) IEnumerable[T] {
 
 		result = result.withData(newData)
 	}
-
-	return result
-}
-
-func (src *enumerable[T]) SelectWithSampleValueOfResult(selector func(v T) any, notNilSampleResultValue any) IEnumerable[any] {
-	src.assertSrcNonNil()
-	src.assertSelectorNonNil(selector)
-	src.assertSampleResultValueNonNil(notNilSampleResultValue)
-
-	sampleResultType := fmt.Sprintf("%T", notNilSampleResultValue)
-
-	newData := make([]any, len(src.data))
-
-	if len(src.data) > 0 {
-		for i, d := range src.data {
-			v := selector(d)
-			if v != nil {
-				newData[i] = v
-
-				resultType := fmt.Sprintf("%T", v)
-				if sampleResultType != resultType {
-					panic(fmt.Sprintf("sample result is type [%s] but got result %v of type [%s]", sampleResultType, v, resultType))
-				}
-			} else {
-				newData[i] = nil
-			}
-		}
-	}
-
-	result := NewIEnumerable[any](newData...)
-
-	eResult := e[any](result)
-	eResult.dataType = sampleResultType
-	eResult.injectDefaultComparer()
 
 	return result
 }

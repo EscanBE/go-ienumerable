@@ -1,6 +1,9 @@
 package goe
 
-import "fmt"
+import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
+)
 
 func (src *enumerable[T]) SelectMany(selector func(v T) []any) IEnumerable[any] {
 	src.assertSrcNonNil()
@@ -11,8 +14,6 @@ func (src *enumerable[T]) SelectMany(selector func(v T) []any) IEnumerable[any] 
 	}
 
 	newData := make([]any, 0)
-
-	trackerTypes := make(map[string]bool)
 
 	for _, d := range src.data {
 		a := selector(d)
@@ -26,69 +27,46 @@ func (src *enumerable[T]) SelectMany(selector func(v T) []any) IEnumerable[any] 
 		}
 
 		newData = append(newData, a...)
-
-		for _, v := range a {
-			trackerTypes[fmt.Sprintf("%T", v)] = true
-		}
 	}
-
-	uniqueTypes := getMapKeys(trackerTypes)
 
 	result := NewIEnumerable[any](newData...)
 
-	if len(uniqueTypes) == 1 {
-		dataType := uniqueTypes[0]
-		if len(dataType) > 0 {
-			eResult := e[any](result)
-			eResult.dataType = dataType
-			eResult.injectDefaultComparer()
-		}
-	}
+	if len(newData) > 0 {
+		var nextDefaultComparer comparers.IComparer[any]
+		var nextDateType string
 
-	return result
-}
-
-func (src *enumerable[T]) SelectManyWithSampleValueOfResult(selector func(v T) []any, notNilSampleResultValue any) IEnumerable[any] {
-	src.assertSrcNonNil()
-	src.assertArraySelectorNonNil(selector)
-	src.assertSampleResultValueNonNil(notNilSampleResultValue)
-
-	sampleResultType := fmt.Sprintf("%T", notNilSampleResultValue)
-
-	newData := make([]any, 0)
-
-	if len(src.data) > 0 {
-		for i1, d := range src.data {
-			a := selector(d)
-
-			if a == nil {
-				panic("result array can not be nil")
-			}
-
-			if len(a) < 1 {
+		for _, d := range newData {
+			if d == nil {
 				continue
 			}
 
-			newData = append(newData, a...)
+			if nextDefaultComparer != nil && len(nextDateType) > 0 {
+				break
+			}
 
-			for i2, v := range a {
-				if v == nil {
-					continue
+			if nextDefaultComparer == nil {
+				comparer, found := comparers.TryGetDefaultComparerFromValue(d)
+				if found {
+					nextDefaultComparer = comparer
 				}
+			}
 
-				resultType := fmt.Sprintf("%T", v)
-				if sampleResultType != resultType {
-					panic(fmt.Sprintf("sample result at index %d yields by element at index %d is type [%s] but got result %v of type [%s]", i2, i1, sampleResultType, v, resultType))
+			if len(nextDateType) < 1 {
+				vo, isNil := reflection.RootValueExtractor(d)
+				if !isNil {
+					nextDateType = vo.Type().String()
 				}
 			}
 		}
+
+		eResult := e[any](result)
+		if nextDefaultComparer != nil {
+			eResult.defaultComparer = nextDefaultComparer
+		}
+		if len(nextDateType) > 0 {
+			eResult.dataType = nextDateType
+		}
 	}
-
-	result := NewIEnumerable[any](newData...)
-
-	eResult := e[any](result)
-	eResult.dataType = sampleResultType
-	eResult.injectDefaultComparer()
 
 	return result
 }
