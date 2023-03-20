@@ -9,6 +9,14 @@ type GreaterFunc[T any] func(left, right T) bool
 // EqualsFunc is function returns true when and only when 'left' is equals to 'right'
 type EqualsFunc[T any] func(left, right T) bool
 
+// OptionalEqualsFunc is function returns true when and only when 'left' is equals to 'right'.
+// This equality function is optional and will be resolved at runtime or using defined default comparer if not provided.
+type OptionalEqualsFunc[T any] EqualsFunc[T]
+
+// RequiredEqualsFunc is function returns true when and only when 'left' is equals to 'right'.
+// This equality function is required and will cause panic if not provided.
+type RequiredEqualsFunc[T any] EqualsFunc[T]
+
 // CompareFunc is function:
 //
 // returns -1 when left < right

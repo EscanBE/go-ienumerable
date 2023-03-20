@@ -1,8 +1,10 @@
 package goe
 
 import (
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"testing"
+	"time"
 )
 
 func Test_enumerable_WithComparersFrom(t *testing.T) {
@@ -42,16 +44,15 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 
 func Test_enumerable_WithDefaultComparer(t *testing.T) {
 	t.Run("inject and remove default comparer", func(t *testing.T) {
-		eSrc := createRandomIntEnumerable(5)
+		eSrc := NewIEnumerable[time.Time]()
 		eSrc.WithDefaultComparer(nil)
 
-		e := e[int](eSrc)
+		e := e[time.Time](eSrc)
 		assert.Nil(t, e.defaultComparer)
 
 		// replace
 
-		// eSrc.WithDefaultComparer(comparers.NumericComparer)
-		panic("re-implement")
+		eSrc.WithDefaultComparer(comparers.TimeComparer)
 
 		assert.NotNil(t, e.defaultComparer)
 

@@ -142,7 +142,12 @@ type IEnumerable[T any] interface {
 	// Distinct returns distinct elements from a sequence.
 	//
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
-	Distinct(optionalCompareFunc CompareFunc[T]) IEnumerable[T]
+	Distinct(optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
+
+	// DistinctBy returns distinct elements from a sequence according to a specified key selector function.
+	//
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	DistinctBy(requiredKeySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//

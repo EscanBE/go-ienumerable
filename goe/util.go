@@ -40,14 +40,6 @@ func copySlice[T any](src []T) []T {
 	return dst
 }
 
-func getMapKeys[T comparable](m map[T]bool) []T {
-	keys := make([]T, 0)
-	for k := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
 func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
 	comparer, found := src.tryFindDefaultComparer()
 	if found {

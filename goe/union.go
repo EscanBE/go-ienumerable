@@ -64,10 +64,10 @@ func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityOrComparer inte
 		}
 	}
 
-	return src.internalUnionBy(second, isEquals)
+	return src.internalUnionBy(second, RequiredEqualsFunc[T](isEquals))
 }
 
-func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
+func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityComparer RequiredEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	src.assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)
@@ -78,7 +78,7 @@ func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityCompare
 		return result.withEmptyData()
 	}
 
-	return result.
-		withData(append(copySlice(src.data), copySlice(second.ToArray())...)).
-		internalDistinctBy(equalityComparer)
+	uniqueData := distinct(append(copySlice(src.data), copySlice(second.ToArray())...), OptionalEqualsFunc[T](equalityComparer))
+
+	return result.withData(uniqueData)
 }
