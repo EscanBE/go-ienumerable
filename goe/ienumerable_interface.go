@@ -147,7 +147,7 @@ type IEnumerable[T any] interface {
 	// DistinctBy returns distinct elements from a sequence according to a specified key selector function.
 	//
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
-	DistinctBy(requiredKeySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
+	DistinctBy(keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
@@ -178,7 +178,19 @@ type IEnumerable[T any] interface {
 	// Except produces the set difference of two sequences.
 	//
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
-	Except(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T]
+	Except(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
+
+	// ExceptBy produces the set difference of two sequences according to a specified key selector function.
+	//
+	// _______________
+	//
+	// Contract: type of elements in second IEnumerable must be the same type with value returns by keySelector,
+	// otherwise panic.
+	//
+	// _______________
+	//
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	ExceptBy(second IEnumerable[any], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// First returns the first element of a sequence
 	First() T
@@ -248,7 +260,7 @@ type IEnumerable[T any] interface {
 	//
 	// If omitted the compareFunc, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
-	MinBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
+	MinBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
 
 	// Max returns the greatest value in a sequence.
 	//
@@ -262,7 +274,7 @@ type IEnumerable[T any] interface {
 	//
 	// If omitted the compare func, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
-	MaxBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
+	MaxBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
@@ -284,7 +296,7 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
+	OrderBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
 
 	// OrderByDescending sorts the elements of a sequence in descending order
 	// according to the selected key.
@@ -307,7 +319,7 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderByDescendingBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
+	OrderByDescendingBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]

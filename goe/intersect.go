@@ -2,7 +2,7 @@ package goe
 
 func (src *enumerable[T]) Intersect(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
+	assertSecondIEnumerableNonNil(second)
 
 	if optionalCompareFunc == nil {
 		defaultComparer := src.defaultComparer
@@ -21,7 +21,7 @@ func (src *enumerable[T]) Intersect(second IEnumerable[T], optionalCompareFunc C
 
 func (src *enumerable[T]) internalIntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
+	assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)
 
 	if len(src.data) < 1 || second.Count() < 1 {

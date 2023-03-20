@@ -69,3 +69,13 @@ func (src *enumerable[T]) injectDefaultComparer() IEnumerable[T] {
 func e[T any](ie IEnumerable[T]) *enumerable[T] {
 	return ie.(*enumerable[T])
 }
+
+// cast IEnumerable[T] to IEnumerable[any]
+func asIEnumerableAny[T any](ie IEnumerable[T]) IEnumerable[any] {
+	if ie == nil {
+		return nil
+	}
+	return ie.Select(func(v T) any {
+		return v
+	})
+}

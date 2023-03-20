@@ -1,30 +1,26 @@
 package goe
 
-func (src *enumerable[T]) Except(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T] {
-	src.assertSrcNonNil()
+import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
-	if optionalCompareFunc == nil {
+func (src *enumerable[T]) Except(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T] {
+	src.assertSrcNonNil()
+	assertSecondIEnumerableNonNil(second)
+
+	var isEquals EqualsFunc[T]
+	if optionalEqualsFunc == nil {
 		defaultComparer := src.defaultComparer
 		if defaultComparer == nil {
 			defaultComparer = src.findDefaultComparer()
 		}
-		optionalCompareFunc = func(v1, v2 T) int {
-			return defaultComparer.CompareAny(v1, v2)
+		isEquals = func(v1, v2 T) bool {
+			return defaultComparer.CompareAny(v1, v2) == 0
 		}
+	} else {
+		isEquals = EqualsFunc[T](optionalEqualsFunc)
 	}
 
-	return src.internalExceptBy(second, func(v1, v2 T) bool {
-		return optionalCompareFunc(v1, v2) == 0
-	})
-}
-
-func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
-	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
-	src.assertComparerNonNil(equalityComparer)
-
 	if second.Count() < 1 {
-		return src.copyExceptData().withData(copySlice(src.ToArray()))
+		return src.copyExceptData().withData(copySlice(src.data))
 	}
 
 	if len(src.data) < 1 {
@@ -36,7 +32,7 @@ func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityCompar
 	for _, d := range src.data {
 		var foundInAnother bool
 		for _, t := range secondData {
-			if equalityComparer(d, t) {
+			if isEquals(d, t) {
 				foundInAnother = true
 				break
 			}
@@ -45,7 +41,7 @@ func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityCompar
 			var addedPreviously bool
 
 			for _, t := range result {
-				if equalityComparer(d, t) {
+				if isEquals(d, t) {
 					addedPreviously = true
 					break
 				}
@@ -55,6 +51,100 @@ func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityCompar
 				result = append(result, d)
 			}
 		}
+	}
+
+	return src.copyExceptData().withData(result)
+}
+
+func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
+	src.assertSrcNonNil()
+	assertSecondIEnumerableNonNil(second)
+	assertKeySelectorNonNil(requiredKeySelector)
+
+	var equalityComparer EqualsFunc[any]
+	if optionalEqualsFunc != nil {
+		equalityComparer = EqualsFunc[any](optionalEqualsFunc)
+	}
+
+	type holder struct {
+		elementIndex int
+		key          any
+	}
+
+	srcHolders := make([]holder, len(src.data))
+	secondData := second.ToArray()
+
+	for i, d1 := range src.data {
+		srcHolders[i] = holder{
+			elementIndex: i,
+			key:          requiredKeySelector(d1),
+		}
+
+		if equalityComparer == nil {
+			comparer, found := comparers.TryGetDefaultComparerFromValue(srcHolders[i].key)
+			if found {
+				equalityComparer = func(v1, v2 any) bool {
+					return comparer.CompareAny(v1, v2) == 0
+				}
+			}
+		}
+	}
+
+	if equalityComparer == nil {
+		for _, d2 := range secondData {
+			if equalityComparer == nil {
+				comparer, found := comparers.TryGetDefaultComparerFromValue(d2)
+				if found {
+					equalityComparer = func(v1, v2 any) bool {
+						return comparer.CompareAny(v1, v2) == 0
+					}
+					break
+				}
+			}
+		}
+	}
+
+	if equalityComparer == nil {
+		panic(getErrorFailedCompare2ElementsInArray())
+	}
+
+	if len(secondData) < 1 {
+		return src.copyExceptData().withData(copySlice(src.data))
+	}
+
+	if len(src.data) < 1 {
+		return src.copyExceptData().withEmptyData()
+	}
+
+	resultHolders := make([]holder, 0)
+	for _, hSource := range srcHolders {
+		var foundInAnother bool
+		for _, d2 := range secondData {
+			if equalityComparer(hSource.key, d2) {
+				foundInAnother = true
+				break
+			}
+		}
+
+		if !foundInAnother {
+			var addedPreviously bool
+
+			for _, t := range resultHolders {
+				if equalityComparer(hSource.key, t.key) {
+					addedPreviously = true
+					break
+				}
+			}
+
+			if !addedPreviously {
+				resultHolders = append(resultHolders, hSource)
+			}
+		}
+	}
+
+	result := make([]T, len(resultHolders))
+	for i, resultHolder := range resultHolders {
+		result[i] = src.data[resultHolder.elementIndex]
 	}
 
 	return src.copyExceptData().withData(result)

@@ -2,7 +2,7 @@ package goe
 
 func (src *enumerable[T]) Concat(second IEnumerable[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
+	assertSecondIEnumerableNonNil(second)
 
 	result := src.copyExceptData()
 

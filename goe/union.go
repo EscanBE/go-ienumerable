@@ -4,7 +4,7 @@ import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
 func (src *enumerable[T]) Union(second IEnumerable[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
+	assertSecondIEnumerableNonNil(second)
 
 	comparer := src.defaultComparer
 	if comparer == nil {
@@ -18,7 +18,7 @@ func (src *enumerable[T]) Union(second IEnumerable[T]) IEnumerable[T] {
 
 func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
+	assertSecondIEnumerableNonNil(second)
 
 	var isEquals EqualsFunc[T]
 
@@ -69,7 +69,7 @@ func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityOrComparer inte
 
 func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityComparer RequiredEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
+	assertSecondIEnumerableNonNil(second)
 	src.assertComparerNonNil(equalityComparer)
 
 	result := src.copyExceptData()

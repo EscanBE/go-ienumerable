@@ -42,7 +42,7 @@ func (col *enumerator[T]) assertCollectionNonNil() {
 	}
 }
 
-func (_ *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
+func assertSecondIEnumerableNonNil[T any](second IEnumerable[T]) {
 	if second == nil {
 		panic("second IEnumerable is nil")
 	}
