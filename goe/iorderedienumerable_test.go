@@ -371,7 +371,7 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 
 		oe2 := eSrc2.Order()
 
-		defer deferExpectPanicContains(t, "no default comparer found for MyStruct", true)
+		defer deferExpectPanicContains(t, "no default comparer found for [goe.MyStruct]", true)
 
 		_ = oe2.GetOrderedEnumerable()
 	})

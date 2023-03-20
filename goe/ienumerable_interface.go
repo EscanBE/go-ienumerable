@@ -122,7 +122,7 @@ type IEnumerable[T any] interface {
 
 	// Contains determines whether a sequence contains a specified element.
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
 	Contains(value T, optionalCompareFunc CompareFunc[T]) bool
 
 	// Count returns the number of elements in a sequence.
@@ -141,18 +141,8 @@ type IEnumerable[T any] interface {
 
 	// Distinct returns distinct elements from a sequence.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	Distinct() IEnumerable[T]
-
-	// DistinctBy returns distinct elements from a sequence by using the
-	// specified equality comparer to compare values.
-	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	DistinctBy(equalityOrComparer interface{}) IEnumerable[T]
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Distinct(optionalCompareFunc CompareFunc[T]) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
