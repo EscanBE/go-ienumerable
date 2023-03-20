@@ -214,23 +214,17 @@ type IEnumerable[T any] interface {
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
 	Intersect(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T]
 
-	// Last returns the last element of a sequence
-	Last() T
-
-	// LastBy returns the last element in a sequence that satisfies a specified condition
-	LastBy(predicate func(T) bool) T
+	// Last returns the last element of a sequence that satisfies a specified condition.
+	//
+	// If omitted predicate, the last element will be returned.
+	Last(optionalPredicate OptionalPredicate[T]) T
 
 	// LastOrDefault returns the last element of a sequence, or a default value of type if the sequence contains no elements.
-	LastOrDefault() T
-
-	// LastOrDefaultBy returns the last element of the sequence that satisfies a condition, or a default value of type if no such element is found
-	LastOrDefaultBy(predicate func(T) bool) T
-
-	// LastOrDefaultUsing returns the last element of a sequence, or a specified default value if the sequence contains no elements.
-	LastOrDefaultUsing(defaultValue T) T
-
-	// LastOrDefaultByUsing returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
-	LastOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
+	//
+	// If omitted predicate, the last element will be returned.
+	//
+	// If omitted the optional default value param, default value of T will be returned.
+	LastOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
 	// LongCount returns an int64 that represents the number of elements in a sequence.
 	//
