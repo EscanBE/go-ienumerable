@@ -200,18 +200,8 @@ type IEnumerable[T any] interface {
 
 	// Intersect produces the set intersection of two sequences.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	Intersect(second IEnumerable[T]) IEnumerable[T]
-
-	// IntersectBy produces the set intersection of two sequences by using the
-	// specified equality comparer to compare values.
-	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	IntersectBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Intersect(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T]
 
 	// Last returns the last element of a sequence
 	Last() T

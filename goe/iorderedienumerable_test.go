@@ -369,9 +369,25 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 			bSrc2.assertUnchanged(t, eSrc2)
 		}()
 
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyStruct]", true)
+
 		oe2 := eSrc2.Order()
 
-		defer deferExpectPanicContains(t, "no default comparer found for [goe.MyStruct]", true)
+		_ = oe2.GetOrderedEnumerable()
+	})
+
+	t.Run("panic when no default comparer", func(t *testing.T) {
+		type MyStruct struct{}
+		eSrc2 := NewIEnumerable[MyStruct](MyStruct{}, MyStruct{})
+		bSrc2 := backupForAssetUnchanged(eSrc2)
+
+		defer func() {
+			bSrc2.assertUnchanged(t, eSrc2)
+		}()
+
+		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyStruct]", true)
+
+		oe2 := eSrc2.OrderByDescending()
 
 		_ = oe2.GetOrderedEnumerable()
 	})

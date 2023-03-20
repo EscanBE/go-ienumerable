@@ -95,7 +95,7 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 
 			bSrc.assertUnchanged(t, cpSrc)
 
-			assert.Nil(t, e[int](cpSrc).defaultComparer)
+			assert.NotNil(t, e[int](cpSrc).defaultComparer)
 		})
 	}
 
@@ -162,15 +162,25 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 
 	t.Run("panic if no default comparer", func(t *testing.T) {
 		type MyInt64 struct{}
+
+		// empty => ok
 		ieSrc := NewIEnumerable[MyInt64]()
+		_ = ieSrc.OrderBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 
-		defer deferExpectPanicContains(t, "no default comparer registered", true)
+		// one => ok
+		ieSrc = NewIEnumerable[MyInt64](MyInt64{})
+		_ = ieSrc.OrderBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 
-		ieSrc.OrderBy(test_getSelfSelector[MyInt64](), nil)
+		// many => panic
+		ieSrc = NewIEnumerable[MyInt64](MyInt64{}, MyInt64{})
+
+		defer deferExpectPanicContains(t, "no default comparer found for goe.MyInt64", true)
+
+		_ = ieSrc.OrderBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 	})
 }
 
-func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByComparer(t *testing.T) {
+func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 	fGreater := func(t1, t2 int) bool {
 		return t1 > t2
 	}
@@ -262,11 +272,21 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy_OrderByDescendingByCo
 
 	t.Run("panic if no default comparer", func(t *testing.T) {
 		type MyInt64 struct{}
+
+		// empty => ok
 		ieSrc := NewIEnumerable[MyInt64]()
+		_ = ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 
-		defer deferExpectPanicContains(t, "no default comparer registered", true)
+		// one => ok
+		ieSrc = NewIEnumerable[MyInt64](MyInt64{})
+		_ = ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 
-		ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil)
+		// many => panic
+		ieSrc = NewIEnumerable[MyInt64](MyInt64{}, MyInt64{})
+
+		defer deferExpectPanicContains(t, "no default comparer found for goe.MyInt64", true)
+
+		_ = ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 	})
 
 	t.Run("default comparer resolved based on key selector", func(t *testing.T) {

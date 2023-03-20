@@ -56,7 +56,9 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 
 	result := e.copyExceptData()
 
-	if len(e.data) > 0 {
+	if len(e.data) < 1 {
+		result = result.withEmptyData()
+	} else {
 		copied := copySlice(e.data)
 
 		sort.SliceStable(copied, func(i, j int) bool {
