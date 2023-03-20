@@ -26,31 +26,31 @@ func (src *enumerable[T]) Max() T {
 	return src.data[maxIdx]
 }
 
-func (src *enumerable[T]) MaxBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) T {
+func (src *enumerable[T]) MaxBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
-	assertKeySelectorNonNil(keySelector)
+	assertKeySelectorNonNil(requiredKeySelector)
 
 	keys := make([]any, len(src.data))
 	for i, t := range src.data {
-		keys[i] = keySelector(t)
-		if compareFunc == nil {
+		keys[i] = requiredKeySelector(t)
+		if optionalCompareFunc == nil {
 			comparer, found := comparers.TryGetDefaultComparerFromValue(keys[i])
 			if found {
-				compareFunc = func(v1, v2 any) int {
+				optionalCompareFunc = func(v1, v2 any) int {
 					return comparer.CompareAny(v1, v2)
 				}
 			}
 		}
 	}
 
-	if compareFunc == nil {
+	if optionalCompareFunc == nil {
 		panic(getErrorFailedCompare2ElementsInArray())
 	}
 
 	keyIdx := 0
 	for i := 1; i < len(src.data); i++ {
-		if compareFunc(keys[i], keys[keyIdx]) > 0 {
+		if optionalCompareFunc(keys[i], keys[keyIdx]) > 0 {
 			keyIdx = i
 		}
 	}

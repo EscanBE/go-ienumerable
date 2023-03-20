@@ -15,11 +15,11 @@ func (src *enumerable[T]) Order() IOrderedEnumerable[T] {
 	}, CLC_ASC)
 }
 
-func (src *enumerable[T]) OrderBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
+func (src *enumerable[T]) OrderBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
-	assertKeySelectorNonNil(keySelector)
+	assertKeySelectorNonNil(requiredKeySelector)
 
-	return newIOrderedEnumerable[T](src, keySelector, compareFunc, CLC_ASC)
+	return newIOrderedEnumerable[T](src, requiredKeySelector, optionalCompareFunc, CLC_ASC)
 }
 
 func (src *enumerable[T]) OrderByDescending() IOrderedEnumerable[T] {
@@ -37,9 +37,9 @@ func (src *enumerable[T]) OrderByDescending() IOrderedEnumerable[T] {
 	}, CLC_DESC)
 }
 
-func (src *enumerable[T]) OrderByDescendingBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
+func (src *enumerable[T]) OrderByDescendingBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
-	assertKeySelectorNonNil(keySelector)
+	assertKeySelectorNonNil(requiredKeySelector)
 
-	return newIOrderedEnumerable[T](src, keySelector, compareFunc, CLC_DESC)
+	return newIOrderedEnumerable[T](src, requiredKeySelector, optionalCompareFunc, CLC_DESC)
 }

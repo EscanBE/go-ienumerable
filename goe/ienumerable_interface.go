@@ -285,13 +285,9 @@ type IEnumerable[T any] interface {
 	// MinBy returns the minimum value in a generic sequence according to a specified key selector function
 	// and key comparer.
 	//
-	// ________
-	//
-	// keySelector is required, compareFunc is optional.
-	//
 	// If omitted the compareFunc, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
-	MinBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) T
+	MinBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
 
 	// Max returns the greatest value in a sequence.
 	//
@@ -303,13 +299,9 @@ type IEnumerable[T any] interface {
 	// MaxBy returns the maximum value in a generic sequence according to a specified key selector function
 	// and key comparer.
 	//
-	// ________
-	//
-	// keySelector is required, compareFunc is optional.
-	//
-	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// If omitted the compare func, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
-	MaxBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) T
+	MaxBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) T
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
@@ -331,7 +323,7 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T]
+	OrderBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
 
 	// OrderByDescending sorts the elements of a sequence in descending order
 	// according to the selected key.
@@ -354,7 +346,7 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderByDescendingBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T]
+	OrderByDescendingBy(requiredKeySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
