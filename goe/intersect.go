@@ -1,21 +1,24 @@
 package goe
 
-func (src *enumerable[T]) Intersect(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T] {
+func (src *enumerable[T]) Intersect(second IEnumerable[T], optionalCompareFunc OptionalCompareFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	assertSecondIEnumerableNonNil(second)
 
+	var compareFunc CompareFunc[T]
 	if optionalCompareFunc == nil {
 		defaultComparer := src.defaultComparer
 		if defaultComparer == nil {
 			defaultComparer = src.findDefaultComparer()
 		}
-		optionalCompareFunc = func(v1, v2 T) int {
+		compareFunc = func(v1, v2 T) int {
 			return defaultComparer.CompareAny(v1, v2)
 		}
+	} else {
+		compareFunc = CompareFunc[T](optionalCompareFunc)
 	}
 
 	return src.internalIntersectBy(second, func(v1, v2 T) bool {
-		return optionalCompareFunc(v1, v2) == 0
+		return compareFunc(v1, v2) == 0
 	})
 }
 

@@ -298,7 +298,7 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		f := func(v1, v2 any) int {
 			return 0
 		}
-		_ = newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), CompareFunc[any](f), CLC_ASC).GetOrderedEnumerable()
+		_ = newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), f, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
 

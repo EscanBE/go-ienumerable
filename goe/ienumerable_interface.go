@@ -208,8 +208,8 @@ type IEnumerable[T any] interface {
 
 	// Intersect produces the set intersection of two sequences.
 	//
-	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
-	Intersect(second IEnumerable[T], optionalCompareFunc CompareFunc[T]) IEnumerable[T]
+	// If omitted the optional compare function, the default comparer will be used or panic if no default comparer found.
+	Intersect(second IEnumerable[T], optionalCompareFunc OptionalCompareFunc[T]) IEnumerable[T]
 
 	// Last returns the last element of a sequence that satisfies a specified condition.
 	//
@@ -276,7 +276,7 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
+	OrderBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
 
 	// OrderByDescending sorts the elements of a sequence in descending order
 	// according to the selected key.
@@ -293,13 +293,13 @@ type IEnumerable[T any] interface {
 	//
 	// keySelector is required, compareFunc is optional.
 	//
-	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// If omitted the optional compare function, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
 	//
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderByDescendingBy(keySelector KeySelector[T], optionalCompareFunc CompareFunc[any]) IOrderedEnumerable[T]
+	OrderByDescendingBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]

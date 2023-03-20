@@ -16,9 +16,9 @@ type orderedEnumerable[T any] struct {
 }
 
 type chainableComparer[T any] struct {
-	keySelector KeySelector[T]
-	compareFunc CompareFunc[any]
-	orderType   chainableComparerOrderType
+	keySelector         KeySelector[T]
+	optionalCompareFunc OptionalCompareFunc[any]
+	orderType           chainableComparerOrderType
 }
 
 type chainableComparerOrderType byte
@@ -30,7 +30,7 @@ const (
 )
 
 // newIOrderedEnumerable returns a new IOrderedEnumerable with the same type as data elements
-func newIOrderedEnumerable[T any](src IEnumerable[T], keySelector KeySelector[T], compareFunc CompareFunc[any], orderType chainableComparerOrderType) IOrderedEnumerable[T] {
+func newIOrderedEnumerable[T any](src IEnumerable[T], keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any], orderType chainableComparerOrderType) IOrderedEnumerable[T] {
 	if keySelector == nil {
 		keySelector = func(src T) any {
 			return src
@@ -38,14 +38,14 @@ func newIOrderedEnumerable[T any](src IEnumerable[T], keySelector KeySelector[T]
 	}
 	return (&orderedEnumerable[T]{
 		sourceIEnumerable: src,
-	}).chainMoreComparer(keySelector, compareFunc, orderType)
+	}).chainMoreComparer(keySelector, optionalCompareFunc, orderType)
 }
 
-func (o *orderedEnumerable[T]) ThenBy(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
+func (o *orderedEnumerable[T]) ThenBy(keySelector KeySelector[T], compareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T] {
 	return o.chainMoreComparer(keySelector, compareFunc, CLC_ASC)
 }
 
-func (o *orderedEnumerable[T]) ThenByDescending(keySelector KeySelector[T], compareFunc CompareFunc[any]) IOrderedEnumerable[T] {
+func (o *orderedEnumerable[T]) ThenByDescending(keySelector KeySelector[T], compareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T] {
 	return o.chainMoreComparer(keySelector, compareFunc, CLC_DESC)
 }
 
@@ -83,7 +83,9 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 					k2 = v2
 				}
 
-				if comparer.compareFunc == nil {
+				var compareFunc CompareFunc[any]
+
+				if comparer.optionalCompareFunc == nil {
 					isNil1 := k1 == nil
 					isNil2 := k2 == nil
 
@@ -126,14 +128,17 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 						}()))
 					}
 
-					comparer.compareFunc = defaultComparer.CompareAny
+					comparer.optionalCompareFunc = defaultComparer.CompareAny
 					o.chainableComparers[i2] = comparer
 					//fmt.Println("Cached")
+
+					compareFunc = defaultComparer.CompareAny
 				} else {
 					// fmt.Println("Re-use")
+					compareFunc = CompareFunc[any](comparer.optionalCompareFunc)
 				}
 
-				compareResult := comparer.compareFunc(k1, k2)
+				compareResult := compareFunc(k1, k2)
 				if compareResult < 0 {
 					return true
 				}
@@ -152,16 +157,16 @@ func (o *orderedEnumerable[T]) GetOrderedEnumerable() IEnumerable[T] {
 	return result
 }
 
-func (o *orderedEnumerable[T]) chainMoreComparer(keySelector KeySelector[T], compareFunc CompareFunc[any], orderType chainableComparerOrderType) *orderedEnumerable[T] {
+func (o *orderedEnumerable[T]) chainMoreComparer(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any], orderType chainableComparerOrderType) *orderedEnumerable[T] {
 	o.assertSrcNonNil()
 	assertKeySelectorNonNil[T](keySelector)
 
 	return &orderedEnumerable[T]{
 		sourceIEnumerable: o.sourceIEnumerable,
 		chainableComparers: append(copySlice(o.chainableComparers), chainableComparer[T]{
-			keySelector: keySelector,
-			compareFunc: compareFunc,
-			orderType:   orderType,
+			keySelector:         keySelector,
+			optionalCompareFunc: optionalCompareFunc,
+			orderType:           orderType,
 		}),
 	}
 }
