@@ -1,6 +1,6 @@
 package comparers
 
-// IComparer use method Compare to compare value of 2 input values.
+// IComparer use methods Compare* to compare value of 2 input values.
 //
 // If left is less than right, returns -1.
 //
