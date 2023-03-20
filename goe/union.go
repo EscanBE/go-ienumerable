@@ -1,12 +1,10 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers"
-
 func (src *enumerable[T]) Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	assertSecondIEnumerableNonNil(second)
 
-	var equalsFunc RequiredEqualsFunc[T]
+	var equalsFunc EqualsFunc[T]
 
 	if optionalEqualsFunc == nil {
 		comparer := src.defaultComparer
@@ -17,67 +15,8 @@ func (src *enumerable[T]) Union(second IEnumerable[T], optionalEqualsFunc Option
 			return comparer.CompareAny(v1, v2) == 0
 		}
 	} else {
-		equalsFunc = RequiredEqualsFunc[T](optionalEqualsFunc)
+		equalsFunc = EqualsFunc[T](optionalEqualsFunc)
 	}
-
-	return src.internalUnionBy(second, equalsFunc)
-}
-
-func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T] {
-	src.assertSrcNonNil()
-	assertSecondIEnumerableNonNil(second)
-
-	var isEquals EqualsFunc[T]
-
-	if equalityOrComparer != nil {
-		if eff, okEff := equalityOrComparer.(func(v1, v2 T) bool); okEff {
-			if eff != nil {
-				isEquals = eff
-			}
-		} else if eft, okEft := equalityOrComparer.(EqualsFunc[T]); okEft {
-			if eft != nil {
-				isEquals = eft
-			}
-		} else if cff, okCff := equalityOrComparer.(func(v1, v2 T) int); okCff {
-			if cff != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cff(v1, v2) == 0
-				}
-			}
-		} else if cft, okCft := equalityOrComparer.(CompareFunc[T]); okCft {
-			if cft != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cft(v1, v2) == 0
-				}
-			}
-		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
-			if cpr != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cpr.CompareAny(v1, v2) == 0
-				}
-			}
-		} else {
-			panic(getErrorComparerMustBeEqualsFuncOrIComparer())
-		}
-	}
-
-	if isEquals == nil {
-		defaultComparer := src.defaultComparer
-		if defaultComparer == nil {
-			defaultComparer = src.findDefaultComparer()
-		}
-		isEquals = func(v1, v2 T) bool {
-			return defaultComparer.CompareAny(v1, v2) == 0
-		}
-	}
-
-	return src.internalUnionBy(second, RequiredEqualsFunc[T](isEquals))
-}
-
-func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityComparer RequiredEqualsFunc[T]) IEnumerable[T] {
-	src.assertSrcNonNil()
-	assertSecondIEnumerableNonNil(second)
-	src.assertComparerNonNil(equalityComparer)
 
 	result := src.copyExceptData()
 
@@ -85,7 +24,32 @@ func (src *enumerable[T]) internalUnionBy(second IEnumerable[T], equalityCompare
 		return result.withEmptyData()
 	}
 
-	uniqueData := distinct(append(copySlice(src.data), copySlice(second.ToArray())...), OptionalEqualsFunc[T](equalityComparer))
+	uniqueData := distinct(
+		append(copySlice(src.data), copySlice(second.ToArray())...),
+		OptionalEqualsFunc[T](equalsFunc),
+	)
 
 	return result.withData(uniqueData)
+}
+
+func (src *enumerable[T]) UnionBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
+	src.assertSrcNonNil()
+	assertSecondIEnumerableNonNil(second)
+	assertKeySelectorNonNil(keySelector)
+
+	result := src.copyExceptData()
+
+	if len(src.data) < 1 && second.Count(nil) < 1 {
+		result = result.withEmptyData()
+	} else {
+		uniqueData := distinctByKeySelector(
+			append(copySlice(src.data), copySlice(second.ToArray())...),
+			keySelector,
+			optionalEqualsFunc,
+		)
+
+		result = result.withData(uniqueData)
+	}
+
+	return result
 }

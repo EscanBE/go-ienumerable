@@ -132,54 +132,32 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 			bSecond.assertUnchanged(t, tt.second)
 		})
 
-		// TODO
-		//t.Run(tt.name+"_UnionBy", func(t *testing.T) {
-		//	bSource := backupForAssetUnchanged(tt.source)
-		//	bSecond := backupForAssetUnchanged(tt.second)
-		//
-		//	if tt.panic && tt.source == nil {
-		//		return
-		//	}
-		//	defer deferWantPanicDepends(t, tt.panic)
-		//
-		//	// EqualsFunc
-		//	got := tt.source.UnionBy(tt.second, tt.fEquals)
-		//
-		//	assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-		//
-		//	bSource.assertUnchanged(t, tt.source)
-		//	bSecond.assertUnchanged(t, tt.second)
-		//
-		//	got = tt.source.UnionBy(tt.second, EqualsFunc[int](tt.fEquals))
-		//
-		//	assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-		//
-		//	bSource.assertUnchanged(t, tt.source)
-		//	bSecond.assertUnchanged(t, tt.second)
-		//
-		//	// CompareFunc
-		//	got = tt.source.UnionBy(tt.second, tt.fCompare)
-		//
-		//	assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-		//
-		//	bSource.assertUnchanged(t, tt.source)
-		//	bSecond.assertUnchanged(t, tt.second)
-		//
-		//	got = tt.source.UnionBy(tt.second, CompareFunc[int](tt.fCompare))
-		//
-		//	assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-		//
-		//	bSource.assertUnchanged(t, tt.source)
-		//	bSecond.assertUnchanged(t, tt.second)
-		//
-		//	// IComparer
-		//	got = tt.source.UnionBy(tt.second, tt.comparer)
-		//
-		//	assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-		//
-		//	bSource.assertUnchanged(t, tt.source)
-		//	bSecond.assertUnchanged(t, tt.second)
-		//})
+		t.Run(tt.name+"_UnionBy", func(t *testing.T) {
+			bSource := backupForAssetUnchanged(tt.source)
+			bSecond := backupForAssetUnchanged(tt.second)
+
+			if tt.panic && tt.source == nil {
+				return
+			}
+			defer deferWantPanicDepends(t, tt.panic)
+
+			// EqualsFunc
+			var equalsFunc OptionalEqualsFunc[any]
+			if tt.fEquals == nil {
+				equalsFunc = nil
+			} else {
+				equalsFunc = func(v1, v2 any) bool {
+					return tt.fEquals(v1.(int), v2.(int))
+				}
+			}
+
+			got := tt.source.UnionBy(tt.second, test_getSelfSelector[int](), equalsFunc)
+
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
+
+			bSource.assertUnchanged(t, tt.source)
+			bSecond.assertUnchanged(t, tt.second)
+		})
 	}
 
 	t.Run("auto-resolve comparer if default comparer is nil", func(t *testing.T) {
@@ -201,18 +179,17 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 		bSource.assertUnchanged(t, ieSrc)
 		bSecond.assertUnchanged(t, ieSecond)
 
-		// TODO
 		// UnionBy
-		//ieGot = ieSrc.UnionBy(ieSecond, nil)
-		//assert.Equal(t, 5, ieGot.Count(nil))
-		//assert.Equal(t, 5, ieGot.ToArray()[0])
-		//assert.Equal(t, 2, ieGot.ToArray()[1])
-		//assert.Equal(t, 6, ieGot.ToArray()[2])
-		//assert.Equal(t, 1, ieGot.ToArray()[3])
-		//assert.Equal(t, 3, ieGot.ToArray()[4])
-		//
-		//bSource.assertUnchanged(t, ieSrc)
-		//bSecond.assertUnchanged(t, ieSecond)
+		ieGot = ieSrc.UnionBy(ieSecond, test_getSelfSelector[int](), nil)
+		assert.Equal(t, 5, ieGot.Count(nil))
+		assert.Equal(t, 5, ieGot.ToArray()[0])
+		assert.Equal(t, 2, ieGot.ToArray()[1])
+		assert.Equal(t, 6, ieGot.ToArray()[2])
+		assert.Equal(t, 1, ieGot.ToArray()[3])
+		assert.Equal(t, 3, ieGot.ToArray()[4])
+
+		bSource.assertUnchanged(t, ieSrc)
+		bSecond.assertUnchanged(t, ieSecond)
 	})
 
 	t.Run("panic if no default resolver (Union)", func(t *testing.T) {
@@ -224,43 +201,12 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 		ieSrc.Union(ieSrc, nil)
 	})
 
-	// TODO
-	//t.Run("panic if no default resolver (UnionBy)", func(t *testing.T) {
-	//	type MyInt64 struct{}
-	//	ieSrc := NewIEnumerable[MyInt64]()
-	//
-	//	defer deferExpectPanicContains(t, "no default comparer registered", true)
-	//
-	//	ieSrc.UnionBy(ieSrc, nil)
-	//})
+	t.Run("panic if no default resolver (UnionBy)", func(t *testing.T) {
+		type MyInt64 struct{}
+		ieSrc := NewIEnumerable[MyInt64](MyInt64{})
 
-	// TODO
-	//t.Run("panic if not supported comparer", func(t *testing.T) {
-	//	ieSrc := NewIEnumerable[int]()
-	//
-	//	defer deferExpectPanicContains(t, "comparer must be", true)
-	//
-	//	var badFunc func(v int) bool
-	//	ieSrc.UnionBy(ieSrc, badFunc)
-	//})
+		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-	// TODO
-	//t.Run("panic if not supported comparer", func(t *testing.T) {
-	//	ieSrc := NewIEnumerable[int](1)
-	//
-	//	defer deferExpectPanicContains(t, "comparer must be", true)
-	//
-	//	var badFunc LessFunc[int]
-	//	ieSrc.UnionBy(ieSrc, badFunc)
-	//})
-
-	// TODO
-	//t.Run("panic if not supported comparer", func(t *testing.T) {
-	//	ieSrc := NewIEnumerable[int](1)
-	//
-	//	defer deferExpectPanicContains(t, "comparer must be", true)
-	//
-	//	var badFunc GreaterFunc[int]
-	//	ieSrc.UnionBy(ieSrc, badFunc)
-	//})
+		ieSrc.UnionBy(ieSrc, test_getSelfSelector[MyInt64](), nil)
+	})
 }

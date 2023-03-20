@@ -211,6 +211,8 @@ type IEnumerable[T any] interface {
 	// If omitted the optional compare function, the default comparer will be used or panic if no default comparer found.
 	Intersect(second IEnumerable[T], optionalCompareFunc OptionalCompareFunc[T]) IEnumerable[T]
 
+	// TODO IntersectBy
+
 	// Last returns the last element of a sequence that satisfies a specified condition.
 	//
 	// If omitted predicate, the last element will be returned.
@@ -454,13 +456,11 @@ type IEnumerable[T any] interface {
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
 	Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
-	// UnionBy produces the set union of two sequences by using the
-	// specified equality-comparer to compare values.
+	// UnionBy produces the set union of two sequences according to a specified key selector function and using the
+	// optional equality-comparer to compare keys.
 	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	UnionBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
+	UnionBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]

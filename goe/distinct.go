@@ -24,11 +24,11 @@ func (src *enumerable[T]) Distinct(optionalEqualsFunc OptionalEqualsFunc[T]) IEn
 	return src.copyExceptData().withData(uniqueData)
 }
 
-func (src *enumerable[T]) DistinctBy(requiredKeySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
+func (src *enumerable[T]) DistinctBy(keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
 	src.assertSrcNonNil()
-	assertKeySelectorNonNil(requiredKeySelector)
+	assertKeySelectorNonNil(keySelector)
 
-	unique := distinctByKeySelector(copySlice(src.data), requiredKeySelector, optionalEqualsFunc)
+	unique := distinctByKeySelector(copySlice(src.data), keySelector, optionalEqualsFunc)
 	return src.copyExceptData().withData(unique)
 }
 
