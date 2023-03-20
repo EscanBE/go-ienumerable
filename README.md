@@ -3,7 +3,7 @@
 
 # go-ienumerable [![GoDoc](https://godoc.org/github.com/EscanBE/go-ienumerable?status.svg)](https://godoc.org/github.com/EscanBE/go-ienumerable) [![Go Report Card](https://goreportcard.com/badge/github.com/EscanBE/go-ienumerable)](https://goreportcard.com/report/github.com/EscanBE/go-ienumerable)
 
-> Code coverage: 100% files, 100% statements
+> Code coverage: 100% files, 96.9% statements covered by 11k+ lines of test over 4k+ lines of code
 
 > Require: Go 1.18+
 
@@ -15,20 +15,24 @@ In addition: Check the methods [ported from C#](https://learn.microsoft.com/en-u
 got := goe.NewIEnumerable[string]("Hello", "World").
     Where(func(v string) bool {
         return len(v) < 3
-    }).OrderByDescending().Reverse().
-    FirstOrDefaultUsing("\"Oops\"")
+    }).
+    OrderByDescending().GetOrderedEnumerable().
+    Reverse().
+    FirstOrDefault(nil, goe.Ptr("Oops"))
+
 fmt.Println(got)
 // "Oops"
 ```
 ```go
 array := []byte{0, 70, 99, 106, 106, 109, 30, 85, 109, 112, 106, 98, 99, 66, 88, 69}
 got := goe.NewIEnumerable[byte](array...).
-        Skip(1).Take(11).Select(func(v byte) any {
-        return v + 2
-    }).CastInt32().Append('"').
-    AggregateWithAnySeed("\"", func(str any, v int32) any {
-        return fmt.Sprintf("%s%c", str, v)
-    })
+    Skip(1).
+    Take(11).
+    Select(transform).
+    CastInt32().
+    Append('"').
+    AggregateWithAnySeed("\"", aggregate)
+
 fmt.Println(got)
 // "Hello World"
 ```

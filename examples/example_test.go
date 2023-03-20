@@ -39,8 +39,13 @@ func Test_example_2(t *testing.T) {
 	// 72	101	108	108	111	32	87	111	114	108	100
 	array := []byte{0, 70, 99, 106, 106, 109, 30, 85, 109, 112, 106, 98, 99, 66, 88, 69}
 	got := goe.NewIEnumerable[byte](array...).
-		Skip(1).Take(11).Select(transform).CastInt32().Append('"').
+		Skip(1).
+		Take(11).
+		Select(transform).
+		CastInt32().
+		Append('"').
 		AggregateWithAnySeed("\"", aggregate)
+
 	fmt.Println(got)
 
 	assert.Equal(t, "\"Hello World\"", got)
