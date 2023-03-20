@@ -14,9 +14,13 @@ func Test_example_1(t *testing.T) {
 	got := goe.NewIEnumerable[string]("Hello", "World").
 		Where(func(v string) bool {
 			return len(v) < 3
-		}).OrderByDescending().GetOrderedEnumerable().
+		}).OrderByDescending().
+		GetOrderedEnumerable().
 		Reverse().
-		FirstOrDefaultUsing("Oops")
+		FirstOrDefault(nil, func() *string {
+			var defaultValue string = "Oops"
+			return &defaultValue
+		}())
 	fmt.Println(got)
 
 	assert.Equal(t, "Oops", got)

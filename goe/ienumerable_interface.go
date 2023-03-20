@@ -200,13 +200,9 @@ type IEnumerable[T any] interface {
 	// FirstOrDefault returns the first element of a sequence, or a default value of type if the sequence contains no elements.
 	//
 	// If omitted predicate, the first element will be returned.
-	FirstOrDefault(optionalPredicate OptionalPredicate[T]) T
-
-	// FirstOrDefaultUsing returns the first element of a sequence, or a specified default value if the sequence contains no elements.
-	FirstOrDefaultUsing(defaultValue T) T
-
-	// FirstOrDefaultByUsing returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found
-	FirstOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
+	//
+	// If omitted the optional default value param, default value of T will be returned.
+	FirstOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]
