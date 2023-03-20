@@ -1,23 +1,16 @@
 package goe
 
-func (src *enumerable[T]) FirstOrDefault() T {
+func (src *enumerable[T]) FirstOrDefault(optionalPredicate OptionalPredicate[T]) T {
 	src.assertSrcNonNil()
-
-	if len(src.data) < 1 {
-		return *new(T)
-	}
-
-	return src.data[0]
-}
-
-func (src *enumerable[T]) FirstOrDefaultBy(predicate func(T) bool) T {
-	src.assertSrcNonNil()
-	src.assertPredicateNonNil(predicate)
 
 	if len(src.data) > 0 {
-		for _, d := range src.data {
-			if predicate(d) {
-				return d
+		if optionalPredicate == nil {
+			return src.data[0]
+		} else {
+			for _, d := range src.data {
+				if optionalPredicate(d) {
+					return d
+				}
 			}
 		}
 	}

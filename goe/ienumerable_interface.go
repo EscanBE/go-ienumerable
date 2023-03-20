@@ -198,10 +198,9 @@ type IEnumerable[T any] interface {
 	First(optionalPredicate OptionalPredicate[T]) T
 
 	// FirstOrDefault returns the first element of a sequence, or a default value of type if the sequence contains no elements.
-	FirstOrDefault() T
-
-	// FirstOrDefaultBy returns the first element of the sequence that satisfies a condition, or a default value of type if no such element is found
-	FirstOrDefaultBy(predicate func(T) bool) T
+	//
+	// If omitted predicate, the first element will be returned.
+	FirstOrDefault(optionalPredicate OptionalPredicate[T]) T
 
 	// FirstOrDefaultUsing returns the first element of a sequence, or a specified default value if the sequence contains no elements.
 	FirstOrDefaultUsing(defaultValue T) T
