@@ -61,3 +61,43 @@ func Test_enumerable_WithDefaultComparer(t *testing.T) {
 		assert.Nil(t, e.defaultComparer)
 	})
 }
+
+func Test_enumerable_WithDefaultComparerAny(t *testing.T) {
+	t.Run("inject and remove default comparer", func(t *testing.T) {
+		eSrc := NewIEnumerable[time.Time]()
+		eSrc.WithDefaultComparerAny(nil)
+
+		e := e[time.Time](eSrc)
+		assert.Nil(t, e.defaultComparer)
+
+		// replace
+
+		eSrc.WithDefaultComparerAny(comparers.ConvertFromComparerIntoDefaultComparer(comparers.TimeComparer))
+
+		assert.NotNil(t, e.defaultComparer)
+
+		// eraser if input nil
+		eSrc.WithDefaultComparerAny(nil)
+		assert.Nil(t, e.defaultComparer)
+	})
+
+	t.Run("Comparer any for exact type within IEnumerable[any]", func(t *testing.T) {
+		now := time.Now()
+		eSrc := NewIEnumerable[any](now.Add(time.Minute), now.Add(time.Hour), now, now.Add(time.Second))
+		eSrc.WithDefaultComparerAny(nil)
+
+		e := e[any](eSrc)
+		assert.Nil(t, e.defaultComparer)
+
+		// replace
+
+		eSrc.WithDefaultComparerAny(comparers.ConvertFromComparerIntoDefaultComparer(comparers.TimeComparer))
+
+		assert.NotNil(t, e.defaultComparer)
+
+		min := eSrc.Min()
+		assert.Equal(t, now, min)
+		max := eSrc.Max()
+		assert.Equal(t, now.Add(time.Hour), max)
+	})
+}

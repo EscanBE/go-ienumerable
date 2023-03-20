@@ -20,3 +20,12 @@ func (src *enumerable[T]) WithDefaultComparer(comparer comparers.IComparer[T]) I
 	}
 	return src
 }
+
+func (src *enumerable[T]) WithDefaultComparerAny(comparer comparers.IComparer[any]) IEnumerable[T] {
+	if comparer == nil {
+		src.defaultComparer = nil
+	} else {
+		src.defaultComparer = comparer
+	}
+	return src
+}

@@ -231,7 +231,7 @@ type IEnumerable[T any] interface {
 	// Min returns the minimum value in a sequence.
 	//
 	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
+	// or already set via WithDefaultComparer / WithDefaultComparerAny / WithComparerFrom,
 	// otherwise panic.
 	Min() T
 
@@ -245,7 +245,7 @@ type IEnumerable[T any] interface {
 	// Max returns the greatest value in a sequence.
 	//
 	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
+	// or already set via WithDefaultComparer / WithDefaultComparerAny / WithComparerFrom,
 	// otherwise panic.
 	Max() T
 
@@ -465,7 +465,7 @@ type IEnumerable[T any] interface {
 	// Union produces the set union of two sequences.
 	//
 	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
+	// or already set via WithDefaultComparer / WithDefaultComparerAny / WithComparerFrom,
 	// otherwise panic.
 	Union(second IEnumerable[T]) IEnumerable[T]
 
@@ -495,4 +495,11 @@ type IEnumerable[T any] interface {
 	//
 	// Setting to nil will remove existing if any.
 	WithDefaultComparer(comparer comparers.IComparer[T]) IEnumerable[T]
+
+	// WithDefaultComparerAny setting default comparer to be used in this IEnumerable[T].
+	//
+	// If any existing (previously set or automatically detected) will be overridden.
+	//
+	// Setting to nil will remove existing if any.
+	WithDefaultComparerAny(comparer comparers.IComparer[any]) IEnumerable[T]
 }
