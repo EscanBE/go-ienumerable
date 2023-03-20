@@ -98,10 +98,6 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 		return src.copyExceptData().withEmptyData()
 	}
 
-	if equalityComparer == nil {
-		panic(getErrorFailedCompare2ElementsInArray())
-	}
-
 	resultHolders := make([]holder, 0)
 	for _, hSource := range srcHolders {
 		var foundInAnother bool

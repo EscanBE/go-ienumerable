@@ -31,18 +31,21 @@ func (src *enumerable[T]) Select(selector func(v T) any) IEnumerable[any] {
 				continue
 			}
 
-			if nextDefaultComparer != nil && len(nextDateType) > 0 {
+			hasNextDefaultComparer := nextDefaultComparer != nil
+			hasNextDataType := len(nextDateType) > 0
+
+			if hasNextDefaultComparer && hasNextDataType {
 				break
 			}
 
-			if nextDefaultComparer == nil {
+			if !hasNextDefaultComparer {
 				comparer, found := comparers.TryGetDefaultComparerFromValue(d)
 				if found {
 					nextDefaultComparer = comparer
 				}
 			}
 
-			if len(nextDateType) < 1 {
+			if !hasNextDataType {
 				vo, isNil := reflection.RootValueExtractor(d)
 				if !isNil {
 					nextDateType = vo.Type().String()

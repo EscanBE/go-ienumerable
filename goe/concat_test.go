@@ -61,6 +61,7 @@ func Test_enumerable_Concat(t *testing.T) {
 			}
 
 			defer deferWantPanicDepends(t, tt.wantPanic)
+
 			got := tt.first.Concat(tt.second)
 
 			if assert.Len(t, got.ToArray(), tt.want.Count(nil)) {

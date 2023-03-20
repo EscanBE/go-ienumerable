@@ -68,7 +68,7 @@ func Test_enumerable_SelectMany(t *testing.T) {
 	t.Run("nil selector", func(t *testing.T) {
 		eSrc := NewIEnumerable[int8]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilSelector().Error(), true)
 
 		_ = eSrc.SelectMany(nil)
 	})
@@ -109,13 +109,17 @@ func Test_enumerable_SelectMany(t *testing.T) {
 			Value int
 		}
 
-		ieSrc := NewIEnumerable[[]int]([]int{3, 1}, []int{})
+		ieSrc := NewIEnumerable[[]int]([]int{3, 1, 2, 6}, []int{})
 
 		ieGot := ieSrc.SelectMany(func(i []int) []any {
 			result := make([]any, len(i))
 			for idx, iv := range i {
-				result[idx] = MyInt{
-					Value: iv,
+				if iv == 2 {
+					result[idx] = nil
+				} else {
+					result[idx] = &MyInt{
+						Value: iv,
+					}
 				}
 			}
 			return result
@@ -123,8 +127,11 @@ func Test_enumerable_SelectMany(t *testing.T) {
 
 		gotArray := ieGot.ToArray()
 
-		assert.Equal(t, 3, gotArray[0].(MyInt).Value)
-		assert.Equal(t, 1, gotArray[1].(MyInt).Value)
+		assert.Len(t, gotArray, 4)
+		assert.Equal(t, 3, gotArray[0].(*MyInt).Value)
+		assert.Equal(t, 1, gotArray[1].(*MyInt).Value)
+		assert.Nil(t, gotArray[2])
+		assert.Equal(t, 6, gotArray[3].(*MyInt).Value)
 
 		eGot := e[any](ieGot)
 		assert.Equal(t, "goe.MyInt", eGot.dataType)

@@ -28,6 +28,7 @@ func testEnumerator[T any](t *testing.T, enumerator IEnumerator[T]) {
 	_, err := enumerator.CurrentSafe()
 	assert.NotNil(t, err)
 
-	defer deferWantPanicDepends(t, true)
+	defer deferExpectPanicContains(t, "invalid operation", true)
+
 	enumerator.Current()
 }

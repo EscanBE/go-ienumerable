@@ -29,7 +29,7 @@ func Test_enumerable_Aggregate(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		e := NewIEnumerable[int]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
 		e.Aggregate(func(pr, v int) int {
 			return pr + v
@@ -61,7 +61,7 @@ func Test_enumerable_AggregateWithSeed(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		e := NewIEnumerable[int]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
 		e.AggregateWithSeed(9, func(pr, v int) int {
 			return pr + v
@@ -93,7 +93,7 @@ func Test_enumerable_AggregateWithAnySeed(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		e := NewIEnumerable[int]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
 		e.AggregateWithAnySeed(9, func(pr any, v int) any {
 			return pr.(int) + v

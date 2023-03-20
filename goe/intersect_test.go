@@ -109,6 +109,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 			if tt.panic && tt.source == nil {
 				return
 			}
+
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// nil

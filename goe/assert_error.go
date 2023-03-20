@@ -38,8 +38,12 @@ func (src *enumerable[T]) assertIndex(index int) {
 
 func (col *enumerator[T]) assertCollectionNonNil() {
 	if col == nil {
-		panic("collection is nil")
+		panic(getErrorCollectionIsNil())
 	}
+}
+
+func getErrorCollectionIsNil() error {
+	return fmt.Errorf("collection is nil")
 }
 
 func assertSecondIEnumerableNonNil[T any](second IEnumerable[T]) {

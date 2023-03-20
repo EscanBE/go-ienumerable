@@ -71,7 +71,7 @@ func Test_enumerable_Select(t *testing.T) {
 	t.Run("nil selector", func(t *testing.T) {
 		eSrc := NewIEnumerable[int8]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilSelector().Error(), true)
 
 		_ = eSrc.Select(nil)
 	})
@@ -102,18 +102,24 @@ func Test_enumerable_Select(t *testing.T) {
 			Value int
 		}
 
-		ieSrc := NewIEnumerable[int](3, 1)
+		ieSrc := NewIEnumerable[int](3, 1, 2, 6)
 
 		ieGot := ieSrc.Select(func(i int) any {
-			return MyInt{
+			if i == 2 {
+				return nil
+			}
+			return &MyInt{
 				Value: i,
 			}
 		})
 
 		gotArray := ieGot.ToArray()
 
-		assert.Equal(t, 3, gotArray[0].(MyInt).Value)
-		assert.Equal(t, 1, gotArray[1].(MyInt).Value)
+		assert.Len(t, gotArray, 4)
+		assert.Equal(t, 3, gotArray[0].(*MyInt).Value)
+		assert.Equal(t, 1, gotArray[1].(*MyInt).Value)
+		assert.Nil(t, gotArray[2])
+		assert.Equal(t, 6, gotArray[3].(*MyInt).Value)
 
 		eGot := e[any](ieGot)
 		assert.Equal(t, "goe.MyInt", eGot.dataType)
@@ -164,7 +170,7 @@ func Test_enumerable_SelectNewValue(t *testing.T) {
 	t.Run("nil selector", func(t *testing.T) {
 		eSrc := NewIEnumerable[int8]()
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorNilSelector().Error(), true)
 
 		_ = eSrc.SelectNewValue(nil)
 	})
