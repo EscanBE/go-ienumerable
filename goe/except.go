@@ -20,7 +20,7 @@ func (src *enumerable[T]) Except(second IEnumerable[T], optionalEqualsFunc Optio
 	}
 
 	if second.Count() < 1 {
-		return src.copyExceptData().withData(copySlice(src.data))
+		return src.copyExceptData().withData(distinct(copySlice(src.data), OptionalEqualsFunc[T](isEquals)))
 	}
 
 	if len(src.data) < 1 {
@@ -90,30 +90,16 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 		}
 	}
 
-	if equalityComparer == nil {
-		for _, d2 := range secondData {
-			if equalityComparer == nil {
-				comparer, found := comparers.TryGetDefaultComparerFromValue(d2)
-				if found {
-					equalityComparer = func(v1, v2 any) bool {
-						return comparer.CompareAny(v1, v2) == 0
-					}
-					break
-				}
-			}
-		}
-	}
-
-	if equalityComparer == nil {
-		panic(getErrorFailedCompare2ElementsInArray())
-	}
-
 	if len(secondData) < 1 {
-		return src.copyExceptData().withData(copySlice(src.data))
+		return src.copyExceptData().withData(distinctByKeySelector(copySlice(src.data), requiredKeySelector, OptionalEqualsFunc[any](equalityComparer)))
 	}
 
 	if len(src.data) < 1 {
 		return src.copyExceptData().withEmptyData()
+	}
+
+	if equalityComparer == nil {
+		panic(getErrorFailedCompare2ElementsInArray())
 	}
 
 	resultHolders := make([]holder, 0)

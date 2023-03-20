@@ -109,6 +109,7 @@ func deferWantPanicDepends(t *testing.T, wantPanic bool) {
 		t.Errorf("expect panic")
 	} else if err != nil && !wantPanic {
 		t.Errorf("expect not panic but got %v", err)
+		panic(err)
 	} else if err != nil && wantPanic {
 		errS := fmt.Sprintf("%v", err)
 		if strings.Contains(errS, "invalid memory address") {
