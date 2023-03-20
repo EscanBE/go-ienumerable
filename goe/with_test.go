@@ -17,7 +17,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		assert.NotNil(t, eS.defaultComparer)
 		assert.Nil(t, eD.defaultComparer)
 
-		assert.True(t, ieSrc.Contains(2))
+		assert.True(t, ieSrc.Contains(2, nil))
 
 		//
 
@@ -26,7 +26,7 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		assert.NotNil(t, eS.defaultComparer)
 		assert.Nil(t, eD.defaultComparer)
 
-		assert.True(t, ieSrc.Contains(2)) // not changed
+		assert.True(t, ieSrc.Contains(2, nil)) // not changed
 
 		//
 
@@ -35,8 +35,8 @@ func Test_enumerable_WithComparersFrom(t *testing.T) {
 		assert.NotNil(t, eS.defaultComparer)
 		assert.NotNil(t, eD.defaultComparer)
 
-		assert.True(t, ieSrc.Contains(2))
-		assert.True(t, ieDes.Contains(5))
+		assert.True(t, ieSrc.Contains(2, nil))
+		assert.True(t, ieDes.Contains(5, nil))
 	})
 }
 
