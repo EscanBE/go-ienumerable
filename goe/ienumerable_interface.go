@@ -192,11 +192,10 @@ type IEnumerable[T any] interface {
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
 	ExceptBy(second IEnumerable[any], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
-	// First returns the first element of a sequence
-	First() T
-
-	// FirstBy returns the first element in a sequence that satisfies a specified condition
-	FirstBy(predicate func(T) bool) T
+	// First returns the first element of a sequence that satisfies a specified condition.
+	//
+	// If omitted predicate, the first element will be returned.
+	First(optionalPredicate OptionalPredicate[T]) T
 
 	// FirstOrDefault returns the first element of a sequence, or a default value of type if the sequence contains no elements.
 	FirstOrDefault() T

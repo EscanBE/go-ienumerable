@@ -9,50 +9,16 @@ func Test_enumerable_First(t *testing.T) {
 	tests := []struct {
 		name       string
 		src        IEnumerable[int]
+		predicate  OptionalPredicate[int]
 		wantResult int
 		wantPanic  bool
 	}{
 		{
-			name:       "first",
+			name:       "first without predicate",
 			src:        createIntEnumerable(5, 7),
+			predicate:  nil,
 			wantResult: 5,
 			wantPanic:  false,
-		},
-		{
-			name:      "not any",
-			src:       createEmptyIntEnumerable(),
-			wantPanic: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			backSrc := backupForAssetUnchanged(tt.src)
-
-			defer func() {
-				backSrc.assertUnchanged(t, tt.src)
-			}()
-
-			defer deferWantPanicDepends(t, tt.wantPanic)
-
-			gotResult := tt.src.First()
-			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-		})
-	}
-}
-
-func Test_enumerable_FirstBy(t *testing.T) {
-	tests := []struct {
-		name       string
-		src        IEnumerable[int]
-		predicate  func(int) bool
-		wantResult int
-		wantPanic  bool
-	}{
-		{
-			name:      "nil predicate",
-			src:       createRandomIntEnumerable(3),
-			predicate: nil,
-			wantPanic: true,
 		},
 		{
 			name: "first",
@@ -90,7 +56,7 @@ func Test_enumerable_FirstBy(t *testing.T) {
 
 			defer deferWantPanicDepends(t, tt.wantPanic)
 
-			gotResult := tt.src.FirstBy(tt.predicate)
+			gotResult := tt.src.First(tt.predicate)
 			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 		})
 	}

@@ -30,6 +30,11 @@ type CompareFunc[T any] func(left, right T) int
 // Usually used as filters.
 type Predicate[T any] func(value T) bool
 
+// OptionalPredicate is function that receives a value as input and returns boolean as output.
+// Usually used as filters.
+// This predicate function is optional and will be resolved at runtime or using defined default comparer if not provided.
+type OptionalPredicate[T any] Predicate[T]
+
 // PredicateWithIndex is function that receives a value as input, along with an index value and returns boolean as output.
 // Usually used as filters.
 type PredicateWithIndex[T any] func(value T, index int) bool
