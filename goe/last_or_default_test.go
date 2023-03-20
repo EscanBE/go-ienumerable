@@ -32,7 +32,7 @@ func Test_enumerable_LastOrDefault(t *testing.T) {
 			name:         "not any without predicate",
 			src:          createEmptyIntEnumerable(),
 			predicate:    nil,
-			defaultValue: &defaultValue,
+			defaultValue: Ptr(defaultValue),
 			wantResult:   defaultValue,
 		},
 		{
@@ -66,7 +66,7 @@ func Test_enumerable_LastOrDefault(t *testing.T) {
 			predicate: func(i int) bool {
 				return i >= 8
 			},
-			defaultValue: &defaultValue,
+			defaultValue: Ptr(defaultValue),
 			wantResult:   defaultValue,
 		},
 	}
@@ -94,8 +94,7 @@ func Test_enumerable_LastOrDefault(t *testing.T) {
 		}
 		assert.Equal(t, "", eSrc.LastOrDefault(predicate, nil))
 
-		var defaultValue string = "default"
-		assert.Equal(t, "default", eSrc.LastOrDefault(predicate, &defaultValue))
+		assert.Equal(t, "default", eSrc.LastOrDefault(predicate, Ptr("default")))
 
 		bSrc.assertUnchanged(t, eSrc)
 	})

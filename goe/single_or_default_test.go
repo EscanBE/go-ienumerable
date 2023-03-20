@@ -15,7 +15,7 @@ func Test_enumerable_SingleOrDefault(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.SingleOrDefault())
+		assert.Equal(t, 9, eSrc.SingleOrDefault(nil, nil))
 	})
 
 	t.Run("empty", func(t *testing.T) {
@@ -26,7 +26,7 @@ func Test_enumerable_SingleOrDefault(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Zero(t, eSrc.SingleOrDefault())
+		assert.Zero(t, eSrc.SingleOrDefault(nil, nil))
 	})
 
 	t.Run("more than one", func(t *testing.T) {
@@ -46,11 +46,9 @@ func Test_enumerable_SingleOrDefault(t *testing.T) {
 			assert.Contains(t, fmt.Sprintf("%v", err), getErrorMoreThanOne().Error())
 		}()
 
-		_ = eSrc.SingleOrDefault()
+		_ = eSrc.SingleOrDefault(nil, nil)
 	})
-}
 
-func Test_enumerable_SingleOrDefaultBy(t *testing.T) {
 	t.Run("match", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](6, 9)
 		bSrc := backupForAssetUnchanged(eSrc)
@@ -59,9 +57,11 @@ func Test_enumerable_SingleOrDefaultBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.SingleOrDefaultBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 8
-		}))
+		}
+
+		assert.Equal(t, 9, eSrc.SingleOrDefault(predicate, nil))
 	})
 
 	t.Run("empty", func(t *testing.T) {
@@ -72,9 +72,11 @@ func Test_enumerable_SingleOrDefaultBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		got := eSrc.SingleOrDefaultBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 8
-		})
+		}
+
+		got := eSrc.SingleOrDefault(predicate, nil)
 
 		assert.Zero(t, got)
 	})
@@ -87,18 +89,12 @@ func Test_enumerable_SingleOrDefaultBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorMoreThanOne().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorMoreThanOne().Error(), true)
 
-		_ = eSrc.SingleOrDefaultBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 5
-		})
+		}
+		_ = eSrc.SingleOrDefault(predicate, nil)
 	})
 
 	t.Run("no match", func(t *testing.T) {
@@ -109,35 +105,15 @@ func Test_enumerable_SingleOrDefaultBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		got := eSrc.SingleOrDefaultBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v < 5
-		})
+		}
+
+		got := eSrc.SingleOrDefault(predicate, nil)
 
 		assert.Zero(t, got)
 	})
 
-	t.Run("nil predicate", func(t *testing.T) {
-		eSrc := NewIEnumerable[int](6, 9)
-		bSrc := backupForAssetUnchanged(eSrc)
-
-		defer func() {
-			bSrc.assertUnchanged(t, eSrc)
-		}()
-
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorNilPredicate().Error())
-		}()
-
-		_ = eSrc.SingleOrDefaultBy(nil)
-	})
-}
-
-func Test_enumerable_SingleOrDefaultUsing(t *testing.T) {
 	t.Run("match", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](9)
 		bSrc := backupForAssetUnchanged(eSrc)
@@ -146,7 +122,7 @@ func Test_enumerable_SingleOrDefaultUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.SingleOrDefaultUsing(66))
+		assert.Equal(t, 9, eSrc.SingleOrDefault(nil, Ptr(66)))
 	})
 
 	t.Run("empty", func(t *testing.T) {
@@ -157,7 +133,7 @@ func Test_enumerable_SingleOrDefaultUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.SingleOrDefaultUsing(9))
+		assert.Equal(t, 9, eSrc.SingleOrDefault(nil, Ptr(9)))
 	})
 
 	t.Run("more than one", func(t *testing.T) {
@@ -168,20 +144,11 @@ func Test_enumerable_SingleOrDefaultUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorMoreThanOne().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorMoreThanOne().Error(), true)
 
-		_ = eSrc.SingleOrDefaultUsing(88)
+		_ = eSrc.SingleOrDefault(nil, Ptr(88))
 	})
-}
 
-func Test_enumerable_SingleOrDefaultByUsing(t *testing.T) {
 	t.Run("match", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](6, 9)
 		bSrc := backupForAssetUnchanged(eSrc)
@@ -190,9 +157,11 @@ func Test_enumerable_SingleOrDefaultByUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.SingleOrDefaultByUsing(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 8
-		}, 999))
+		}
+
+		assert.Equal(t, 9, eSrc.SingleOrDefault(predicate, Ptr(999)))
 	})
 
 	t.Run("empty", func(t *testing.T) {
@@ -203,9 +172,11 @@ func Test_enumerable_SingleOrDefaultByUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		got := eSrc.SingleOrDefaultByUsing(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 8
-		}, 999)
+		}
+
+		got := eSrc.SingleOrDefault(predicate, Ptr(999))
 
 		assert.Equal(t, 999, got)
 	})
@@ -218,18 +189,13 @@ func Test_enumerable_SingleOrDefaultByUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorMoreThanOne().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorMoreThanOne().Error(), true)
 
-		_ = eSrc.SingleOrDefaultByUsing(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 5
-		}, 99)
+		}
+
+		_ = eSrc.SingleOrDefault(predicate, Ptr(99))
 	})
 
 	t.Run("no match", func(t *testing.T) {
@@ -240,30 +206,12 @@ func Test_enumerable_SingleOrDefaultByUsing(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		got := eSrc.SingleOrDefaultByUsing(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v < 5
-		}, 999)
+		}
+
+		got := eSrc.SingleOrDefault(predicate, Ptr(999))
 
 		assert.Equal(t, 999, got)
-	})
-
-	t.Run("nil predicate", func(t *testing.T) {
-		eSrc := NewIEnumerable[int](6, 9)
-		bSrc := backupForAssetUnchanged(eSrc)
-
-		defer func() {
-			bSrc.assertUnchanged(t, eSrc)
-		}()
-
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorNilPredicate().Error())
-		}()
-
-		_ = eSrc.SingleOrDefaultByUsing(nil, 9)
 	})
 }

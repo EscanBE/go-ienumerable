@@ -191,12 +191,12 @@ type IEnumerable[T any] interface {
 
 	// First returns the first element of a sequence that satisfies a specified condition.
 	//
-	// If omitted predicate, the first element will be returned.
+	// If omitted the optional predicate, the first element will be returned.
 	First(optionalPredicate OptionalPredicate[T]) T
 
 	// FirstOrDefault returns the first element of a sequence, or a default value of type if the sequence contains no elements.
 	//
-	// If omitted predicate, the first element will be returned.
+	// If omitted the optional predicate, the first element will be returned.
 	//
 	// If omitted the optional default value param, default value of T will be returned.
 	FirstOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
@@ -268,7 +268,7 @@ type IEnumerable[T any] interface {
 	//
 	// ________
 	//
-	// keySelector is required, compareFunc is optional.
+	// keySelector is required, compare function is optional.
 	//
 	// If omitted the compareFunc, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
@@ -291,7 +291,7 @@ type IEnumerable[T any] interface {
 	//
 	// ________
 	//
-	// keySelector is required, compareFunc is optional.
+	// keySelector is required, compare function is optional.
 	//
 	// If omitted the optional compare function, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
@@ -332,7 +332,7 @@ type IEnumerable[T any] interface {
 	// - It is not able to resolve default comparer for result type if sequence contains no element.
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
-	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer / WithDefaultComparerAny,
 	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
 
@@ -361,40 +361,27 @@ type IEnumerable[T any] interface {
 	// - It is not able to resolve default comparer for result type if sequence contains no element.
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
-	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer / WithDefaultComparerAny,
 	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
-	// Single returns the only element of a sequence,
-	// and panic if there is not exactly one element in the sequence.
-	Single() T
-
-	// SingleBy returns the only element of a sequence that satisfies a specified condition,
+	// Single returns the only element of a sequence that satisfies an optional condition,
 	// and panic if more than one such element exists.
-	SingleBy(predicate func(T) bool) T
+	Single(optionalPredicate OptionalPredicate[T]) T
 
-	// SingleOrDefault returns the only element of a sequence,
-	// or a default value of type if the sequence is empty;
-	// this panics if there is more than one element in the sequence.
-	SingleOrDefault() T
-
-	// SingleOrDefaultBy returns the only element of a sequence that satisfies a specified condition
+	// SingleOrDefault returns the only element of a sequence that satisfies an optional condition
 	// or a default value of type if no such element exists;
 	// this method panics if more than one element satisfies the condition.
-	SingleOrDefaultBy(predicate func(T) bool) T
-
-	// SingleOrDefaultUsing returns the only element of a sequence,
-	// or a specified default value if the sequence is empty;
-	// this method panics if there is more than one element in the sequence.
-	SingleOrDefaultUsing(defaultValue T) T
-
-	// SingleOrDefaultByUsing returns the only element of a sequence that satisfies a specified condition,
-	// or a specified default value of type if no such element exists
-	// or no element of the sequence that satisfies the specified condition;
-	// this method panics if more than one element satisfies the condition.
-	SingleOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
+	//
+	// If omitted the optional predicate, the only one element will be returned,
+	// or panic if more than one,
+	// or default value (provided by optional default value params or default of T) if no element,
+	//
+	//
+	// If omitted the optional default value param, default value of T will be returned.
+	SingleOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]

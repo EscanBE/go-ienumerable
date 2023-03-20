@@ -17,10 +17,7 @@ func Test_example_1(t *testing.T) {
 		}).OrderByDescending().
 		GetOrderedEnumerable().
 		Reverse().
-		FirstOrDefault(nil, func() *string {
-			var defaultValue string = "Oops"
-			return &defaultValue
-		}())
+		FirstOrDefault(nil, goe.Ptr("Oops"))
 	fmt.Println(got)
 
 	assert.Equal(t, "Oops", got)

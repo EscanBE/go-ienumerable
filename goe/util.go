@@ -79,3 +79,9 @@ func asIEnumerableAny[T any](ie IEnumerable[T]) IEnumerable[any] {
 		return v
 	})
 }
+
+// Ptr convert a value into pointer form,
+// usually used to provide default value for methods like FirstOrDefault, LastOrDefault, SingleOrDefault,...
+func Ptr[T any](value T) *T {
+	return &value
+}
