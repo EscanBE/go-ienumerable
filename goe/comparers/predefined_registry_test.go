@@ -104,6 +104,14 @@ func TestTryGetDefaultComparer(t *testing.T) {
 			assert.Equal(t, 1, gotComparer.CompareAny(time.Now().Add(time.Hour), time.Now()))
 		}
 	})
+	t.Run("time.Duration", func(t *testing.T) {
+		gotComparer, gotOk := TryGetDefaultComparer[time.Duration]()
+		assert.True(t, gotOk)
+		if gotOk {
+			assert.NotNil(t, gotComparer)
+			assert.Equal(t, 1, gotComparer.CompareAny(time.Hour, time.Minute))
+		}
+	})
 	t.Run("not supported type", func(t *testing.T) {
 		type myType struct{}
 		gotComparer, gotOk := TryGetDefaultComparer[myType]()

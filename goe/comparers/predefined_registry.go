@@ -30,6 +30,7 @@ var mappedDefaultComparers = map[reflect.Type]IComparer[any]{
 	getDefaultComparerKeyFromSampleValue(new(big.Float).SetInt64(1)):          ConvertFromComparerIntoDefaultComparer[*big.Float](NewBigFloatComparer()),
 	getDefaultComparerKeyFromSampleValue("string"):                            ConvertFromComparerIntoDefaultComparer[string](NewStringComparer()),
 	getDefaultComparerKeyFromSampleValue(true):                                ConvertFromComparerIntoDefaultComparer[bool](NewBoolComparer()),
+	getDefaultComparerKeyFromSampleValue(time.Minute):                         NewNumericComparer(),
 	getDefaultComparerKeyFromSampleValue(time.Now()):                          ConvertFromComparerIntoDefaultComparer[time.Time](NewTimeComparer()),
 }
 
