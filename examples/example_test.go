@@ -3,6 +3,7 @@ package examples
 import (
 	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -51,20 +52,36 @@ func Test_example_2(t *testing.T) {
 	assert.Equal(t, "\"Hello World\"", got)
 }
 
-//func Test_example_3(t *testing.T) {
-//	eSrc := goe.NewIEnumerable[string]("v2430", "v1530", "v3530", "v4530", "v2420", "v2160", "v3990")
-//
-//	comparatorLevel1 := func(l, r string) int {
-//		return comparers.StringComparer.Compare(string(l[1]), string(r[1]))
-//	}
-//
-//	comparatorLevel2 := func(l, r string) int {
-//		return comparers.StringComparer.Compare(string(l[2]), string(r[2]))
-//	}
-//
-//	comparatorLevel3 := func(l, r string) int {
-//		return comparers.StringComparer.Compare(string(l[3]), string(r[3]))
-//	}
-//
-//	// TODO
-//}
+func Test_example_3(t *testing.T) {
+	eSrc := goe.NewIEnumerable[string]("v2430", "v1530", "v3530", "v4530", "v2420", "v2160", "v3990")
+
+	comparatorLevel1 := func(l, r any) int {
+		leftString := l.(string)
+		rightString := r.(string)
+		return comparers.StringComparer.CompareTyped(string(leftString[1]), string(rightString[1]))
+	}
+
+	comparatorLevel2 := func(l, r any) int {
+		leftString := l.(string)
+		rightString := r.(string)
+		return comparers.StringComparer.CompareTyped(string(leftString[2]), string(rightString[2]))
+	}
+
+	comparatorLevel3 := func(l, r any) int {
+		leftString := l.(string)
+		rightString := r.(string)
+		return comparers.StringComparer.CompareTyped(string(leftString[3]), string(rightString[3]))
+	}
+
+	selfSelector := func(str string) any {
+		return str
+	}
+
+	got := eSrc.OrderByDescendingBy(selfSelector, comparatorLevel1).
+		ThenBy(selfSelector, comparatorLevel2).
+		ThenByDescending(selfSelector, comparatorLevel3).
+		GetOrderedEnumerable()
+
+	fmt.Println(got)
+	// v4530 v3530 v3990 v2160 v2430 v2420 v1530
+}
