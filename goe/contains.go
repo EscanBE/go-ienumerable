@@ -1,21 +1,25 @@
 package goe
 
-func (src *enumerable[T]) Contains(value T, optionalCompareFunc CompareFunc[T]) bool {
+func (src *enumerable[T]) Contains(value T, optionalEqualsFunc OptionalEqualsFunc[T]) bool {
 	src.assertSrcNonNil()
 
-	if optionalCompareFunc == nil {
+	var equalsFunc EqualsFunc[T]
+
+	if optionalEqualsFunc == nil {
 		comparer := src.defaultComparer
 		if comparer == nil {
 			comparer = src.findDefaultComparer()
 		}
 
-		optionalCompareFunc = func(v1, v2 T) int {
-			return comparer.CompareAny(v1, v2)
+		equalsFunc = func(v1, v2 T) bool {
+			return comparer.CompareAny(v1, v2) == 0
 		}
+	} else {
+		equalsFunc = EqualsFunc[T](optionalEqualsFunc)
 	}
 
 	for _, d := range src.data {
-		if optionalCompareFunc(value, d) == 0 {
+		if equalsFunc(value, d) {
 			return true
 		}
 	}

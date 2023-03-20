@@ -123,7 +123,7 @@ type IEnumerable[T any] interface {
 	// Contains determines whether a sequence contains a specified element.
 	//
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
-	Contains(value T, optionalCompareFunc CompareFunc[T]) bool
+	Contains(value T, optionalEqualsFunc OptionalEqualsFunc[T]) bool
 
 	// Count returns the number of elements in a sequence.
 	Count() int

@@ -7,63 +7,63 @@ import (
 )
 
 func Test_enumerable_Contains(t *testing.T) {
-	fCompare := func(l, r int) int {
-		return comparers.NumericComparer.CompareAny(l, r)
+	fEquals := func(l, r int) bool {
+		return comparers.NumericComparer.CompareAny(l, r) == 0
 	}
 	var tests = []struct {
-		name     string
-		source   IEnumerable[int]
-		check    int
-		fCompare func(v1, v2 int) int
-		want     bool
+		name    string
+		source  IEnumerable[int]
+		check   int
+		fEquals OptionalEqualsFunc[int]
+		want    bool
 	}{
 		{
-			name:     "empty source",
-			source:   createEmptyIntEnumerable(),
-			fCompare: fCompare,
-			want:     false,
+			name:    "empty source",
+			source:  createEmptyIntEnumerable(),
+			fEquals: fEquals,
+			want:    false,
 		},
 		{
-			name:     "single",
-			source:   NewIEnumerable[int](2),
-			check:    1,
-			fCompare: fCompare,
-			want:     false,
+			name:    "single",
+			source:  NewIEnumerable[int](2),
+			check:   1,
+			fEquals: fEquals,
+			want:    false,
 		},
 		{
-			name:     "single",
-			source:   NewIEnumerable[int](2),
-			check:    2,
-			fCompare: fCompare,
-			want:     true,
+			name:    "single",
+			source:  NewIEnumerable[int](2),
+			check:   2,
+			fEquals: fEquals,
+			want:    true,
 		},
 		{
-			name:     "many",
-			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
-			check:    99,
-			fCompare: fCompare,
-			want:     false,
+			name:    "many",
+			source:  NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
+			check:   99,
+			fEquals: fEquals,
+			want:    false,
 		},
 		{
-			name:     "negative",
-			source:   NewIEnumerable[int](-1, -2, -3, -4, 55),
-			check:    -4,
-			fCompare: fCompare,
-			want:     true,
+			name:    "negative",
+			source:  NewIEnumerable[int](-1, -2, -3, -4, 55),
+			check:   -4,
+			fEquals: fEquals,
+			want:    true,
 		},
 		{
-			name:     "no equality comparer still ok since int has default comparer",
-			source:   NewIEnumerable[int](2),
-			check:    2,
-			fCompare: nil,
-			want:     true,
+			name:    "no equality comparer still ok since int has default comparer",
+			source:  NewIEnumerable[int](2),
+			check:   2,
+			fEquals: nil,
+			want:    true,
 		},
 		{
-			name:     "no equality comparer still ok since int has default comparer",
-			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
-			check:    3,
-			fCompare: nil,
-			want:     true,
+			name:    "no equality comparer still ok since int has default comparer",
+			source:  NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
+			check:   3,
+			fEquals: nil,
+			want:    true,
 		},
 	}
 	for _, tt := range tests {
@@ -71,7 +71,7 @@ func Test_enumerable_Contains(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
 			// CompareFunc
-			got := tt.source.Contains(tt.check, tt.fCompare)
+			got := tt.source.Contains(tt.check, tt.fEquals)
 
 			assert.Equal(t, tt.want, got)
 
@@ -85,9 +85,7 @@ func Test_enumerable_Contains(t *testing.T) {
 
 		assert.True(t, ieSrc.Contains(3, nil))
 
-		var cff func(v1, v2 int) int
-		assert.True(t, ieSrc.Contains(3, cff))
-		var cft CompareFunc[int]
+		var cft OptionalEqualsFunc[int]
 		assert.True(t, ieSrc.Contains(3, cft))
 
 		assert.Nil(t, e[int](ieSrc).defaultComparer)
