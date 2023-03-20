@@ -2,18 +2,25 @@ package goe
 
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
-func (src *enumerable[T]) Union(second IEnumerable[T]) IEnumerable[T] {
+func (src *enumerable[T]) Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	assertSecondIEnumerableNonNil(second)
 
-	comparer := src.defaultComparer
-	if comparer == nil {
-		comparer = src.findDefaultComparer()
+	var equalsFunc RequiredEqualsFunc[T]
+
+	if optionalEqualsFunc == nil {
+		comparer := src.defaultComparer
+		if comparer == nil {
+			comparer = src.findDefaultComparer()
+		}
+		equalsFunc = func(v1, v2 T) bool {
+			return comparer.CompareAny(v1, v2) == 0
+		}
+	} else {
+		equalsFunc = RequiredEqualsFunc[T](optionalEqualsFunc)
 	}
 
-	return src.internalUnionBy(second, func(v1, v2 T) bool {
-		return comparer.CompareAny(v1, v2) == 0
-	})
+	return src.internalUnionBy(second, equalsFunc)
 }
 
 func (src *enumerable[T]) UnionBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T] {

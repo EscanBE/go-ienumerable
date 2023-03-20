@@ -449,12 +449,10 @@ type IEnumerable[T any] interface {
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
 
-	// Union produces the set union of two sequences.
+	// Union produces the set union of two sequences by using an optional equality function to compare values.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer / WithDefaultComparerAny / WithComparerFrom,
-	// otherwise panic.
-	Union(second IEnumerable[T]) IEnumerable[T]
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
 	// UnionBy produces the set union of two sequences by using the
 	// specified equality-comparer to compare values.
