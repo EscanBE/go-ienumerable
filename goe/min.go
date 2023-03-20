@@ -1,6 +1,6 @@
 package goe
 
-import comparers "github.com/EscanBE/go-ienumerable/goe/comparers2"
+import comparers "github.com/EscanBE/go-ienumerable/goe/comparers"
 
 func (src *enumerable[T]) Min() T {
 	src.assertSrcNonNil()

@@ -1,6 +1,6 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers2"
+import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
 func (src *enumerable[T]) Union(second IEnumerable[T]) IEnumerable[T] {
 	src.assertSrcNonNil()

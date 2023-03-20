@@ -1,7 +1,7 @@
 package examples
 
 import (
-	"github.com/EscanBE/go-ienumerable/goe/comparers2"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/EscanBE/go-ienumerable/goe/reflection"
 	"github.com/stretchr/testify/assert"
 	"testing"

@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	comparers "github.com/EscanBE/go-ienumerable/goe/comparers2"
+	comparers "github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"testing"

@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	"github.com/EscanBE/go-ienumerable/goe/comparers2"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 )
 
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {
