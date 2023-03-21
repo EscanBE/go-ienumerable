@@ -31,11 +31,29 @@ got := goe.NewIEnumerable[byte](array...).
     Select(transform).
     CastInt32().
     Append('"').
-    AggregateWithAnySeed("\"", aggregate)
+    AggregateAnySeed("\"", aggregate)
 
 fmt.Println(got)
 // "Hello World"
 ```
+
+## Notice about some missing methods:
+Due to limitation of Go that does not allow generic type in struct method, the following methods are defined in `goe_helper` package as utility methods, instead of attaching directly into the IEnumerable instance:
+- Chunk
+- GroupBy
+- GroupJoin
+- Join
+- OfType
+- Zip
+
+Example: ❌ instance.Chunk(size:2) | ✅ goe_helper.Chunk(instance, size:2)
+___
+The following methods are implemented IEnumerable instance but also implemented in `goe_helper` package, since methods in helper package is more likely C# method signature.
+- Select
+- SelectMany
+- Aggregate
+- Empty
+- Repeat
 
 ## Notices about value comparison:
 Some `IEnumerable[T]` methods like `Order`, `Distinct`, `Except`, `Union`, `Intersect`,... need value comparator to compare between each element in the sequence and the `IComparer[T]` is needed.

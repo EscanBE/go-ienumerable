@@ -76,7 +76,7 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
 			// CompareFunc
-			got := tt.source.MinBy(test_getSelfSelector[int](), tt.fCompare)
+			got := tt.source.MinBy(SelfSelector[int](), tt.fCompare)
 
 			assert.Equal(t, tt.want, got)
 
@@ -90,10 +90,10 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 
 		assert.Equal(t, -3, ieSrc.Min())
 
-		assert.Equal(t, -3, ieSrc.MinBy(test_getSelfSelector[int](), nil))
+		assert.Equal(t, -3, ieSrc.MinBy(SelfSelector[int](), nil))
 
 		var cff func(v1, v2 any) int
-		assert.Equal(t, -3, ieSrc.MinBy(test_getSelfSelector[int](), cff))
+		assert.Equal(t, -3, ieSrc.MinBy(SelfSelector[int](), cff))
 
 		assert.Nil(t, e[int](ieSrc).defaultComparer)
 	})
@@ -104,7 +104,7 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 		var nilString *string
 		assert.Equal(t, nilString, ieSrc.Min())
 
-		assert.Equal(t, nilString, ieSrc.MinBy(test_getSelfSelector[*string](), nil))
+		assert.Equal(t, nilString, ieSrc.MinBy(SelfSelector[*string](), nil))
 
 		assert.Nil(t, e[*string](ieSrc).defaultComparer)
 	})
@@ -124,7 +124,7 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-		ieSrc.MinBy(test_getSelfSelector[MyInt64](), nil)
+		ieSrc.MinBy(SelfSelector[MyInt64](), nil)
 	})
 
 	t.Run("panic if empty source (Min)", func(t *testing.T) {
@@ -140,6 +140,6 @@ func Test_enumerable_Min_MinBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
-		ieSrc.MinBy(test_getSelfSelector[int](), nil)
+		ieSrc.MinBy(SelfSelector[int](), nil)
 	})
 }

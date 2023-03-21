@@ -3,20 +3,25 @@ package goe
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
 // IEnumerable from C#, brought to Golang by VictorTrustyDev
+//
+//goland:noinspection GoSnakeCaseUsage
 type IEnumerable[T any] interface {
 	// Aggregate applies an accumulator function over a sequence.
 	Aggregate(f func(previousValue, value T) T) T
 
-	// AggregateWithSeed applies an accumulator function over a sequence.
+	// AggregateSeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
-	AggregateWithSeed(seed T, f func(previousValue, value T) T) T
+	AggregateSeed(seed T, f func(previousValue, value T) T) T
 
-	// AggregateWithAnySeed applies an accumulator function over a sequence.
+	// AggregateAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
 	// Contract: the type of the seed and the aggregate function `f` param and result,
 	// must be the same type
-	AggregateWithAnySeed(seed any, f func(previousValue any, value T) any) any
+	AggregateAnySeed(seed any, f func(previousValue any, value T) any) any
+
+	// Aggregate_ImplementedInHelper aggregate methods are also implemented as helper, use the Aggregate methods from the helper package for method signature more likely C#.
+	Aggregate_ImplementedInHelper()
 
 	// All returns true if all elements matches with predicate, also true when empty
 	All(predicate func(T) bool) bool
@@ -86,10 +91,10 @@ type IEnumerable[T any] interface {
 	// a default comparer will be assigned automatically if able to resolve.
 	CastBool() IEnumerable[bool]
 
-	// ChunkToHolder (Chunk) supposed to split the elements of a sequence into chunks of size at most size.
+	// ChunkToHolder (known as Chunk) supposed to split the elements of a sequence into chunks of size at most size.
 	// Use method GetChunkedIEnumeratorFromHolder to convert from ChunkHolder[T] back to IEnumerable[[]T].
 	//
-	// Suggestion: use helper function helper.Chunk from helper package.
+	// Suggestion: use helper function goe_helper.Chunk from helper package.
 	//
 	// Due to limitation of Golang that can not define a method signature like
 	//
@@ -104,7 +109,7 @@ type IEnumerable[T any] interface {
 
 	// ChunkToAny (Chunk) splits the elements of a sequence into chunks of size at most size.
 	//
-	// Suggestion: use helper function helper.Chunk from helper package.
+	// Suggestion: use helper function goe_helper.Chunk from helper package.
 	//
 	// Due to limitation of Golang that can not define a method signature like
 	//
@@ -115,6 +120,9 @@ type IEnumerable[T any] interface {
 	//
 	// ChunkToAny with result IEnumerable[[]any] is not really a nice way since we have to convert it back to original type of it.
 	ChunkToAny(size int) IEnumerable[[]any]
+
+	// Chunk_ImplementedInHelper the Chunk method is also implemented as helper, use the Chunk method from the helper package for method signature more likely C#.
+	Chunk_ImplementedInHelper()
 
 	// Concat concatenates two sequences.
 	Concat(second IEnumerable[T]) IEnumerable[T]
@@ -193,9 +201,11 @@ type IEnumerable[T any] interface {
 	// If omitted the optional default value param, default value of T will be returned.
 	FirstOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
-	// TODO GroupBy
+	// GroupBy_ImplementedInHelper the GroupBy method is implemented as helper, use the GroupBy method from the helper package for method signature more likely C#.
+	GroupBy_ImplementedInHelper()
 
-	// TODO GroupJoin
+	// GroupJoin_ImplementedInHelper the GroupJoin method is implemented as helper, use the GroupJoin method from the helper package for method signature more likely C#.
+	GroupJoin_ImplementedInHelper()
 
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]
@@ -213,7 +223,8 @@ type IEnumerable[T any] interface {
 	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
 	IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
-	// TODO Join
+	// Join_ImplementedInHelper Join method are also implemented as helper, use the Join methods from the helper package for method signature more likely C#.
+	Join_ImplementedInHelper()
 
 	// Last returns the last element of a sequence that satisfies a specified condition.
 	//
@@ -260,7 +271,8 @@ type IEnumerable[T any] interface {
 	// or panic if no default compare found.
 	MaxBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
 
-	// TODO OfType
+	// OfType_ImplementedInHelper OfType method are also implemented as helper, use the OfType methods from the helper package for method signature more likely C#.
+	OfType_ImplementedInHelper()
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
@@ -309,7 +321,8 @@ type IEnumerable[T any] interface {
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
 
-	// TODO Range
+	// Range_ImplementedInHelper Range method are also implemented as helper, use the Range methods from the helper package for method signature more likely C#.
+	Range_ImplementedInHelper()
 
 	// Repeat generates a new sequence that contains one repeated value.
 	//
@@ -374,7 +387,13 @@ type IEnumerable[T any] interface {
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
-	// TODO SequenceEqual
+	// Select_ImplementedInHelper select methods are also implemented as helper, use the Select* methods from the helper package for method signature more likely C#.
+	Select_ImplementedInHelper()
+
+	// SequenceEqual determines whether two sequences are equal according to an equality comparer.
+	//
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
+	SequenceEqual(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) bool
 
 	// Single returns the only element of a sequence that satisfies an optional condition,
 	// and panic if more than one such element exists.
@@ -458,7 +477,8 @@ type IEnumerable[T any] interface {
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
 
-	// TODO ToDictionary
+	// ToDictionary_ImplementedInHelper the ToDictionary method is also implemented as helper, use the ToDictionary method from the helper package for method signature more likely C#.
+	ToDictionary_ImplementedInHelper()
 
 	// TODO ToHashSet
 
@@ -468,7 +488,7 @@ type IEnumerable[T any] interface {
 
 	// Union produces the set union of two sequences by using an optional equality function to compare values.
 	//
-	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
 	Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
 	// UnionBy produces the set union of two sequences according to a specified key selector function and using the
@@ -480,7 +500,8 @@ type IEnumerable[T any] interface {
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
 
-	// TODO Zip
+	// Zip_ImplementedInHelper Zip methods are implemented as helper, use the Zip methods from the helper package
+	Zip_ImplementedInHelper()
 
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#

@@ -258,7 +258,7 @@ func (i wrappedInt32Comparer) CompareTyped(x, y wrappedInt32) int {
 	return 0
 }
 
-func (i wrappedInt32Comparer) CompareAny(any, any) int {
+func (i wrappedInt32Comparer) CompareAny(_, _ any) int {
 	panic("not implemented")
 	return 0
 }

@@ -13,7 +13,7 @@ func (src *enumerable[T]) Aggregate(f func(pr, v T) T) T {
 	return result
 }
 
-func (src *enumerable[T]) AggregateWithSeed(seed T, f func(pr, v T) T) T {
+func (src *enumerable[T]) AggregateSeed(seed T, f func(pr, v T) T) T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
 	src.assertAggregateFuncNonNil(f)
@@ -26,7 +26,7 @@ func (src *enumerable[T]) AggregateWithSeed(seed T, f func(pr, v T) T) T {
 	return result
 }
 
-func (src *enumerable[T]) AggregateWithAnySeed(seed any, f func(pr any, v T) any) any {
+func (src *enumerable[T]) AggregateAnySeed(seed any, f func(pr any, v T) any) any {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
 	src.assertAggregateAnySeedFuncNonNil(f)

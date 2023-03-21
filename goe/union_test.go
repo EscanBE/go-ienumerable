@@ -151,7 +151,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 				}
 			}
 
-			got := tt.source.UnionBy(tt.second, test_getSelfSelector[int](), equalsFunc)
+			got := tt.source.UnionBy(tt.second, SelfSelector[int](), equalsFunc)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
@@ -180,7 +180,7 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 		bSecond.assertUnchanged(t, ieSecond)
 
 		// UnionBy
-		ieGot = ieSrc.UnionBy(ieSecond, test_getSelfSelector[int](), nil)
+		ieGot = ieSrc.UnionBy(ieSecond, SelfSelector[int](), nil)
 		assert.Equal(t, 5, ieGot.Count(nil))
 		assert.Equal(t, 5, ieGot.ToArray()[0])
 		assert.Equal(t, 2, ieGot.ToArray()[1])
@@ -207,6 +207,6 @@ func Test_enumerable_Union_UnionBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-		ieSrc.UnionBy(ieSrc, test_getSelfSelector[MyInt64](), nil)
+		ieSrc.UnionBy(ieSrc, SelfSelector[MyInt64](), nil)
 	})
 }

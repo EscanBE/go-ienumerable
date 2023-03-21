@@ -1,11 +1,5 @@
 package goe
 
-// LessFunc is function returns true when and only when 'left' is less than 'right'
-type LessFunc[T any] func(left, right T) bool
-
-// GreaterFunc is function returns true when and only when 'left' is greater than 'right'
-type GreaterFunc[T any] func(left, right T) bool
-
 // EqualsFunc is function returns true when and only when 'left' is equals to 'right'
 type EqualsFunc[T any] func(left, right T) bool
 
@@ -52,3 +46,19 @@ type PredicateWithIndex[T any] func(value T, index int) bool
 
 // KeySelector is function that specify key that to be used for comparing elements within a collection.
 type KeySelector[T any] func(value T) any
+
+type ValueTuple2[T1, T2 any] struct {
+	First  T1
+	Second T2
+}
+
+type ValueTuple3[T1, T2, T3 any] struct {
+	First  T1
+	Second T2
+	Third  T3
+}
+
+type Group[TKey, TElement any] struct {
+	Key      TKey
+	Elements TElement
+}

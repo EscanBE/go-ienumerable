@@ -96,3 +96,10 @@ func asIEnumerableAny[T any](ie IEnumerable[T]) IEnumerable[any] {
 func Ptr[T any](value T) *T {
 	return &value
 }
+
+// SelfSelector is KeySelector that returns the element itself
+func SelfSelector[T any]() KeySelector[T] {
+	return func(value T) any {
+		return value
+	}
+}

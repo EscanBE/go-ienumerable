@@ -2,7 +2,7 @@ package goe
 
 import (
 	"fmt"
-	comparers "github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/comparers"
 	"github.com/EscanBE/go-ienumerable/goe/reflection"
 	"sort"
 )
