@@ -269,7 +269,8 @@ type IEnumerable[T any] interface {
 	// or panic if no default compare found.
 	MaxBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
 
-	// TODO OfType
+	// OfType_ImplementedInHelper OfType method are also implemented as helper, use the OfType methods from the helper package for method signature more likely C#.
+	OfType_ImplementedInHelper()
 
 	// Order sorts the elements of a sequence in ascending order.
 	//

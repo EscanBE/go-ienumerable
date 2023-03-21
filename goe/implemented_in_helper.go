@@ -16,6 +16,11 @@ func (src *enumerable[T]) Join_ImplementedInHelper() {
 }
 
 //goland:noinspection GoSnakeCaseUsage
+func (src *enumerable[T]) OfType_ImplementedInHelper() {
+	panic("use method in helper")
+}
+
+//goland:noinspection GoSnakeCaseUsage
 func (src *enumerable[T]) Select_ImplementedInHelper() {
 	panic("use method in helper")
 }
