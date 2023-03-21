@@ -188,15 +188,13 @@ func Test_enumerable_DefaultIfEmptyUsing(t *testing.T) {
 	})
 
 	t.Run("bool", func(t *testing.T) {
-		defaultValue := true
-
 		eSrc := NewIEnumerable[bool]()
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		got := eSrc.DefaultIfEmptyUsing(defaultValue)
+		got := eSrc.DefaultIfEmptyUsing(true)
 		gotData := got.ToArray()
 		assert.Len(t, gotData, 1)
-		assert.Equal(t, defaultValue, gotData[0])
+		assert.True(t, gotData[0])
 
 		bSrc.assertUnchanged(t, eSrc)
 		bSrc.assertUnchangedIgnoreData(t, got)

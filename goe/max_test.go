@@ -76,7 +76,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
 			// CompareFunc
-			got := tt.source.MaxBy(test_getSelfSelector[int](), tt.fCompare)
+			got := tt.source.MaxBy(SelfSelector[int](), tt.fCompare)
 
 			assert.Equal(t, tt.want, got)
 
@@ -90,10 +90,10 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 
 		assert.Equal(t, 6, ieSrc.Max())
 
-		assert.Equal(t, 6, ieSrc.MaxBy(test_getSelfSelector[int](), nil))
+		assert.Equal(t, 6, ieSrc.MaxBy(SelfSelector[int](), nil))
 
 		var cff func(v1, v2 any) int
-		assert.Equal(t, 6, ieSrc.MaxBy(test_getSelfSelector[int](), cff))
+		assert.Equal(t, 6, ieSrc.MaxBy(SelfSelector[int](), cff))
 
 		assert.Nil(t, e[int](ieSrc).defaultComparer)
 	})
@@ -104,7 +104,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 		var nilString *string
 		assert.Equal(t, nilString, ieSrc.Max())
 
-		assert.Equal(t, nilString, ieSrc.MaxBy(test_getSelfSelector[*string](), nil))
+		assert.Equal(t, nilString, ieSrc.MaxBy(SelfSelector[*string](), nil))
 
 		assert.Nil(t, e[*string](ieSrc).defaultComparer)
 	})
@@ -124,7 +124,7 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-		ieSrc.MaxBy(test_getSelfSelector[MyInt64](), nil)
+		ieSrc.MaxBy(SelfSelector[MyInt64](), nil)
 	})
 
 	t.Run("panic if empty source (Max)", func(t *testing.T) {
@@ -140,6 +140,6 @@ func Test_enumerable_Max_MaxBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
-		ieSrc.MaxBy(test_getSelfSelector[int](), nil)
+		ieSrc.MaxBy(SelfSelector[int](), nil)
 	})
 }

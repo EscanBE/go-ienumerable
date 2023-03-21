@@ -73,13 +73,9 @@ func Test_example_3(t *testing.T) {
 		return comparers.StringComparer.CompareTyped(string(leftString[3]), string(rightString[3]))
 	}
 
-	selfSelector := func(str string) any {
-		return str
-	}
-
-	got := eSrc.OrderByDescending(selfSelector, comparatorLevel1).
-		ThenBy(selfSelector, comparatorLevel2).
-		ThenByDescending(selfSelector, comparatorLevel3).
+	got := eSrc.OrderByDescending(goe.SelfSelector[string](), comparatorLevel1).
+		ThenBy(goe.SelfSelector[string](), comparatorLevel2).
+		ThenByDescending(goe.SelfSelector[string](), comparatorLevel3).
 		GetOrderedEnumerable()
 
 	fmt.Println(got)

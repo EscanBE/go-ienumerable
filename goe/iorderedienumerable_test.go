@@ -7,12 +7,6 @@ import (
 	"testing"
 )
 
-func test_getSelfSelector[T any]() KeySelector[T] {
-	return func(value T) any {
-		return value
-	}
-}
-
 func Test_IOrderedIEnumerable1(t *testing.T) {
 	type s3 struct {
 		value int
@@ -228,15 +222,15 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		eSrc := createRandomIntEnumerable(3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		oe0 := eSrc.OrderBy(test_getSelfSelector[int](), func(_, _ any) int {
+		oe0 := eSrc.OrderBy(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		})
 
 		_oe0 := oe0.(*orderedEnumerable[int])
-		_oe1 := _oe0.ThenByDescending(test_getSelfSelector[int](), func(_, _ any) int {
+		_oe1 := _oe0.ThenByDescending(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}).(*orderedEnumerable[int])
-		_oe2 := _oe1.ThenBy(test_getSelfSelector[int](), func(_, _ any) int {
+		_oe2 := _oe1.ThenBy(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}).(*orderedEnumerable[int])
 
@@ -251,15 +245,15 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		eSrc := createRandomIntEnumerable(3)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		oe0 := eSrc.OrderBy(test_getSelfSelector[int](), func(_, _ any) int {
+		oe0 := eSrc.OrderBy(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		})
 
 		_oe0 := oe0.(*orderedEnumerable[int])
-		_oe1 := _oe0.ThenByDescending(test_getSelfSelector[int](), func(_, _ any) int {
+		_oe1 := _oe0.ThenByDescending(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}).(*orderedEnumerable[int])
-		_oe2 := _oe1.ThenBy(test_getSelfSelector[int](), func(_, _ any) int {
+		_oe2 := _oe1.ThenBy(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}).(*orderedEnumerable[int])
 
@@ -278,7 +272,7 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 	t.Run("keep same", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-		_ = eSrc.OrderBy(test_getSelfSelector[int](), func(_, _ any) int {
+		_ = eSrc.OrderBy(SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
@@ -298,7 +292,7 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 		f := func(v1, v2 any) int {
 			return 0
 		}
-		_ = newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), f, CLC_ASC).GetOrderedEnumerable()
+		_ = newIOrderedEnumerable(eSrc, SelfSelector[int](), f, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
 	})
 
@@ -315,7 +309,7 @@ func Test_IOrderedIEnumerable3(t *testing.T) {
 	t.Run("compare using IComparer", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-		_ = newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(x, y any) int {
+		_ = newIOrderedEnumerable(eSrc, SelfSelector[int](), func(x, y any) int {
 			return comparers.NumericComparer.CompareAny(x, y)
 		}, CLC_ASC).GetOrderedEnumerable()
 		bSrc.assertUnchanged(t, eSrc)
@@ -326,7 +320,7 @@ func Test_IOrderedIEnumerable4(t *testing.T) {
 	t.Run("use compare func if exists", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-		output := e[int](newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(x, y any) int {
+		output := e[int](newIOrderedEnumerable(eSrc, SelfSelector[int](), func(x, y any) int {
 			return comparers.NumericComparer.CompareAny(x, y) * -1
 		}, CLC_ASC).GetOrderedEnumerable())
 		assert.Len(t, output.data, 4)
@@ -338,7 +332,7 @@ func Test_IOrderedIEnumerable4(t *testing.T) {
 	t.Run("save & re-use use cached compare func, rather than resolve everytime", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](3, 1, 1, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
-		output := e[int](newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), nil, CLC_ASC).GetOrderedEnumerable())
+		output := e[int](newIOrderedEnumerable(eSrc, SelfSelector[int](), nil, CLC_ASC).GetOrderedEnumerable())
 		assert.Len(t, output.data, 4)
 		assert.Equal(t, 1, output.data[0])
 		assert.Equal(t, 1, output.data[1])
@@ -382,7 +376,7 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 	eSrc := NewIEnumerable[int](3, 1, 1, 2)
 	bSrc := backupForAssetUnchanged(eSrc)
 
-	oe := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+	oe := newIOrderedEnumerable(eSrc, SelfSelector[int](), func(_, _ any) int {
 		return 0
 	}, CLC_ASC).(*orderedEnumerable[int])
 
@@ -391,7 +385,7 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		oe2 := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+		oe2 := newIOrderedEnumerable(eSrc, SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}, CLC_ASC).(*orderedEnumerable[int])
 
@@ -439,7 +433,7 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		oe2 := newIOrderedEnumerable(eSrc, test_getSelfSelector[int](), func(_, _ any) int {
+		oe2 := newIOrderedEnumerable(eSrc, SelfSelector[int](), func(_, _ any) int {
 			return 0
 		}, CLC_ASC).(*orderedEnumerable[int])
 

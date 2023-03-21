@@ -127,7 +127,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
 			// nil
-			result = tt.source.IntersectBy(tt.second, test_getSelfSelector[int](), nil)
+			result = tt.source.IntersectBy(tt.second, SelfSelector[int](), nil)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -141,7 +141,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 					return tt.fEquals(v1.(int), v2.(int))
 				}
 			}
-			result = tt.source.IntersectBy(tt.second, test_getSelfSelector[int](), isEquals)
+			result = tt.source.IntersectBy(tt.second, SelfSelector[int](), isEquals)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -186,7 +186,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 		assert.Equal(t, nilStr, ieGot.ToArray()[0])
 
 		// IntersectBy
-		ieGot = ieSrc.IntersectBy(ieSecond, test_getSelfSelector[*string](), nil)
+		ieGot = ieSrc.IntersectBy(ieSecond, SelfSelector[*string](), nil)
 		assert.Equal(t, 1, ieGot.Count(nil))
 		assert.Equal(t, nilStr, ieGot.ToArray()[0])
 
@@ -268,7 +268,7 @@ func Test_enumerable_Intersect(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-		ieSrc.IntersectBy(ieSrc, test_getSelfSelector[MyInt64](), nil)
+		ieSrc.IntersectBy(ieSrc, SelfSelector[MyInt64](), nil)
 	})
 
 	t.Run("panic if no key selector (IntersectBy)", func(t *testing.T) {

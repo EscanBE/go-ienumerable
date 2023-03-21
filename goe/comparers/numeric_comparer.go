@@ -29,7 +29,7 @@ func (n numericComparer) CompareTyped(x, y any) int {
 	assertExactOneValueNotNil(ix, bfx, cx)
 	assertExactOneValueNotNil(iy, bfy, cy)
 
-	if ix != nil {
+	if ix != nil { // x is integer
 		if bfy != nil {
 			return n.internalCompareTyped(new(big.Float).SetInt64(*ix), bfy, _USCTM_BIGFLOAT)
 		}
@@ -47,7 +47,7 @@ func (n numericComparer) CompareTyped(x, y any) int {
 		return n.internalCompareTyped(*ix, *iy, _USCTM_INT64)
 	}
 
-	if bfx != nil {
+	if bfx != nil { // x is float number
 		if iy != nil {
 			return n.internalCompareTyped(bfx, new(big.Float).SetInt64(*iy), _USCTM_BIGFLOAT)
 		}
@@ -64,7 +64,7 @@ func (n numericComparer) CompareTyped(x, y any) int {
 		return n.internalCompareTyped(bfx, bfy, _USCTM_BIGFLOAT)
 	}
 
-	// tx == _USCTM_COMPLEX128
+	// x is complex128
 	if iy != nil {
 		bfx = new(big.Float).SetFloat64(real(*cx))
 		bfy = new(big.Float).SetInt64(*iy)
@@ -115,7 +115,7 @@ func (n numericComparer) CompareAny(x, y any) int {
 	assertExactOneValueNotNil(ix, bfx, cx)
 	assertExactOneValueNotNil(iy, bfy, cy)
 
-	if ix != nil {
+	if ix != nil { // x is integer
 		if bfy != nil {
 			return n.internalCompareTyped(new(big.Float).SetInt64(*ix), bfy, _USCTM_BIGFLOAT)
 		}
@@ -133,7 +133,7 @@ func (n numericComparer) CompareAny(x, y any) int {
 		return n.internalCompareTyped(*ix, *iy, _USCTM_INT64)
 	}
 
-	if bfx != nil {
+	if bfx != nil { // x is float number
 		if iy != nil {
 			return n.internalCompareTyped(bfx, new(big.Float).SetInt64(*iy), _USCTM_BIGFLOAT)
 		}
@@ -150,7 +150,7 @@ func (n numericComparer) CompareAny(x, y any) int {
 		return n.internalCompareTyped(bfx, bfy, _USCTM_BIGFLOAT)
 	}
 
-	// tx == _USCTM_COMPLEX128
+	// x is complex128
 	if iy != nil {
 		bfx = new(big.Float).SetFloat64(real(*cx))
 		bfy = new(big.Float).SetInt64(*iy)

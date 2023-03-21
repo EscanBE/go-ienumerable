@@ -146,7 +146,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// nil
-			result := tt.source.ExceptBy(anySecond, test_getSelfSelector[int](), nil)
+			result := tt.source.ExceptBy(anySecond, SelfSelector[int](), nil)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -162,7 +162,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			} else {
 				optionalEqualsFunc = nil
 			}
-			result = tt.source.ExceptBy(anySecond, test_getSelfSelector[int](), optionalEqualsFunc)
+			result = tt.source.ExceptBy(anySecond, SelfSelector[int](), optionalEqualsFunc)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -183,7 +183,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		got := ieSrc.Except(ieSecond, nil)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
-		got = ieSrc.ExceptBy(anySecond, test_getSelfSelector[int](), nil)
+		got = ieSrc.ExceptBy(anySecond, SelfSelector[int](), nil)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		var cft1 OptionalEqualsFunc[int]
@@ -191,7 +191,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		var cft2 OptionalEqualsFunc[any]
-		got = ieSrc.ExceptBy(anySecond, test_getSelfSelector[int](), cft2)
+		got = ieSrc.ExceptBy(anySecond, SelfSelector[int](), cft2)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		bSrc.assertUnchanged(t, ieSrc)
@@ -228,6 +228,6 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-		ieSrc.ExceptBy(asIEnumerableAny(ieSrc), test_getSelfSelector[MyInt64](), nil)
+		ieSrc.ExceptBy(asIEnumerableAny(ieSrc), SelfSelector[MyInt64](), nil)
 	})
 }

@@ -162,16 +162,7 @@ func Test_enumerable_SkipWhile(t *testing.T) {
 
 		defer deferExpectPanicContains(t, "predicate must be", true)
 
-		var badFunc LessFunc[int]
-		ieSrc.SkipWhile(badFunc)
-	})
-
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1)
-
-		defer deferExpectPanicContains(t, "predicate must be", true)
-
-		var badFunc GreaterFunc[int]
+		var badFunc CompareFunc[int]
 		ieSrc.SkipWhile(badFunc)
 	})
 

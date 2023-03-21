@@ -13,7 +13,7 @@ import (
 
 type randomFunc func() any
 
-var randomFuncsGenerateNumericTest = []randomFunc{
+var randomNumericGenerators = []randomFunc{
 	func() any {
 		return int8(rand.Intn(math.MaxUint8) - math.MaxInt8)
 	},
@@ -80,13 +80,13 @@ var randomFuncsGenerateNumericTest = []randomFunc{
 func Test_numericComparer_CompareTyped(t *testing.T) {
 	t.Run("monkey test", func(t *testing.T) {
 		report := make(map[int]int)
-		radFuncSize := len(randomFuncsGenerateNumericTest)
+		radFuncSize := len(randomNumericGenerators)
 		comparer := numericComparer{}
 
 		for i := 0; i < 1_000_000; i++ {
 			executeMonkeyTest := func() {
-				v1 := randomFuncsGenerateNumericTest[rand.Intn(radFuncSize)]()
-				v2 := randomFuncsGenerateNumericTest[rand.Intn(radFuncSize)]()
+				v1 := randomNumericGenerators[rand.Intn(radFuncSize)]()
+				v2 := randomNumericGenerators[rand.Intn(radFuncSize)]()
 
 				vo1 := reflect.ValueOf(v1)
 				vo2 := reflect.ValueOf(v2)
@@ -174,13 +174,13 @@ func Test_numericComparer_CompareAny(t *testing.T) {
 	})
 	t.Run("monkey test", func(t *testing.T) {
 		report := make(map[int]int)
-		radFuncSize := len(randomFuncsGenerateNumericTest)
+		radFuncSize := len(randomNumericGenerators)
 
 		for i := 0; i < 1_000_000; i++ {
 			//fmt.Println(i)
 			executeMonkeyTest := func() int {
-				v1 := randomFuncsGenerateNumericTest[rand.Intn(radFuncSize)]()
-				v2 := randomFuncsGenerateNumericTest[rand.Intn(radFuncSize)]()
+				v1 := randomNumericGenerators[rand.Intn(radFuncSize)]()
+				v2 := randomNumericGenerators[rand.Intn(radFuncSize)]()
 
 				vo1 := reflect.ValueOf(v1)
 				vo2 := reflect.ValueOf(v2)

@@ -711,6 +711,7 @@ func TestUnboxAnyAsFloat64OrInt64OrInt64(t *testing.T) {
 	})
 }
 
+//goland:noinspection GoVarAndConstTypeMayBeOmitted,SpellCheckingInspection
 func Test_enumerable_unboxAnyAsX(t *testing.T) {
 	t.Run("unbox any byte & pointer", func(t *testing.T) {
 		var b int8 = 3

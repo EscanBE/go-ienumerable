@@ -69,7 +69,7 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 				}
 			}
 
-			got := tt.source.DistinctBy(test_getSelfSelector[int](), equalsFuncAny)
+			got := tt.source.DistinctBy(SelfSelector[int](), equalsFuncAny)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
@@ -114,7 +114,7 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 		eSrc := NewIEnumerable[int](2, 2)
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		got := eSrc.DistinctBy(test_getSelfSelector[int](), nil).ToArray()
+		got := eSrc.DistinctBy(SelfSelector[int](), nil).ToArray()
 		assert.Len(t, got, 1)
 
 		bSrc.assertUnchanged(t, eSrc)
@@ -139,7 +139,7 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 		}
 		eSrc := NewIEnumerable[MyType](MyType{Value: 1}, MyType{Value: 1})
 		bSrc := backupForAssetUnchanged(eSrc)
-		got := eSrc.DistinctBy(test_getSelfSelector[MyType](), func(v1, v2 any) bool {
+		got := eSrc.DistinctBy(SelfSelector[MyType](), func(v1, v2 any) bool {
 			return v1.(MyType).Value == v2.(MyType).Value
 		}).ToArray()
 		assert.Len(t, got, 1)
@@ -156,7 +156,7 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 		}()
 
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
-		eSrc.DistinctBy(test_getSelfSelector[MyType](), nil)
+		eSrc.DistinctBy(SelfSelector[MyType](), nil)
 	})
 
 	t.Run("panic if missing key selector", func(t *testing.T) {
@@ -175,23 +175,23 @@ func Test_enumerable_DistinctBy(t *testing.T) {
 	})
 
 	t.Run("distinct empty", func(t *testing.T) {
-		r := NewIEnumerable[int]().DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		r := NewIEnumerable[int]().DistinctBy(SelfSelector[int](), feq).ToArray()
 		assert.Len(t, r, 0)
 	})
 
 	t.Run("distinct one", func(t *testing.T) {
-		r := NewIEnumerable[int](9).DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		r := NewIEnumerable[int](9).DistinctBy(SelfSelector[int](), feq).ToArray()
 		assert.Len(t, r, 1)
 	})
 
 	t.Run("distinct two", func(t *testing.T) {
-		r := NewIEnumerable[int](99, 99).DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		r := NewIEnumerable[int](99, 99).DistinctBy(SelfSelector[int](), feq).ToArray()
 		assert.Len(t, r, 1)
 		assert.Equal(t, 99, r[0])
 	})
 
 	t.Run("distinct many", func(t *testing.T) {
-		r := NewIEnumerable[int](99, 99, 66, 66).DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		r := NewIEnumerable[int](99, 99, 66, 66).DistinctBy(SelfSelector[int](), feq).ToArray()
 		assert.Len(t, r, 2)
 		assert.Equal(t, 99, r[0])
 		assert.Equal(t, 66, r[1])
@@ -240,7 +240,7 @@ func Test_distinct(t *testing.T) {
 
 func Test_distinctByKeySelector(t *testing.T) {
 	t.Run("optional equality comparer", func(t *testing.T) {
-		got := distinctByKeySelector[int]([]int{2, 2}, test_getSelfSelector[int](), nil)
+		got := distinctByKeySelector[int]([]int{2, 2}, SelfSelector[int](), nil)
 		assert.Len(t, got, 1)
 	})
 
@@ -262,7 +262,7 @@ func Test_distinctByKeySelector(t *testing.T) {
 		}
 		got := distinctByKeySelector[MyType]([]MyType{
 			{Value: 1}, {Value: 1},
-		}, test_getSelfSelector[MyType](), func(v1, v2 any) bool {
+		}, SelfSelector[MyType](), func(v1, v2 any) bool {
 			return v1.(MyType).Value == v2.(MyType).Value
 		})
 		assert.Len(t, got, 1)
@@ -271,7 +271,7 @@ func Test_distinctByKeySelector(t *testing.T) {
 	t.Run("panic if not able to resolve comparer when absent", func(t *testing.T) {
 		type MyType struct{}
 		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
-		distinctByKeySelector[MyType]([]MyType{}, test_getSelfSelector[MyType](), nil)
+		distinctByKeySelector[MyType]([]MyType{}, SelfSelector[MyType](), nil)
 	})
 
 	t.Run("panic if missing key selector", func(t *testing.T) {
@@ -284,23 +284,23 @@ func Test_distinctByKeySelector(t *testing.T) {
 	})
 
 	t.Run("distinct empty", func(t *testing.T) {
-		r := distinctByKeySelector[int]([]int{}, test_getSelfSelector[int](), feq)
+		r := distinctByKeySelector[int]([]int{}, SelfSelector[int](), feq)
 		assert.Len(t, r, 0)
 	})
 
 	t.Run("distinct one", func(t *testing.T) {
-		r := distinctByKeySelector[int]([]int{9}, test_getSelfSelector[int](), feq)
+		r := distinctByKeySelector[int]([]int{9}, SelfSelector[int](), feq)
 		assert.Len(t, r, 1)
 	})
 
 	t.Run("distinct two", func(t *testing.T) {
-		r := distinctByKeySelector[int]([]int{99, 99}, test_getSelfSelector[int](), feq)
+		r := distinctByKeySelector[int]([]int{99, 99}, SelfSelector[int](), feq)
 		assert.Len(t, r, 1)
 		assert.Equal(t, 99, r[0])
 	})
 
 	t.Run("distinct many", func(t *testing.T) {
-		r := distinctByKeySelector[int]([]int{66, 66, 99, 99}, test_getSelfSelector[int](), feq)
+		r := distinctByKeySelector[int]([]int{66, 66, 99, 99}, SelfSelector[int](), feq)
 		assert.Len(t, r, 2)
 		assert.Equal(t, 66, r[0])
 		assert.Equal(t, 99, r[1])
