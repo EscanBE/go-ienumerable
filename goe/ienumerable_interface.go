@@ -221,7 +221,8 @@ type IEnumerable[T any] interface {
 	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
 	IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
-	// TODO Join
+	// Join_ImplementedInHelper Join method are also implemented as helper, use the Join methods from the helper package for method signature more likely C#.
+	Join_ImplementedInHelper()
 
 	// Last returns the last element of a sequence that satisfies a specified condition.
 	//

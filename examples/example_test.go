@@ -131,3 +131,77 @@ func Test_example_4(t *testing.T) {
 		assert.Equal(t, "{Owner=Price, Pet=Scratches}", gotData[3])
 	})
 }
+
+func Test_example_5(t *testing.T) {
+	type Person struct {
+		Name string
+	}
+	type Pet struct {
+		Name  string
+		Owner Person
+	}
+	type PetInfo struct {
+		OwnerName string
+		Pet       string
+	}
+
+	magnus := Person{
+		Name: "Hedlund, Magnus",
+	}
+	terry := Person{
+		Name: "Adams, Terry",
+	}
+	charlotte := Person{
+		Name: "Weiss, Charlotte",
+	}
+
+	barley := Pet{
+		Name:  "Barley",
+		Owner: terry,
+	}
+
+	boots := Pet{
+		Name:  "Boots",
+		Owner: terry,
+	}
+
+	whiskers := Pet{
+		Name:  "Whiskers",
+		Owner: charlotte,
+	}
+
+	daisy := Pet{
+		Name:  "Daisy",
+		Owner: magnus,
+	}
+
+	iePeople := goe.NewIEnumerable(magnus, terry, charlotte)
+	iePets := goe.NewIEnumerable(barley, boots, whiskers, daisy)
+
+	var compareOwnerFunc goe.OptionalEqualsFunc[Person] = func(person1, person2 Person) bool {
+		return person1.Name == person2.Name
+	}
+
+	ieGot := helper.Join(iePeople, iePets, func(person Person) Person {
+		return person
+	}, func(pet Pet) Person {
+		return pet.Owner
+	}, func(person Person, pet Pet) PetInfo {
+		return PetInfo{
+			OwnerName: person.Name,
+			Pet:       pet.Name,
+		}
+	}, compareOwnerFunc)
+
+	got := ieGot.ToArray()
+	assert.Len(t, got, 4)
+
+	getString := func(pet PetInfo) string {
+		return fmt.Sprintf("%s - %s", pet.OwnerName, pet.Pet)
+	}
+
+	assert.Equal(t, "Hedlund, Magnus - Daisy", getString(got[0]))
+	assert.Equal(t, "Adams, Terry - Barley", getString(got[1]))
+	assert.Equal(t, "Adams, Terry - Boots", getString(got[2]))
+	assert.Equal(t, "Weiss, Charlotte - Whiskers", getString(got[3]))
+}
