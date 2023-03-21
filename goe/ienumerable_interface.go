@@ -91,7 +91,7 @@ type IEnumerable[T any] interface {
 	// a default comparer will be assigned automatically if able to resolve.
 	CastBool() IEnumerable[bool]
 
-	// ChunkToHolder (Chunk) supposed to split the elements of a sequence into chunks of size at most size.
+	// ChunkToHolder (known as Chunk) supposed to split the elements of a sequence into chunks of size at most size.
 	// Use method GetChunkedIEnumeratorFromHolder to convert from ChunkHolder[T] back to IEnumerable[[]T].
 	//
 	// Suggestion: use helper function helper.Chunk from helper package.
@@ -120,6 +120,9 @@ type IEnumerable[T any] interface {
 	//
 	// ChunkToAny with result IEnumerable[[]any] is not really a nice way since we have to convert it back to original type of it.
 	ChunkToAny(size int) IEnumerable[[]any]
+
+	// Chunk_ImplementedInHelper the Chunk method is also implemented as helper, use the Chunk method from the helper package for method signature more likely C#.
+	Chunk_ImplementedInHelper()
 
 	// Concat concatenates two sequences.
 	Concat(second IEnumerable[T]) IEnumerable[T]
