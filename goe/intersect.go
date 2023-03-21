@@ -1,61 +1,49 @@
 package goe
 
-func (src *enumerable[T]) Intersect(second IEnumerable[T], optionalCompareFunc OptionalCompareFunc[T]) IEnumerable[T] {
+func (src *enumerable[T]) Intersect(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	assertSecondIEnumerableNonNil(second)
 
-	var compareFunc CompareFunc[T]
-	if optionalCompareFunc == nil {
+	var isEquals EqualsFunc[T]
+	if optionalEqualsFunc == nil {
 		defaultComparer := src.defaultComparer
 		if defaultComparer == nil {
 			defaultComparer = src.findDefaultComparer()
 		}
-		compareFunc = func(v1, v2 T) int {
-			return defaultComparer.CompareAny(v1, v2)
+		isEquals = func(v1, v2 T) bool {
+			return defaultComparer.CompareAny(v1, v2) == 0
 		}
 	} else {
-		compareFunc = CompareFunc[T](optionalCompareFunc)
+		isEquals = EqualsFunc[T](optionalEqualsFunc)
 	}
 
-	return src.internalIntersectBy(second, func(v1, v2 T) bool {
-		return compareFunc(v1, v2) == 0
-	})
-}
-
-func (src *enumerable[T]) internalIntersectBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
-	src.assertSrcNonNil()
-	assertSecondIEnumerableNonNil(second)
-	src.assertComparerNonNil(equalityComparer)
+	result := src.copyExceptData()
 
 	if len(src.data) < 1 || second.Count(nil) < 1 {
-		return src.copyExceptData().withEmptyData()
-	}
+		result = result.withEmptyData()
+	} else {
+		intersect := make([]T, 0)
+		secondData := second.ToArray()
 
-	result := make([]T, 0)
-	secondData := second.ToArray()
-	for _, fe := range src.data {
-		var foundInAnother bool
-		for _, se := range secondData {
-			if equalityComparer(fe, se) {
-				foundInAnother = true
-				break
-			}
-		}
-		if foundInAnother {
-			var addedPreviously bool
-
-			for _, t := range result {
-				if equalityComparer(fe, t) {
-					addedPreviously = true
+		for _, fe := range src.data {
+			for _, se := range secondData {
+				if isEquals(fe, se) {
+					intersect = append(intersect, fe)
 					break
 				}
 			}
-
-			if !addedPreviously {
-				result = append(result, fe)
-			}
 		}
+
+		result = result.withData(distinct(intersect, OptionalEqualsFunc[T](isEquals)))
 	}
 
-	return src.copyExceptData().withData(result)
+	return result
+}
+
+func (src *enumerable[T]) IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
+	src.assertSrcNonNil()
+	assertSecondIEnumerableNonNil(second)
+	assertKeySelectorNonNil(keySelector)
+
+	return nil
 }

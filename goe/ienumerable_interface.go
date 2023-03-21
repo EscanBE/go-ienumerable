@@ -208,10 +208,14 @@ type IEnumerable[T any] interface {
 
 	// Intersect produces the set intersection of two sequences.
 	//
-	// If omitted the optional compare function, the default comparer will be used or panic if no default comparer found.
-	Intersect(second IEnumerable[T], optionalCompareFunc OptionalCompareFunc[T]) IEnumerable[T]
+	// If omitted the optional equality comparer function, the default comparer will be used or panic if no default comparer found.
+	Intersect(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
-	// TODO IntersectBy
+	// IntersectBy produces the set intersection of two sequences according to a specified key selector function and using the
+	// optional equality-comparer to compare keys.
+	//
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
+	IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// Last returns the last element of a sequence that satisfies a specified condition.
 	//
