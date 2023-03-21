@@ -61,9 +61,9 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 	assertSecondIEnumerableNonNil(second)
 	assertKeySelectorNonNil(requiredKeySelector)
 
-	var equalityComparer EqualsFunc[any]
+	var isEquals EqualsFunc[any]
 	if optionalEqualsFunc != nil {
-		equalityComparer = EqualsFunc[any](optionalEqualsFunc)
+		isEquals = EqualsFunc[any](optionalEqualsFunc)
 	}
 
 	type holder struct {
@@ -80,10 +80,10 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 			key:          requiredKeySelector(d1),
 		}
 
-		if equalityComparer == nil {
+		if isEquals == nil {
 			comparer, found := comparers.TryGetDefaultComparerFromValue(srcHolders[i].key)
 			if found {
-				equalityComparer = func(v1, v2 any) bool {
+				isEquals = func(v1, v2 any) bool {
 					return comparer.CompareAny(v1, v2) == 0
 				}
 			}
@@ -91,7 +91,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 	}
 
 	if len(secondData) < 1 {
-		return src.copyExceptData().withData(distinctByKeySelector(copySlice(src.data), requiredKeySelector, OptionalEqualsFunc[any](equalityComparer)))
+		return src.copyExceptData().withData(distinctByKeySelector(copySlice(src.data), requiredKeySelector, OptionalEqualsFunc[any](isEquals)))
 	}
 
 	if len(src.data) < 1 {
@@ -102,7 +102,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 	for _, hSource := range srcHolders {
 		var foundInAnother bool
 		for _, d2 := range secondData {
-			if equalityComparer(hSource.key, d2) {
+			if isEquals(hSource.key, d2) {
 				foundInAnother = true
 				break
 			}
@@ -112,7 +112,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 			var addedPreviously bool
 
 			for _, t := range resultHolders {
-				if equalityComparer(hSource.key, t.key) {
+				if isEquals(hSource.key, t.key) {
 					addedPreviously = true
 					break
 				}
