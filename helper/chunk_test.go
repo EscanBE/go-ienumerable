@@ -73,12 +73,12 @@ func TestChunk(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got := Chunk[int](tt.src, tt.size)
 
-			if got.Count() != tt.want.Count() {
-				t.Errorf("length expected %d got %d", tt.want.Count(), got.Count())
+			if got.Count(nil) != tt.want.Count(nil) {
+				t.Errorf("length expected %d got %d", tt.want.Count(nil), got.Count(nil))
 				return
 			}
 
-			if tt.want.Count() > 0 {
+			if tt.want.Count(nil) > 0 {
 				gotData := got.ToArray()
 				for i0, aw := range tt.want.ToArray() {
 					ag := gotData[i0]

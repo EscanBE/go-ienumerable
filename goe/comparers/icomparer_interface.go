@@ -1,6 +1,6 @@
 package comparers
 
-// IComparer use method Compare to compare value of 2 input values.
+// IComparer use methods Compare* to compare value of 2 input values.
 //
 // If left is less than right, returns -1.
 //
@@ -8,16 +8,16 @@ package comparers
 //
 // If left is greater than right, returns 1.
 type IComparer[T any] interface {
-	// Compare compares value from params.
+	// CompareTyped compares value from params.
 	//
 	// If x is less than y, returns -1.
 	//
-	// If x is equals to y, returns 0.
+	// If x is equals to y, returns 0.s
 	//
 	// If x is greater than y, returns 1.
-	Compare(x, y T) int
+	CompareTyped(x, y T) int
 
-	// ComparePointerMode compares two params but in pointer mode (like *int vs *int).
+	// CompareAny accept any params.
 	//
 	// If both x and y are nil, return 0.
 	//
@@ -25,8 +25,7 @@ type IComparer[T any] interface {
 	//
 	// If x is not nil and y is nil, return 1.
 	//
-	// If both x and y are not nil, do like Compare does.
-	//
-	// Implementation must support both type of input param *T or *any (*interface{}) of T.
-	ComparePointerMode(x, y any) int
+	// The rest, implement in your own way, since type any means you can pass everything here,
+	// and you should handle them carefully
+	CompareAny(x, y any) int
 }

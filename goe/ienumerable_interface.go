@@ -2,9 +2,8 @@ package goe
 
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
+// IEnumerable from C#, brought to Golang by VictorTrustyDev
 type IEnumerable[T any] interface {
-	// C#
-
 	// Aggregate applies an accumulator function over a sequence.
 	Aggregate(f func(previousValue, value T) T) T
 
@@ -15,7 +14,7 @@ type IEnumerable[T any] interface {
 	// AggregateWithAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
-	// Notice, the type (specified as 'any') of the seed and the aggregate function `f` param and result,
+	// Contract: the type of the seed and the aggregate function `f` param and result,
 	// must be the same type
 	AggregateWithAnySeed(seed any, f func(previousValue any, value T) any) any
 
@@ -122,28 +121,11 @@ type IEnumerable[T any] interface {
 
 	// Contains determines whether a sequence contains a specified element.
 	//
-	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
-	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	Contains(value T) bool
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Contains(value T, optionalEqualsFunc OptionalEqualsFunc[T]) bool
 
-	// ContainsBy determines whether a sequence contains a specified element
-	// by using the specified comparer to compare values.
-	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	//
-	// Beware of compare numeric when IEnumerable[any] because int8(1) is not equals to int16(1), int32(1)...
-	ContainsBy(value T, equalityOrComparer interface{}) bool
-
-	// Count returns the number of elements in a sequence.
-	Count() int
-
-	// CountBy returns a number that represents how many elements in the specified sequence satisfy a condition.
-	CountBy(predicate func(T) bool) int
+	// Count returns a number that represents how many elements in the specified sequence satisfy a condition.
+	Count(optionalPredicate OptionalPredicate[T]) int
 
 	// DefaultIfEmpty returns the elements of the specified sequence
 	// or the type parameter's default value in a singleton collection if the sequence is empty.
@@ -155,40 +137,28 @@ type IEnumerable[T any] interface {
 
 	// Distinct returns distinct elements from a sequence.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	Distinct() IEnumerable[T]
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Distinct(optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
-	// DistinctBy returns distinct elements from a sequence by using the
-	// specified equality comparer to compare values.
+	// DistinctBy returns distinct elements from a sequence according to a specified key selector function.
 	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	DistinctBy(equalityOrComparer interface{}) IEnumerable[T]
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	DistinctBy(keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
-	// Panic if index is less than 0 or greater than or equal to the number of elements in source
-	ElementAt(index int) T
-
-	// ElementAtReverse returns the element at a specified reverse index (0 based, from tail) in a sequence.
+	// When setting reverse to true, index is reverse index (0based, from tail).
 	//
 	// Panic if index is less than 0 or greater than or equal to the number of elements in source
-	ElementAtReverse(reverseIndex int) T
+	ElementAt(index int, reverse bool) T
 
 	// ElementAtOrDefault returns the element at a specified index (0 based, from head) in a sequence.
 	// If index is out of range, return default value of type.
 	//
-	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
-	ElementAtOrDefault(index int) T
-
-	// ElementAtReverseOrDefault returns the element at a specified reverse index (0 based, from tail) in a sequence.
-	// If index is out of range, return default value of type.
+	// When setting reverse to true, index is reverse index (0based, from tail).
 	//
 	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
-	ElementAtReverseOrDefault(reverseIndex int) T
+	ElementAtOrDefault(index int, reverse bool) T
 
 	// Empty returns a new empty IEnumerable[T] that has the specified type argument.
 	// Comparers will be copied into the new IEnumerable[T].
@@ -196,36 +166,36 @@ type IEnumerable[T any] interface {
 
 	// Except produces the set difference of two sequences.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Except(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
+
+	// ExceptBy produces the set difference of two sequences according to a specified key selector function.
+	//
+	// _______________
+	//
+	// Contract: type of elements in second IEnumerable must be the same type with value returns by keySelector,
 	// otherwise panic.
-	Except(second IEnumerable[T]) IEnumerable[T]
-
-	// ExceptBy produces the set difference of two sequences by using the
-	// specified equality comparer to compare values.
 	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// _______________
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	ExceptBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	ExceptBy(second IEnumerable[any], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
-	// First returns the first element of a sequence
-	First() T
-
-	// FirstBy returns the first element in a sequence that satisfies a specified condition
-	FirstBy(predicate func(T) bool) T
+	// First returns the first element of a sequence that satisfies a specified condition.
+	//
+	// If omitted the optional predicate, the first element will be returned.
+	First(optionalPredicate OptionalPredicate[T]) T
 
 	// FirstOrDefault returns the first element of a sequence, or a default value of type if the sequence contains no elements.
-	FirstOrDefault() T
+	//
+	// If omitted the optional predicate, the first element will be returned.
+	//
+	// If omitted the optional default value param, default value of T will be returned.
+	FirstOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
-	// FirstOrDefaultBy returns the first element of the sequence that satisfies a condition, or a default value of type if no such element is found
-	FirstOrDefaultBy(predicate func(T) bool) T
+	// TODO GroupBy
 
-	// FirstOrDefaultUsing returns the first element of a sequence, or a specified default value if the sequence contains no elements.
-	FirstOrDefaultUsing(defaultValue T) T
-
-	// FirstOrDefaultByUsing returns the first element of the sequence that satisfies a condition, or a specified default value if no such element is found
-	FirstOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
+	// TODO GroupJoin
 
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]
@@ -234,127 +204,112 @@ type IEnumerable[T any] interface {
 
 	// Intersect produces the set intersection of two sequences.
 	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	Intersect(second IEnumerable[T]) IEnumerable[T]
+	// If omitted the optional equality comparer function, the default comparer will be used or panic if no default comparer found.
+	Intersect(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
-	// IntersectBy produces the set intersection of two sequences by using the
-	// specified equality comparer to compare values.
+	// IntersectBy produces the set intersection of two sequences according to a specified key selector function and using the
+	// optional equality-comparer to compare keys.
 	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
+	IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
+
+	// TODO Join
+
+	// Last returns the last element of a sequence that satisfies a specified condition.
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	IntersectBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
-
-	// Last returns the last element of a sequence
-	Last() T
-
-	// LastBy returns the last element in a sequence that satisfies a specified condition
-	LastBy(predicate func(T) bool) T
+	// If omitted predicate, the last element will be returned.
+	Last(optionalPredicate OptionalPredicate[T]) T
 
 	// LastOrDefault returns the last element of a sequence, or a default value of type if the sequence contains no elements.
-	LastOrDefault() T
+	//
+	// If omitted predicate, the last element will be returned.
+	//
+	// If omitted the optional default value param, default value of T will be returned.
+	LastOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
-	// LastOrDefaultBy returns the last element of the sequence that satisfies a condition, or a default value of type if no such element is found
-	LastOrDefaultBy(predicate func(T) bool) T
-
-	// LastOrDefaultUsing returns the last element of a sequence, or a specified default value if the sequence contains no elements.
-	LastOrDefaultUsing(defaultValue T) T
-
-	// LastOrDefaultByUsing returns the last element of the sequence that satisfies a condition, or a specified default value if no such element is found
-	LastOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
-
-	// LongCount returns an int64 that represents the number of elements in a sequence.
+	// LongCount returns an int64 that represents how many elements in the specified sequence satisfy an optional condition.
 	//
 	// This method is meaning-less in Go because the Count method returns an int already has max value of int64 in x64 machines
-	LongCount() int64
-
-	// LongCountBy returns an int64 that represents how many elements in the specified sequence satisfy a condition.
-	//
-	// This method is meaning-less in Go because the CountBy method returns an int already has max value of int64 in x64 machines
-	LongCountBy(predicate func(T) bool) int64
+	LongCount(optionalPredicate OptionalPredicate[T]) int64
 
 	// Min returns the minimum value in a sequence.
 	//
 	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
+	// or already set via WithDefaultComparer / WithDefaultComparerAny / WithComparerFrom,
 	// otherwise panic.
 	Min() T
 
-	// MinBy returns the minimum value in a sequence
-	// according to the provided less-than-comparer to compare values.
+	// MinBy returns the minimum value in a generic sequence according to a specified key selector function
+	// and key comparer.
 	//
-	// Comparer must be: LessFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MinBy(lessThanOrComparer interface{}) T
+	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
+	MinBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
 
 	// Max returns the greatest value in a sequence.
 	//
 	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
+	// or already set via WithDefaultComparer / WithDefaultComparerAny / WithComparerFrom,
 	// otherwise panic.
 	Max() T
 
-	// MaxBy returns the greatest value in a sequence
-	// according to the provided greater-than-comparer to compare values.
+	// MaxBy returns the maximum value in a generic sequence according to a specified key selector function
+	// and key comparer.
 	//
-	// Comparer must be: GreaterFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
-	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	MaxBy(greaterThanOrComparer interface{}) T
+	// If omitted the compare func, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
+	MaxBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
+
+	// TODO OfType
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
 	Order() IOrderedEnumerable[T]
 
 	// OrderBy sorts the elements of a sequence in ascending order
-	// according to the provided less-than-comparer to compare values.
+	// according to the selected key.
 	//
-	// Comparer must be either: CompareFunc[T] or comparers.IComparer[T].
+	// ________
 	//
-	// If passing nil as less-than-comparer, the default comparer will be used or panic if no default comparer found.
-	OrderBy(lessComparer func(left, right T) bool) IEnumerable[T]
-
-	// OrderByComparer sorts the elements of a sequence in ascending order
-	// according to the provided comparers.IComparer[T] to compare values.
+	// keySelector is required, compare function is optional.
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	OrderByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
-
-	// OrderByDescending sorts the elements of a sequence in descending order.
+	// If omitted the compareFunc, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
 	//
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	OrderByDescending() IOrderedEnumerable[T]
+	OrderBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
 
-	// OrderByDescendingBy sorts the elements of a sequence in descending order
-	// according to the provided greater-than-comparer to compare values.
+	// OrderDescending sorts the elements of a sequence in descending order.
 	//
-	// If passing nil as greater-than-comparer, the default comparer will be used or panic if no default comparer found.
-	OrderByDescendingBy(greaterComparer func(left, right T) bool) IEnumerable[T]
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	OrderDescending() IOrderedEnumerable[T]
 
-	// OrderByDescendingByComparer sorts the elements of a sequence in descending order
-	// according to the provided comparers.IComparer[T] to compare values.
+	// OrderByDescending sorts the elements of a sequence in descending order
+	// according to the selected key.
 	//
-	// If passing nil as comparer, the default comparer will be used or panic if no default comparer found.
-	OrderByDescendingByComparer(comparer comparers.IComparer[T]) IEnumerable[T]
+	// ________
+	//
+	// keySelector is required, compare function is optional.
+	//
+	// If omitted the optional compare function, the default comparer for corresponding type will be used,
+	// or panic if no default compare found.
+	//
+	// This method is implemented by using deferred execution,
+	// that means you have to call `GetOrderedEnumerable` method
+	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
+	OrderByDescending(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
+
+	// TODO Range
 
 	// Repeat generates a new sequence that contains one repeated value.
 	//
@@ -384,7 +339,7 @@ type IEnumerable[T any] interface {
 	// - It is not able to resolve default comparer for result type if sequence contains no element.
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
-	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer / WithDefaultComparerAny,
 	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	Select(selector func(v T) any) IEnumerable[any]
 
@@ -392,28 +347,6 @@ type IEnumerable[T any] interface {
 	//
 	// Notice: Existing comparer from source will be brought along with the new IEnumerable[T].
 	SelectNewValue(selector func(v T) T) IEnumerable[T]
-
-	// SelectWithSampleValueOfResult projects each element of a sequence into a new form.
-	//
-	// The sample result value parameter is used to automatically detect comparer for type of result
-	// and must be the same type with every value yields from selector,
-	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
-	// thus panic when you call methods where comparer is needed, like Distinct, Order,...
-	//
-	// Due to limitation of current Go, there is no way to directly cast into target type
-	// in just one command, so additional transform from 'any' to target types might be required.
-	//
-	// There are some Cast* methods
-	// CastByte, CastInt, CastString, ... so can do combo like example:
-	//
-	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
-	//
-	// Notice:
-	//
-	// - Comparer from source will NOT be brought along with new IEnumerable[any]
-	//
-	// - Panic if sample result value is nil or type not match with result element type
-	SelectWithSampleValueOfResult(selector func(v T) any, notNilSampleResultValue any) IEnumerable[any]
 
 	// SelectMany projects each element of a sequence to an array of interface
 	// and flattens the resulting sequences into one sequence: IEnumerable[any]
@@ -435,65 +368,29 @@ type IEnumerable[T any] interface {
 	// - It is not able to resolve default comparer for result type if sequence contains no element.
 	//
 	// - If not able to auto-resolve a default comparer for type of result,
-	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer,
+	// you might need to specify comparers.IComparer[any] manually via WithDefaultComparer / WithDefaultComparerAny,
 	// otherwise there is panic when you call methods where comparer is needed, like Distinct, Order,...
 	//
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
-	// SelectManyWithSampleValueOfResult projects each element of a sequence to an array of interface
-	//	// and flattens the resulting sequences into one sequence: IEnumerable[any]
-	//
-	// The sample result value parameter is used to automatically detect comparer for type of result
-	// and must be the same type with every value yields from selector,
-	// if default comparer for type of result is not able to be detected, no comparer will be assigned,
-	// thus panic when you call methods where comparer is needed, like Distinct, Order,...
-	//
-	// Due to limitation of current Go, there is no way to directly cast into target type
-	// in just one command, so additional transform from 'any' to target types might be required.
-	//
-	// There are some Cast* methods
-	// CastByte, CastInt, CastString, ... so can do combo like example:
-	//
-	// IEnumerable[int](src).Select(x => x + 1).CastInt() and will result IEnumerable[int]
-	//
-	// Notice:
-	//
-	// - Comparer from source will NOT be brought along with new IEnumerable[any].
-	//
-	// - Panic if sample result value is nil or type not match with result element type.
-	//
-	// - Panic if selector returns nil.
-	SelectManyWithSampleValueOfResult(selector func(v T) []any, notNilSampleResultValue any) IEnumerable[any]
+	// TODO SequenceEqual
 
-	// Single returns the only element of a sequence,
-	// and panic if there is not exactly one element in the sequence.
-	Single() T
-
-	// SingleBy returns the only element of a sequence that satisfies a specified condition,
+	// Single returns the only element of a sequence that satisfies an optional condition,
 	// and panic if more than one such element exists.
-	SingleBy(predicate func(T) bool) T
+	Single(optionalPredicate OptionalPredicate[T]) T
 
-	// SingleOrDefault returns the only element of a sequence,
-	// or a default value of type if the sequence is empty;
-	// this panics if there is more than one element in the sequence.
-	SingleOrDefault() T
-
-	// SingleOrDefaultBy returns the only element of a sequence that satisfies a specified condition
+	// SingleOrDefault returns the only element of a sequence that satisfies an optional condition
 	// or a default value of type if no such element exists;
 	// this method panics if more than one element satisfies the condition.
-	SingleOrDefaultBy(predicate func(T) bool) T
-
-	// SingleOrDefaultUsing returns the only element of a sequence,
-	// or a specified default value if the sequence is empty;
-	// this method panics if there is more than one element in the sequence.
-	SingleOrDefaultUsing(defaultValue T) T
-
-	// SingleOrDefaultByUsing returns the only element of a sequence that satisfies a specified condition,
-	// or a specified default value of type if no such element exists
-	// or no element of the sequence that satisfies the specified condition;
-	// this method panics if more than one element satisfies the condition.
-	SingleOrDefaultByUsing(predicate func(T) bool, defaultValue T) T
+	//
+	// If omitted the optional predicate, the only one element will be returned,
+	// or panic if more than one,
+	// or default value (provided by optional default value params or default of T) if no element,
+	//
+	//
+	// If omitted the optional default value param, default value of T will be returned.
+	SingleOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
 	// Skip bypasses a specified number of elements in a sequence and then returns the remaining elements.
 	Skip(count int) IEnumerable[T]
@@ -561,23 +458,29 @@ type IEnumerable[T any] interface {
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
 
-	// Union produces the set union of two sequences.
-	//
-	// Require: type must be registered for default comparer
-	// or already set via WithDefaultComparer or WithComparerFrom,
-	// otherwise panic.
-	Union(second IEnumerable[T]) IEnumerable[T]
+	// TODO ToDictionary
 
-	// UnionBy produces the set union of two sequences by using the
-	// specified equality-comparer to compare values.
+	// TODO ToHashSet
+
+	// TODO ToList
+
+	// TODO ToLookUp
+
+	// Union produces the set union of two sequences by using an optional equality function to compare values.
 	//
-	// Comparer must be: EqualsFunc[T] or CompareFunc[T] or comparers.IComparer[T] (or nil).
+	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
+
+	// UnionBy produces the set union of two sequences according to a specified key selector function and using the
+	// optional equality-comparer to compare keys.
 	//
-	// If passing nil as equalityComparer, the default comparer will be used or panic if no default comparer found.
-	UnionBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T]
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
+	UnionBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
+
+	// TODO Zip
 
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#
@@ -594,4 +497,11 @@ type IEnumerable[T any] interface {
 	//
 	// Setting to nil will remove existing if any.
 	WithDefaultComparer(comparer comparers.IComparer[T]) IEnumerable[T]
+
+	// WithDefaultComparerAny setting default comparer to be used in this IEnumerable[T].
+	//
+	// If any existing (previously set or automatically detected) will be overridden.
+	//
+	// Setting to nil will remove existing if any.
+	WithDefaultComparerAny(comparer comparers.IComparer[any]) IEnumerable[T]
 }

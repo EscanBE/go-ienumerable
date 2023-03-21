@@ -1,20 +1,17 @@
 package goe
 
-func (src *enumerable[T]) Last() T {
+func (src *enumerable[T]) Last(optionalPredicate OptionalPredicate[T]) T {
 	src.assertSrcNonNil()
 	src.assertSrcNonEmpty()
 
-	return src.data[len(src.data)-1]
-}
-
-func (src *enumerable[T]) LastBy(predicate func(T) bool) T {
-	src.assertSrcNonNil()
-	src.assertSrcNonEmpty()
-	src.assertPredicateNonNil(predicate)
+	if optionalPredicate == nil {
+		return src.data[len(src.data)-1]
+	}
 
 	for i := len(src.data) - 1; i >= 0; i-- {
-		if predicate(src.data[i]) {
-			return src.data[i]
+		d := src.data[i]
+		if optionalPredicate(d) {
+			return d
 		}
 	}
 

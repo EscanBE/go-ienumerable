@@ -60,7 +60,8 @@ func Test_enumerable_Cast(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, "of type int is over range of byte", true)
+
 		NewIEnumerable[int](999, 1).Select(func(v int) any {
 			return v
 		}).CastByte()
@@ -81,7 +82,8 @@ func Test_enumerable_Cast(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, "of type int64 is over range of int32", true)
+
 		NewIEnumerable[int64](math.MaxInt32+1, 3).Select(func(v int64) any {
 			return v
 		}).CastInt32()
@@ -102,7 +104,8 @@ func Test_enumerable_Cast(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, "of type uint64 is over range of int64", true)
+
 		NewIEnumerable[uint64](math.MaxUint64, 3).Select(func(v uint64) any {
 			return v
 		}).CastInt64()
@@ -123,7 +126,8 @@ func Test_enumerable_Cast(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, "of type uint is over range of int", true)
+
 		NewIEnumerable[uint](math.MaxUint, 3).Select(func(v uint) any {
 			return v
 		}).CastInt()
@@ -173,7 +177,8 @@ func Test_enumerable_Cast(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, "cannot be casted to string", true)
+
 		NewIEnumerable[int64](5, 3).Select(func(v int64) any {
 			return v
 		}).CastString()
@@ -194,7 +199,8 @@ func Test_enumerable_Cast(t *testing.T) {
 
 		bSrc.assertUnchanged(t, eSrc)
 
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, "cannot be casted to bool", true)
+
 		NewIEnumerable[int64](5, 3).Select(func(v int64) any {
 			return v
 		}).CastBool()

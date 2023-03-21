@@ -1,78 +1,24 @@
 package goe
 
-import "github.com/EscanBE/go-ienumerable/goe/comparers"
-
-func (src *enumerable[T]) Except(second IEnumerable[T]) IEnumerable[T] {
+func (src *enumerable[T]) Except(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
-
-	comparer := src.defaultComparer
-	if comparer == nil {
-		comparer = src.findDefaultComparer()
-	}
-
-	return src.internalExceptBy(second, func(v1, v2 T) bool {
-		return comparer.Compare(v1, v2) == 0
-	})
-}
-
-func (src *enumerable[T]) ExceptBy(second IEnumerable[T], equalityOrComparer interface{}) IEnumerable[T] {
-	src.assertSrcNonNil()
+	assertSecondIEnumerableNonNil(second)
 
 	var isEquals EqualsFunc[T]
-
-	if equalityOrComparer != nil {
-		if eff, okEff := equalityOrComparer.(func(v1, v2 T) bool); okEff {
-			if eff != nil {
-				isEquals = eff
-			}
-		} else if eft, okEft := equalityOrComparer.(EqualsFunc[T]); okEft {
-			if eft != nil {
-				isEquals = eft
-			}
-		} else if cff, okCff := equalityOrComparer.(func(v1, v2 T) int); okCff {
-			if cff != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cff(v1, v2) == 0
-				}
-			}
-		} else if cft, okCft := equalityOrComparer.(CompareFunc[T]); okCft {
-			if cft != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cft(v1, v2) == 0
-				}
-			}
-		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
-			if cpr != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cpr.Compare(v1, v2) == 0
-				}
-			}
-		} else {
-			panic(getErrorComparerMustBeEqualsFuncOrIComparer())
-		}
-	}
-
-	if isEquals == nil {
+	if optionalEqualsFunc == nil {
 		defaultComparer := src.defaultComparer
 		if defaultComparer == nil {
 			defaultComparer = src.findDefaultComparer()
 		}
 		isEquals = func(v1, v2 T) bool {
-			return defaultComparer.Compare(v1, v2) == 0
+			return defaultComparer.CompareAny(v1, v2) == 0
 		}
+	} else {
+		isEquals = EqualsFunc[T](optionalEqualsFunc)
 	}
 
-	return src.internalExceptBy(second, isEquals)
-}
-
-func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
-	src.assertSrcNonNil()
-	src.assertSecondIEnumerableNonNil(second)
-	src.assertComparerNonNil(equalityComparer)
-
-	if second.Count() < 1 {
-		return src.copyExceptData().withData(copySlice(src.ToArray()))
+	if second.Count(nil) < 1 {
+		return src.copyExceptData().withData(distinct(copySlice(src.data), OptionalEqualsFunc[T](isEquals)))
 	}
 
 	if len(src.data) < 1 {
@@ -84,7 +30,7 @@ func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityCompar
 	for _, d := range src.data {
 		var foundInAnother bool
 		for _, t := range secondData {
-			if equalityComparer(d, t) {
+			if isEquals(d, t) {
 				foundInAnother = true
 				break
 			}
@@ -93,7 +39,7 @@ func (src *enumerable[T]) internalExceptBy(second IEnumerable[T], equalityCompar
 			var addedPreviously bool
 
 			for _, t := range result {
-				if equalityComparer(d, t) {
+				if isEquals(d, t) {
 					addedPreviously = true
 					break
 				}

@@ -30,6 +30,7 @@ var mappedDefaultComparers = map[reflect.Type]IComparer[any]{
 	getDefaultComparerKeyFromSampleValue(new(big.Float).SetInt64(1)):          ConvertFromComparerIntoDefaultComparer[*big.Float](NewBigFloatComparer()),
 	getDefaultComparerKeyFromSampleValue("string"):                            ConvertFromComparerIntoDefaultComparer[string](NewStringComparer()),
 	getDefaultComparerKeyFromSampleValue(true):                                ConvertFromComparerIntoDefaultComparer[bool](NewBoolComparer()),
+	getDefaultComparerKeyFromSampleValue(time.Minute):                         NewNumericComparer(),
 	getDefaultComparerKeyFromSampleValue(time.Now()):                          ConvertFromComparerIntoDefaultComparer[time.Time](NewTimeComparer()),
 }
 
@@ -66,6 +67,14 @@ func TryGetDefaultComparer[T any]() (comparer IComparer[any], ok bool) {
 	return
 }
 
+func GetDefaultComparer[T any]() IComparer[any] {
+	comparer, found := TryGetDefaultComparer[T]()
+	if !found {
+		panic(fmt.Errorf("not found any default comparer for %T", *new(T)))
+	}
+	return comparer
+}
+
 func TryGetDefaultComparerFromValue(sampleValue any) (comparer IComparer[any], ok bool) {
 	key, err := tryGetDefaultComparerKeyFromSampleValue(sampleValue)
 	if err != nil {
@@ -74,4 +83,9 @@ func TryGetDefaultComparerFromValue(sampleValue any) (comparer IComparer[any], o
 
 	comparer, ok = mappedDefaultComparers[key]
 	return
+}
+
+func RegisterDefaultComparer[T any](comparer IComparer[T]) {
+	key, _ := tryGetDefaultComparerKeyFromSampleValue(*new(T))
+	mappedDefaultComparers[key] = ConvertFromComparerIntoDefaultComparer[T](comparer)
 }

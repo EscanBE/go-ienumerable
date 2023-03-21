@@ -109,6 +109,7 @@ func deferWantPanicDepends(t *testing.T, wantPanic bool) {
 		t.Errorf("expect panic")
 	} else if err != nil && !wantPanic {
 		t.Errorf("expect not panic but got %v", err)
+		panic(err)
 	} else if err != nil && wantPanic {
 		errS := fmt.Sprintf("%v", err)
 		if strings.Contains(errS, "invalid memory address") {
@@ -195,5 +196,15 @@ func Test_enumerable_withEmptyData(t *testing.T) {
 		copied := e.copyExceptData().withEmptyData()
 
 		assert.Nil(t, copied)
+	})
+}
+
+func Test_firstNotNil(t *testing.T) {
+	var nilString *string
+	t.Run("first not nil", func(t *testing.T) {
+		assert.Equal(t, "a", firstNotNil(nil, nilString, "a", nil))
+	})
+	t.Run("first not nil when all nil", func(t *testing.T) {
+		assert.Nil(t, firstNotNil(nil, nilString, nilString, nil))
 	})
 }

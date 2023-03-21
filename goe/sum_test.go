@@ -33,8 +33,6 @@ func Test_enumerable_SumInt32(t *testing.T) {
 	})
 
 	t.Run("empty of any integer type always returns 0", func(t *testing.T) {
-		defer deferWantPanicDepends(t, false)
-
 		assert.Equal(t, 0, int(NewIEnumerable[int8]().SumInt32()))
 		assert.Equal(t, 0, int(NewIEnumerable[uint8]().SumInt32()))
 		assert.Equal(t, 0, int(NewIEnumerable[int16]().SumInt32()))
@@ -222,8 +220,6 @@ func Test_enumerable_SumInt(t *testing.T) {
 	})
 
 	t.Run("empty of any integer type always returns 0", func(t *testing.T) {
-		defer deferWantPanicDepends(t, false)
-
 		assert.Equal(t, 0, NewIEnumerable[int8]().SumInt())
 		assert.Equal(t, 0, NewIEnumerable[uint8]().SumInt())
 		assert.Equal(t, 0, NewIEnumerable[int16]().SumInt())
@@ -402,8 +398,6 @@ func Test_enumerable_SumInt64(t *testing.T) {
 	})
 
 	t.Run("empty of any integer type always returns 0", func(t *testing.T) {
-		defer deferWantPanicDepends(t, false)
-
 		assert.Equal(t, 0, int(NewIEnumerable[int8]().SumInt64()))
 		assert.Equal(t, 0, int(NewIEnumerable[uint8]().SumInt64()))
 		assert.Equal(t, 0, int(NewIEnumerable[int16]().SumInt64()))
@@ -436,8 +430,6 @@ func Test_enumerable_SumInt64(t *testing.T) {
 	})
 
 	t.Run("empty of interface{} (aka any) returns 0", func(t *testing.T) {
-		defer deferWantPanicDepends(t, false)
-
 		assert.Equal(t, 0, int(NewIEnumerable[any]().SumInt64()))
 	})
 
@@ -569,8 +561,6 @@ func Test_enumerable_SumFloat64(t *testing.T) {
 	})
 
 	t.Run("empty of any integer/float type always returns 0", func(t *testing.T) {
-		defer deferWantPanicDepends(t, false)
-
 		assert.Equal(t, 0, int(NewIEnumerable[int8]().SumFloat64()))
 		assert.Equal(t, 0, int(NewIEnumerable[uint8]().SumFloat64()))
 		assert.Equal(t, 0, int(NewIEnumerable[int16]().SumFloat64()))

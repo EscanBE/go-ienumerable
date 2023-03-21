@@ -2,43 +2,46 @@ package examples
 
 import (
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func Test_comparer_1(t *testing.T) {
-	comparer := comparers.Int32Comparer
+	comparer := comparers.NumericComparer
 
 	var big, small int32
 	big = 9
 	small = 3
 
-	assert.Equal(t, 0, comparer.Compare(small, small))
-	assert.Equal(t, 0, comparer.Compare(big, big))
-	assert.Equal(t, 1, comparer.Compare(big, small))
-	assert.Equal(t, -1, comparer.Compare(small, big))
+	assert.Equal(t, 0, comparer.CompareTyped(small, small))
+	assert.Equal(t, 0, comparer.CompareTyped(big, big))
+	assert.Equal(t, 1, comparer.CompareTyped(big, small))
+	assert.Equal(t, -1, comparer.CompareTyped(small, big))
 
-	assert.Equal(t, 0, comparer.ComparePointerMode(&small, &small))
-	assert.Equal(t, 0, comparer.ComparePointerMode(&big, &big))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&big, &small))
-	assert.Equal(t, -1, comparer.ComparePointerMode(&small, &big))
+	assert.Equal(t, 0, comparer.CompareAny(&small, &small))
+	assert.Equal(t, 0, comparer.CompareAny(&big, &big))
+	assert.Equal(t, 1, comparer.CompareAny(&big, &small))
+	assert.Equal(t, -1, comparer.CompareAny(&small, &big))
 
-	assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&big, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&small, nil))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &big))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &small))
+	assert.Equal(t, 0, comparer.CompareAny(nil, nil))
+	assert.Equal(t, 1, comparer.CompareAny(&big, nil))
+	assert.Equal(t, 1, comparer.CompareAny(&small, nil))
+	assert.Equal(t, -1, comparer.CompareAny(nil, &big))
+	assert.Equal(t, -1, comparer.CompareAny(nil, &small))
 }
 
 type wrappedInt32 struct {
 	value int32
 }
 
+var _ comparers.IComparer[wrappedInt32] = wrappedInt32Comparer{}
+
 // Create a custom comparer for a type
 type wrappedInt32Comparer struct {
 }
 
-func (i wrappedInt32Comparer) Compare(x, y wrappedInt32) int {
+func (i wrappedInt32Comparer) CompareTyped(x, y wrappedInt32) int {
 	if x.value < y.value {
 		return -1
 	}
@@ -50,20 +53,19 @@ func (i wrappedInt32Comparer) Compare(x, y wrappedInt32) int {
 	return 0
 }
 
-func (i wrappedInt32Comparer) ComparePointerMode(x, y any) int {
-	if x == nil && y == nil {
+func (i wrappedInt32Comparer) CompareAny(x, y any) int {
+	vox, isNilX := reflection.RootValueExtractor(x)
+	voy, isNilY := reflection.RootValueExtractor(y)
+	if isNilX && isNilY {
 		return 0
 	}
-
-	if x == nil {
+	if isNilX {
 		return -1
 	}
-
-	if y == nil {
+	if isNilY {
 		return 1
 	}
-
-	return i.Compare(comparers.AnyPointerToType[wrappedInt32](x), comparers.AnyPointerToType[wrappedInt32](y))
+	return comparers.NumericComparer.CompareAny(vox.Interface().(wrappedInt32).value, voy.Interface().(wrappedInt32).value)
 }
 
 // ensure implementation
@@ -81,28 +83,28 @@ func Test_comparer_2(t *testing.T) {
 		value: 3,
 	}
 
-	assert.Equal(t, 0, comparer.Compare(small, small))
-	assert.Equal(t, 0, comparer.Compare(big, big))
-	assert.Equal(t, 1, comparer.Compare(big, small))
-	assert.Equal(t, -1, comparer.Compare(small, big))
+	assert.Equal(t, 0, comparer.CompareTyped(small, small))
+	assert.Equal(t, 0, comparer.CompareTyped(big, big))
+	assert.Equal(t, 1, comparer.CompareTyped(big, small))
+	assert.Equal(t, -1, comparer.CompareTyped(small, big))
 
-	assert.Equal(t, 0, comparer.ComparePointerMode(&small, &small))
-	assert.Equal(t, 0, comparer.ComparePointerMode(&big, &big))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&big, &small))
-	assert.Equal(t, -1, comparer.ComparePointerMode(&small, &big))
+	assert.Equal(t, 0, comparer.CompareAny(&small, &small))
+	assert.Equal(t, 0, comparer.CompareAny(&big, &big))
+	assert.Equal(t, 1, comparer.CompareAny(&big, &small))
+	assert.Equal(t, -1, comparer.CompareAny(&small, &big))
 
-	assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&big, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&small, nil))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &big))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &small))
+	assert.Equal(t, 0, comparer.CompareAny(nil, nil))
+	assert.Equal(t, 1, comparer.CompareAny(&big, nil))
+	assert.Equal(t, 1, comparer.CompareAny(&small, nil))
+	assert.Equal(t, -1, comparer.CompareAny(nil, &big))
+	assert.Equal(t, -1, comparer.CompareAny(nil, &small))
 }
 
 func Test_comparer_3(t *testing.T) {
 	// This example shows how register and resolve default comparer for type wrappedInt32
 
 	// register for auto resolve, run once at app boots up
-	comparers.RegisterDefaultTypedComparer[wrappedInt32](wrappedInt32Comparer{}, false)
+	comparers.RegisterDefaultComparer[wrappedInt32](wrappedInt32Comparer{})
 
 	// resolve
 	comparer := comparers.GetDefaultComparer[wrappedInt32]()
@@ -115,19 +117,19 @@ func Test_comparer_3(t *testing.T) {
 		value: 3,
 	}
 
-	assert.Equal(t, 0, comparer.Compare(small, small))
-	assert.Equal(t, 0, comparer.Compare(big, big))
-	assert.Equal(t, 1, comparer.Compare(big, small))
-	assert.Equal(t, -1, comparer.Compare(small, big))
+	assert.Equal(t, 0, comparer.CompareTyped(small, small))
+	assert.Equal(t, 0, comparer.CompareTyped(big, big))
+	assert.Equal(t, 1, comparer.CompareTyped(big, small))
+	assert.Equal(t, -1, comparer.CompareTyped(small, big))
 
-	assert.Equal(t, 0, comparer.ComparePointerMode(&small, &small))
-	assert.Equal(t, 0, comparer.ComparePointerMode(&big, &big))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&big, &small))
-	assert.Equal(t, -1, comparer.ComparePointerMode(&small, &big))
+	assert.Equal(t, 0, comparer.CompareAny(&small, &small))
+	assert.Equal(t, 0, comparer.CompareAny(&big, &big))
+	assert.Equal(t, 1, comparer.CompareAny(&big, &small))
+	assert.Equal(t, -1, comparer.CompareAny(&small, &big))
 
-	assert.Equal(t, 0, comparer.ComparePointerMode(nil, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&big, nil))
-	assert.Equal(t, 1, comparer.ComparePointerMode(&small, nil))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &big))
-	assert.Equal(t, -1, comparer.ComparePointerMode(nil, &small))
+	assert.Equal(t, 0, comparer.CompareAny(nil, nil))
+	assert.Equal(t, 1, comparer.CompareAny(&big, nil))
+	assert.Equal(t, 1, comparer.CompareAny(&small, nil))
+	assert.Equal(t, -1, comparer.CompareAny(nil, &big))
+	assert.Equal(t, -1, comparer.CompareAny(nil, &small))
 }

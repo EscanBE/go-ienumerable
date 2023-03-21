@@ -273,8 +273,9 @@ func Test_numericComparer_CompareTyped_CompareAny(t *testing.T) {
 	greaterParamCandiates := []any{int8(3), int16(3), int32(3), int64(3), int(3), uint8(3), uint16(3), uint32(3), uint64(3), uint(3), float32(3.3), float64(3.3), complex(float32(3.3), float32(3.3)), complex(float64(1.1), float64(2)), complex(float64(3.3), float64(3.3))}
 
 	for _, less := range lessParamCandiates {
-		// TODO resolve problem compare float vs complex and complex vs complex
 		for _, greater := range greaterParamCandiates {
+			// TODO resolve problem compare float vs complex and complex vs complex
+
 			t.Run(fmt.Sprintf("Typed (lesser) %T %v vs %T %v (greater)", less, less, greater, greater), func(t *testing.T) {
 				assert.Equalf(t, -1, NumericComparer.CompareTyped(less, greater), "%v must < %v", less, greater)
 				assert.Equalf(t, 1, NumericComparer.CompareTyped(greater, less), "%v must > %v", greater, less)

@@ -2,85 +2,51 @@ package goe
 
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
-func (src *enumerable[T]) Distinct() IEnumerable[T] {
+func (src *enumerable[T]) Distinct(optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T] {
 	src.assertSrcNonNil()
 
-	comparer := src.defaultComparer
-	if comparer == nil {
-		comparer = src.findDefaultComparer()
-	}
+	var equalityFunc OptionalEqualsFunc[T]
 
-	return src.internalDistinctBy(func(v1, v2 T) bool {
-		return comparer.Compare(v1, v2) == 0
-	})
-}
-
-func (src *enumerable[T]) DistinctBy(equalityOrComparer interface{}) IEnumerable[T] {
-	src.assertSrcNonNil()
-
-	var isEquals EqualsFunc[T]
-
-	if equalityOrComparer != nil {
-		if eff, okEff := equalityOrComparer.(func(v1, v2 T) bool); okEff {
-			if eff != nil {
-				isEquals = eff
-			}
-		} else if eft, okEft := equalityOrComparer.(EqualsFunc[T]); okEft {
-			if eft != nil {
-				isEquals = eft
-			}
-		} else if cff, okCff := equalityOrComparer.(func(v1, v2 T) int); okCff {
-			if cff != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cff(v1, v2) == 0
-				}
-			}
-		} else if cft, okCft := equalityOrComparer.(CompareFunc[T]); okCft {
-			if cft != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cft(v1, v2) == 0
-				}
-			}
-		} else if cpr, okCpr := equalityOrComparer.(comparers.IComparer[T]); okCpr {
-			if cpr != nil {
-				isEquals = func(v1, v2 T) bool {
-					return cpr.Compare(v1, v2) == 0
-				}
-			}
-		} else {
-			panic(getErrorComparerMustBeEqualsFuncOrIComparer())
-		}
-	}
-
-	if isEquals == nil {
+	if optionalEqualsFunc == nil {
 		defaultComparer := src.defaultComparer
 		if defaultComparer == nil {
 			defaultComparer = src.findDefaultComparer()
 		}
-		isEquals = func(v1, v2 T) bool {
-			return defaultComparer.Compare(v1, v2) == 0
+		equalityFunc = func(v1, v2 T) bool {
+			return defaultComparer.CompareAny(v1, v2) == 0
+		}
+	} else {
+		equalityFunc = optionalEqualsFunc
+	}
+
+	uniqueData := distinct(src.data, equalityFunc)
+
+	return src.copyExceptData().withData(uniqueData)
+}
+
+func distinct[T any](data []T, optionalEqualityComparer OptionalEqualsFunc[T]) []T {
+	var equalityComparer EqualsFunc[T]
+
+	if optionalEqualityComparer != nil {
+		equalityComparer = EqualsFunc[T](optionalEqualityComparer)
+	} else {
+		comparer, found := comparers.TryGetDefaultComparer[T]()
+		if !found {
+			panic(getErrorFailedCompare2ElementsInArray())
+		}
+		equalityComparer = func(v1, v2 T) bool {
+			return comparer.CompareAny(v1, v2) == 0
 		}
 	}
 
-	return src.internalDistinctBy(isEquals)
-}
-
-func (src *enumerable[T]) internalDistinctBy(equalityComparer func(v1, v2 T) bool) IEnumerable[T] {
-	src.assertSrcNonNil()
-	src.assertComparerNonNil(equalityComparer)
-
-	if len(src.data) < 1 {
-		return src.copyExceptData().withEmptyData()
+	if len(data) < 2 {
+		return data
 	}
 
-	if len(src.data) < 2 {
-		return src.copyExceptData().withData(copySlice(src.data))
-	}
+	uniqueSet := []T{data[0]}
 
-	uniqueSet := []T{src.data[0]}
-
-	for i1 := 1; i1 < len(src.data); i1++ {
-		ele := src.data[i1]
+	for i1 := 1; i1 < len(data); i1++ {
+		ele := data[i1]
 
 		var exists bool
 		for _, uniq := range uniqueSet {
@@ -95,5 +61,5 @@ func (src *enumerable[T]) internalDistinctBy(equalityComparer func(v1, v2 T) boo
 		}
 	}
 
-	return src.copyExceptData().withData(uniqueSet)
+	return uniqueSet
 }

@@ -38,11 +38,15 @@ func (src *enumerable[T]) assertIndex(index int) {
 
 func (col *enumerator[T]) assertCollectionNonNil() {
 	if col == nil {
-		panic("collection is nil")
+		panic(getErrorCollectionIsNil())
 	}
 }
 
-func (_ *enumerable[T]) assertSecondIEnumerableNonNil(second IEnumerable[T]) {
+func getErrorCollectionIsNil() error {
+	return fmt.Errorf("collection is nil")
+}
+
+func assertSecondIEnumerableNonNil[T any](second IEnumerable[T]) {
 	if second == nil {
 		panic("second IEnumerable is nil")
 	}
@@ -109,16 +113,6 @@ func getErrorNilSelector() error {
 	return fmt.Errorf("selector is nil")
 }
 
-func (src *enumerable[T]) assertSampleResultValueNonNil(sampleResultValue any) {
-	if sampleResultValue == nil {
-		panic(getErrorSampleValueIsNil())
-	}
-}
-
-func getErrorSampleValueIsNil() error {
-	return fmt.Errorf("sample result value is nil")
-}
-
 func (src *enumerable[T]) assertAggregateFuncNonNil(f func(T, T) T) {
 	if f == nil {
 		panic(getErrorNilAggregateFunc())
@@ -147,28 +141,26 @@ func getErrorNoMatch() error {
 	return fmt.Errorf("no element satisfies the condition in predicate")
 }
 
-func getErrorComparerMustBeEqualsFuncOrIComparer() error {
-	return fmt.Errorf("comparer must be\n- equals function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
-}
-
-func getErrorComparerMustBeLessThanFuncOrIComparer() error {
-	return fmt.Errorf("comparer must be\n- less-than function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
-}
-
-func getErrorComparerMustBeGreaterThanFuncOrIComparer() error {
-	return fmt.Errorf("comparer must be\n- greater-than function: func(left, right T) bool\n- or compare function: func(left, right T) int\n- or comparer: IComparer[T]")
-}
-
 func getErrorPredicateMustBePredicate() error {
 	return fmt.Errorf("predicate must be\n- single predicate function: func(value T) bool\n- or predicate with index: func(value T, index int) bool")
-}
-
-func getErrorComparerMustBeCompareFuncOrIComparer() error {
-	return fmt.Errorf("comparer must be\n- compare function: func(left, right T) int\n- or comparer: IComparer[T]")
 }
 
 func (o *orderedEnumerable[T]) assertSrcNonNil() {
 	if o == nil {
 		panic(getErrorSourceIsNil())
 	}
+}
+
+func assertKeySelectorNonNil[T any](keySelector KeySelector[T]) {
+	if keySelector == nil {
+		panic(getErrorKeySelectorNotNil())
+	}
+}
+
+func getErrorKeySelectorNotNil() error {
+	return fmt.Errorf("key selector must not be nil")
+}
+
+func getErrorFailedCompare2ElementsInArray() error {
+	return fmt.Errorf("failed to compare two elements in the array, at least one object must have registered default comparer")
 }

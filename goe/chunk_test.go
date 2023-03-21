@@ -78,12 +78,12 @@ func Test_enumerable_Chunk(t *testing.T) {
 
 			assert.Equal(t, "[]int", e[[]int](got).dataType)
 
-			if got.Count() != tt.want.Count() {
-				t.Errorf("length expected %d got %d", tt.want.Count(), got.Count())
+			if got.Count(nil) != tt.want.Count(nil) {
+				t.Errorf("length expected %d got %d", tt.want.Count(nil), got.Count(nil))
 				return
 			}
 
-			if tt.want.Count() > 0 {
+			if tt.want.Count(nil) > 0 {
 				gotData := got.ToArray()
 				for i0, aw := range tt.want.ToArray() {
 					ag := gotData[i0]
@@ -221,12 +221,12 @@ func Test_enumerable_ChunkToAny(t *testing.T) {
 
 			assert.Equal(t, "[]interface {}", e[[]any](got).dataType)
 
-			if got.Count() != tt.want.Count() {
-				t.Errorf("length expected %d got %d", tt.want.Count(), got.Count())
+			if got.Count(nil) != tt.want.Count(nil) {
+				t.Errorf("length expected %d got %d", tt.want.Count(nil), got.Count(nil))
 				return
 			}
 
-			if tt.want.Count() > 0 {
+			if tt.want.Count(nil) > 0 {
 				gotData := got.ToArray()
 				for i0, aw := range tt.want.ToArray() {
 					ag := gotData[i0]

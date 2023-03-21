@@ -1,7 +1,6 @@
 package goe
 
 import (
-	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -15,7 +14,7 @@ func Test_enumerable_Single(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.Single())
+		assert.Equal(t, 9, eSrc.Single(nil))
 	})
 
 	t.Run("empty", func(t *testing.T) {
@@ -26,16 +25,9 @@ func Test_enumerable_Single(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorSrcContainsNoElement().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
-		_ = eSrc.Single()
+		_ = eSrc.Single(nil)
 	})
 
 	t.Run("more than one", func(t *testing.T) {
@@ -46,20 +38,11 @@ func Test_enumerable_Single(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorMoreThanOne().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorMoreThanOne().Error(), true)
 
-		_ = eSrc.Single()
+		_ = eSrc.Single(nil)
 	})
-}
 
-func Test_enumerable_SingleBy(t *testing.T) {
 	t.Run("match", func(t *testing.T) {
 		eSrc := NewIEnumerable[int](6, 9)
 		bSrc := backupForAssetUnchanged(eSrc)
@@ -68,9 +51,11 @@ func Test_enumerable_SingleBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		assert.Equal(t, 9, eSrc.SingleBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 8
-		}))
+		}
+
+		assert.Equal(t, 9, eSrc.Single(predicate))
 	})
 
 	t.Run("empty", func(t *testing.T) {
@@ -81,18 +66,12 @@ func Test_enumerable_SingleBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorSrcContainsNoElement().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorSrcContainsNoElement().Error(), true)
 
-		_ = eSrc.SingleBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 8
-		})
+		}
+		_ = eSrc.Single(predicate)
 	})
 
 	t.Run("more than one match", func(t *testing.T) {
@@ -103,18 +82,12 @@ func Test_enumerable_SingleBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorMoreThanOne().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorMoreThanOne().Error(), true)
 
-		_ = eSrc.SingleBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v >= 5
-		})
+		}
+		_ = eSrc.Single(predicate)
 	})
 
 	t.Run("no match", func(t *testing.T) {
@@ -125,37 +98,11 @@ func Test_enumerable_SingleBy(t *testing.T) {
 			bSrc.assertUnchanged(t, eSrc)
 		}()
 
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorNoMatch().Error())
-		}()
+		defer deferExpectPanicContains(t, getErrorNoMatch().Error(), true)
 
-		_ = eSrc.SingleBy(func(v int) bool {
+		var predicate OptionalPredicate[int] = func(v int) bool {
 			return v < 5
-		})
-	})
-
-	t.Run("nil predicate", func(t *testing.T) {
-		eSrc := NewIEnumerable[int](6, 9)
-		bSrc := backupForAssetUnchanged(eSrc)
-
-		defer func() {
-			bSrc.assertUnchanged(t, eSrc)
-		}()
-
-		defer func() {
-			err := recover()
-			if err == nil {
-				t.Errorf("expect error")
-				return
-			}
-			assert.Contains(t, fmt.Sprintf("%v", err), getErrorNilPredicate().Error())
-		}()
-
-		_ = eSrc.SingleBy(nil)
+		}
+		_ = eSrc.Single(predicate)
 	})
 }

@@ -10,65 +10,50 @@ import (
 
 func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 	fEquals := func(v1, v2 int) bool {
-		return v1 == v2
-	}
-	fCompare := func(v1, v2 int) int {
-		return comparers.IntComparer.Compare(v1, v2)
+		return comparers.NumericComparer.CompareAny(v1, v2) == 0
 	}
 	var tests = []struct {
-		name     string
-		source   IEnumerable[int]
-		fEquals  func(t1, t2 int) bool
-		fCompare func(t1, t2 int) int
-		comparer comparers.IComparer[int]
-		want     IEnumerable[int]
+		name    string
+		source  IEnumerable[int]
+		fEquals OptionalEqualsFunc[int]
+		want    IEnumerable[int]
 	}{
 		{
-			name:     "empty source",
-			source:   createEmptyIntEnumerable(),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			want:     createEmptyIntEnumerable(),
+			name:    "empty source",
+			source:  createEmptyIntEnumerable(),
+			fEquals: fEquals,
+			want:    createEmptyIntEnumerable(),
 		},
 		{
-			name:     "distinct",
-			source:   NewIEnumerable[int](2),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			want:     NewIEnumerable[int](2),
+			name:    "distinct",
+			source:  NewIEnumerable[int](2),
+			fEquals: fEquals,
+			want:    NewIEnumerable[int](2),
 		},
 		{
-			name:     "distinct",
-			source:   NewIEnumerable[int](2, 2),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			want:     NewIEnumerable[int](2),
+			name:    "distinct",
+			source:  NewIEnumerable[int](2, 2),
+			fEquals: fEquals,
+			want:    NewIEnumerable[int](2),
 		},
 		{
-			name:     "no equality comparer still ok since int has default comparer",
-			source:   NewIEnumerable[int](2),
-			fEquals:  nil,
-			fCompare: nil,
-			comparer: nil,
-			want:     NewIEnumerable[int](2),
+			name:    "no equality comparer still ok since int has default comparer",
+			source:  NewIEnumerable[int](2),
+			fEquals: nil,
+			want:    NewIEnumerable[int](2),
 		},
 		{
-			name:     "keep the same order",
-			source:   NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			want:     NewIEnumerable[int](1, 2, 3, 6, 5, 4),
+			name:    "keep the same order",
+			source:  NewIEnumerable[int](1, 2, 2, 3, 3, 6, 6, 6, 5, 4, 4),
+			fEquals: fEquals,
+			want:    NewIEnumerable[int](1, 2, 3, 6, 5, 4),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("Distinct-%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			got := tt.source.Distinct()
+			got := tt.source.Distinct(tt.fEquals)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
@@ -77,34 +62,14 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 		t.Run(fmt.Sprintf("DistinctBy-%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			// EqualsFunc
-			got := tt.source.DistinctBy(tt.fEquals)
+			var equalsFuncAny OptionalEqualsFunc[any]
+			if tt.fEquals != nil {
+				equalsFuncAny = func(v1, v2 any) bool {
+					return tt.fEquals(v1.(int), v2.(int))
+				}
+			}
 
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-
-			bSrc.assertUnchanged(t, tt.source)
-
-			got = tt.source.DistinctBy(EqualsFunc[int](tt.fEquals))
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-
-			bSrc.assertUnchanged(t, tt.source)
-
-			// CompareFunc
-			got = tt.source.DistinctBy(tt.fCompare)
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-
-			bSrc.assertUnchanged(t, tt.source)
-
-			got = tt.source.DistinctBy(CompareFunc[int](tt.fCompare))
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
-
-			bSrc.assertUnchanged(t, tt.source)
-
-			// IComparer
-			got = tt.source.DistinctBy(tt.comparer)
+			got := tt.source.DistinctBy(test_getSelfSelector[int](), equalsFuncAny)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray()))
 
@@ -119,28 +84,14 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 
 		bSrc := backupForAssetUnchanged(ieSrc)
 
-		got := ieSrc.Distinct()
+		got := ieSrc.Distinct(nil)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
-		got = ieSrc.DistinctBy(nil)
+		var cff func(v1, v2 int) bool
+		got = ieSrc.Distinct(OptionalEqualsFunc[int](cff))
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-
-		var eff func(v1, v2 int) bool
-		got = ieSrc.DistinctBy(eff)
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-		var eft EqualsFunc[int]
-		got = ieSrc.DistinctBy(eft)
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-
-		var cff func(v1, v2 int) int
-		got = ieSrc.DistinctBy(cff)
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-		var cft CompareFunc[int]
-		got = ieSrc.DistinctBy(cft)
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-
-		var comparer comparers.IComparer[int]
-		got = ieSrc.DistinctBy(comparer)
+		var cft OptionalEqualsFunc[int]
+		got = ieSrc.Distinct(cft)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		assert.Nil(t, e[int](ieSrc).defaultComparer)
@@ -154,42 +105,204 @@ func Test_enumerable_Distinct_DistinctBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
-		ieSrc.Distinct()
+		ieSrc.Distinct(nil)
+	})
+}
+
+func Test_enumerable_DistinctBy(t *testing.T) {
+	t.Run("optional equality comparer", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](2, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
+
+		got := eSrc.DistinctBy(test_getSelfSelector[int](), nil).ToArray()
+		assert.Len(t, got, 1)
+
+		bSrc.assertUnchanged(t, eSrc)
 	})
 
-	t.Run("panic if no default resolver (DistinctBy)", func(t *testing.T) {
-		type MyInt64 struct{}
-		ieSrc := NewIEnumerable[MyInt64]()
-
-		defer deferExpectPanicContains(t, "no default comparer registered", true)
-
-		ieSrc.DistinctBy(nil)
+	t.Run("optional equality comparer", func(t *testing.T) {
+		type MyType struct {
+			Value int
+		}
+		eSrc := NewIEnumerable[MyType](MyType{Value: 1}, MyType{Value: 1})
+		bSrc := backupForAssetUnchanged(eSrc)
+		got := eSrc.DistinctBy(func(v MyType) any {
+			return v.Value
+		}, nil).ToArray()
+		assert.Len(t, got, 1)
+		bSrc.assertUnchanged(t, eSrc)
 	})
 
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int]()
-
-		defer deferExpectPanicContains(t, "comparer must be", true)
-
-		var badFunc func(v int) bool
-		ieSrc.DistinctBy(badFunc)
+	t.Run("custom equality comparer", func(t *testing.T) {
+		type MyType struct {
+			Value int
+		}
+		eSrc := NewIEnumerable[MyType](MyType{Value: 1}, MyType{Value: 1})
+		bSrc := backupForAssetUnchanged(eSrc)
+		got := eSrc.DistinctBy(test_getSelfSelector[MyType](), func(v1, v2 any) bool {
+			return v1.(MyType).Value == v2.(MyType).Value
+		}).ToArray()
+		assert.Len(t, got, 1)
+		bSrc.assertUnchanged(t, eSrc)
 	})
 
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1)
+	t.Run("panic if not able to resolve comparer when absent", func(t *testing.T) {
+		type MyType struct{}
+		eSrc := NewIEnumerable[MyType]()
+		bSrc := backupForAssetUnchanged(eSrc)
 
-		defer deferExpectPanicContains(t, "comparer must be", true)
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
 
-		var badFunc LessFunc[int]
-		ieSrc.DistinctBy(badFunc)
+		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
+		eSrc.DistinctBy(test_getSelfSelector[MyType](), nil)
 	})
 
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1)
+	t.Run("panic if missing key selector", func(t *testing.T) {
+		eSrc := NewIEnumerable[int](2, 2)
+		bSrc := backupForAssetUnchanged(eSrc)
 
-		defer deferExpectPanicContains(t, "comparer must be", true)
+		defer func() {
+			bSrc.assertUnchanged(t, eSrc)
+		}()
+		defer deferExpectPanicContains(t, getErrorKeySelectorNotNil().Error(), true)
+		_ = eSrc.DistinctBy(nil, nil)
+	})
 
-		var badFunc GreaterFunc[int]
-		ieSrc.DistinctBy(badFunc)
+	feq := OptionalEqualsFunc[any](func(v1, v2 any) bool {
+		return v1 == v2
+	})
+
+	t.Run("distinct empty", func(t *testing.T) {
+		r := NewIEnumerable[int]().DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		assert.Len(t, r, 0)
+	})
+
+	t.Run("distinct one", func(t *testing.T) {
+		r := NewIEnumerable[int](9).DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		assert.Len(t, r, 1)
+	})
+
+	t.Run("distinct two", func(t *testing.T) {
+		r := NewIEnumerable[int](99, 99).DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		assert.Len(t, r, 1)
+		assert.Equal(t, 99, r[0])
+	})
+
+	t.Run("distinct many", func(t *testing.T) {
+		r := NewIEnumerable[int](99, 99, 66, 66).DistinctBy(test_getSelfSelector[int](), feq).ToArray()
+		assert.Len(t, r, 2)
+		assert.Equal(t, 99, r[0])
+		assert.Equal(t, 66, r[1])
+	})
+}
+
+func Test_distinct(t *testing.T) {
+	t.Run("optional equality comparer", func(t *testing.T) {
+		got := distinct[int]([]int{2, 2}, nil)
+		assert.Len(t, got, 1)
+	})
+
+	t.Run("panic if not able to resolve comparer when absent", func(t *testing.T) {
+		type MyType struct{}
+		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
+		distinct[MyType]([]MyType{}, nil)
+	})
+
+	feq := OptionalEqualsFunc[int](func(v1, v2 int) bool {
+		return v1 == v2
+	})
+
+	t.Run("distinct empty", func(t *testing.T) {
+		r := distinct[int]([]int{}, feq)
+		assert.Len(t, r, 0)
+	})
+
+	t.Run("distinct one", func(t *testing.T) {
+		r := distinct[int]([]int{9}, feq)
+		assert.Len(t, r, 1)
+	})
+
+	t.Run("distinct two", func(t *testing.T) {
+		r := distinct[int]([]int{99, 99}, feq)
+		assert.Len(t, r, 1)
+		assert.Equal(t, 99, r[0])
+	})
+
+	t.Run("distinct many", func(t *testing.T) {
+		r := distinct[int]([]int{99, 99, 66, 66}, feq)
+		assert.Len(t, r, 2)
+		assert.Equal(t, 99, r[0])
+		assert.Equal(t, 66, r[1])
+	})
+}
+
+func Test_distinctByKeySelector(t *testing.T) {
+	t.Run("optional equality comparer", func(t *testing.T) {
+		got := distinctByKeySelector[int]([]int{2, 2}, test_getSelfSelector[int](), nil)
+		assert.Len(t, got, 1)
+	})
+
+	t.Run("optional equality comparer", func(t *testing.T) {
+		type MyType struct {
+			Value int
+		}
+		got := distinctByKeySelector[MyType]([]MyType{
+			{Value: 1}, {Value: 1},
+		}, func(v MyType) any {
+			return v.Value
+		}, nil)
+		assert.Len(t, got, 1)
+	})
+
+	t.Run("custom equality comparer", func(t *testing.T) {
+		type MyType struct {
+			Value int
+		}
+		got := distinctByKeySelector[MyType]([]MyType{
+			{Value: 1}, {Value: 1},
+		}, test_getSelfSelector[MyType](), func(v1, v2 any) bool {
+			return v1.(MyType).Value == v2.(MyType).Value
+		})
+		assert.Len(t, got, 1)
+	})
+
+	t.Run("panic if not able to resolve comparer when absent", func(t *testing.T) {
+		type MyType struct{}
+		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
+		distinctByKeySelector[MyType]([]MyType{}, test_getSelfSelector[MyType](), nil)
+	})
+
+	t.Run("panic if missing key selector", func(t *testing.T) {
+		defer deferExpectPanicContains(t, getErrorKeySelectorNotNil().Error(), true)
+		_ = distinctByKeySelector[int]([]int{2, 2}, nil, nil)
+	})
+
+	feq := OptionalEqualsFunc[any](func(v1, v2 any) bool {
+		return v1 == v2
+	})
+
+	t.Run("distinct empty", func(t *testing.T) {
+		r := distinctByKeySelector[int]([]int{}, test_getSelfSelector[int](), feq)
+		assert.Len(t, r, 0)
+	})
+
+	t.Run("distinct one", func(t *testing.T) {
+		r := distinctByKeySelector[int]([]int{9}, test_getSelfSelector[int](), feq)
+		assert.Len(t, r, 1)
+	})
+
+	t.Run("distinct two", func(t *testing.T) {
+		r := distinctByKeySelector[int]([]int{99, 99}, test_getSelfSelector[int](), feq)
+		assert.Len(t, r, 1)
+		assert.Equal(t, 99, r[0])
+	})
+
+	t.Run("distinct many", func(t *testing.T) {
+		r := distinctByKeySelector[int]([]int{66, 66, 99, 99}, test_getSelfSelector[int](), feq)
+		assert.Len(t, r, 2)
+		assert.Equal(t, 66, r[0])
+		assert.Equal(t, 99, r[1])
 	})
 }

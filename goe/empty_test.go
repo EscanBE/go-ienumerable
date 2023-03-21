@@ -11,7 +11,7 @@ func Test_enumerable_Empty(t *testing.T) {
 
 	gotS := srcS.Empty()
 	eGot := e[string](gotS)
-	assert.Zero(t, gotS.Count())
+	assert.Zero(t, gotS.Count(nil))
 	assert.Equal(t, "string", eGot.dataType)
 
 	bSrc.assertUnchanged(t, srcS)
@@ -19,11 +19,11 @@ func Test_enumerable_Empty(t *testing.T) {
 
 	gotI := NewIEnumerable[int](99, 999).Empty()
 	eGotI := e[int](gotI)
-	assert.Zero(t, gotI.Count())
+	assert.Zero(t, gotI.Count(nil))
 	assert.Equal(t, "int", eGotI.dataType)
 
 	gotA := NewIEnumerable[any](99, 999, "string", 0.0).Empty()
 	eGotA := e[any](gotA)
-	assert.Zero(t, gotA.Count())
+	assert.Zero(t, gotA.Count(nil))
 	assert.Equal(t, "", eGotA.dataType)
 }

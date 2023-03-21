@@ -9,123 +9,103 @@ import (
 
 func Test_enumerable_Except_ExceptBy(t *testing.T) {
 	fEquals := func(i1, i2 int) bool {
-		return i1 == i2
-	}
-	fCompare := func(i1, i2 int) int {
-		return comparers.IntComparer.Compare(i1, i2)
+		return comparers.NumericComparer.CompareTyped(i1, i2) == 0
 	}
 
 	tests := []struct {
-		name     string
-		source   IEnumerable[int]
-		second   IEnumerable[int]
-		want     IEnumerable[int]
-		fEquals  func(int, int) bool
-		fCompare func(int, int) int
-		comparer comparers.IComparer[int]
-		panic    bool
+		name    string
+		source  IEnumerable[int]
+		second  IEnumerable[int]
+		want    IEnumerable[int]
+		fEquals OptionalEqualsFunc[int]
+		panic   bool
 	}{
 		{
-			name:     "except not any",
-			source:   NewIEnumerable[int](1, 2, 3),
-			second:   NewIEnumerable[int](4, 5, 6, 7),
-			want:     NewIEnumerable[int](1, 2, 3),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			name:    "except not any",
+			source:  NewIEnumerable[int](1, 2, 3),
+			second:  NewIEnumerable[int](4, 5, 6, 7),
+			want:    NewIEnumerable[int](1, 2, 3),
+			fEquals: fEquals,
 		},
 		{
-			name:     "returns distinct",
-			source:   NewIEnumerable[int](1, 2, 2, 2, 3),
-			second:   NewIEnumerable[int](1, 3),
-			want:     NewIEnumerable[int](2),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			name:    "returns distinct",
+			source:  NewIEnumerable[int](1, 2, 2, 2, 3),
+			second:  NewIEnumerable[int](1, 3),
+			want:    NewIEnumerable[int](2),
+			fEquals: fEquals,
 		},
 		{
-			name:     "except all",
-			source:   NewIEnumerable[int](1, 2, 3, 1, 2, 3),
-			second:   NewIEnumerable[int](3, 1, 2),
-			want:     NewIEnumerable[int](),
-			fEquals:  nil,
-			fCompare: nil,
-			comparer: nil,
+			name:    "returns distinct",
+			source:  NewIEnumerable[int](1, 2, 2, 2, 3),
+			second:  NewIEnumerable[int](),
+			want:    NewIEnumerable[int](1, 2, 3),
+			fEquals: fEquals,
 		},
 		{
-			name:     "auto-resolve comparer",
-			source:   NewIEnumerable[int](1, 2, 3, 4),
-			second:   NewIEnumerable[int](4, 5, 6, 7),
-			want:     NewIEnumerable[int](1, 2, 3),
-			fEquals:  nil,
-			fCompare: nil,
-			comparer: nil,
+			name:    "except all",
+			source:  NewIEnumerable[int](1, 2, 3, 1, 2, 3),
+			second:  NewIEnumerable[int](3, 1, 2),
+			want:    NewIEnumerable[int](),
+			fEquals: nil,
 		},
 		{
-			name:     "except one",
-			source:   NewIEnumerable[int](1, 2, 3, 4),
-			second:   NewIEnumerable[int](4, 5, 6, 7),
-			want:     NewIEnumerable[int](1, 2, 3),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			name:    "auto-resolve comparer",
+			source:  NewIEnumerable[int](1, 2, 3, 4),
+			second:  NewIEnumerable[int](4, 5, 6, 7),
+			want:    NewIEnumerable[int](1, 2, 3),
+			fEquals: nil,
 		},
 		{
-			name:     "except some",
-			source:   NewIEnumerable[int](1, 2, 3, 5, 6),
-			second:   NewIEnumerable[int](4, 5, 6, 7),
-			want:     NewIEnumerable[int](1, 2, 3),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			name:    "except one",
+			source:  NewIEnumerable[int](1, 2, 3, 4),
+			second:  NewIEnumerable[int](4, 5, 6, 7),
+			want:    NewIEnumerable[int](1, 2, 3),
+			fEquals: fEquals,
 		},
 		{
-			name:     "except when source empty",
-			source:   NewIEnumerable[int](),
-			second:   NewIEnumerable[int](4, 5, 6, 7),
-			want:     NewIEnumerable[int](),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			name:    "except some",
+			source:  NewIEnumerable[int](1, 2, 3, 5, 6),
+			second:  NewIEnumerable[int](4, 5, 6, 7),
+			want:    NewIEnumerable[int](1, 2, 3),
+			fEquals: fEquals,
 		},
 		{
-			name:     "except when second empty",
-			source:   NewIEnumerable[int](1, 2, 3),
-			second:   NewIEnumerable[int](),
-			want:     NewIEnumerable[int](1, 2, 3),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
+			name:    "except when source empty",
+			source:  NewIEnumerable[int](),
+			second:  NewIEnumerable[int](4, 5, 6, 7),
+			want:    NewIEnumerable[int](),
+			fEquals: fEquals,
 		},
 		{
-			name:     "panic with nil src",
-			source:   nil,
-			second:   NewIEnumerable[int](4, 5, 6, 7),
-			want:     NewIEnumerable[int](),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			panic:    true,
+			name:    "except when second empty",
+			source:  NewIEnumerable[int](1, 2, 3),
+			second:  NewIEnumerable[int](),
+			want:    NewIEnumerable[int](1, 2, 3),
+			fEquals: fEquals,
 		},
 		{
-			name:     "panic with nil second",
-			source:   NewIEnumerable[int](1, 2, 3),
-			second:   nil,
-			want:     NewIEnumerable[int](),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			panic:    true,
+			name:    "panic with nil src",
+			source:  nil,
+			second:  NewIEnumerable[int](4, 5, 6, 7),
+			want:    NewIEnumerable[int](),
+			fEquals: fEquals,
+			panic:   true,
 		},
 		{
-			name:     "panic with both nil",
-			source:   nil,
-			second:   nil,
-			want:     NewIEnumerable[int](),
-			fEquals:  fEquals,
-			fCompare: fCompare,
-			comparer: comparers.IntComparer,
-			panic:    true,
+			name:    "panic with nil second",
+			source:  NewIEnumerable[int](1, 2, 3),
+			second:  nil,
+			want:    NewIEnumerable[int](),
+			fEquals: fEquals,
+			panic:   true,
+		},
+		{
+			name:    "panic with both nil",
+			source:  nil,
+			second:  nil,
+			want:    NewIEnumerable[int](),
+			fEquals: fEquals,
+			panic:   true,
 		},
 	}
 	for _, tt := range tests {
@@ -138,8 +118,16 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			}
 			defer deferWantPanicDepends(t, tt.panic)
 
-			// Except
-			result := tt.source.Except(tt.second)
+			// nil
+			result := tt.source.Except(tt.second, nil)
+
+			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
+
+			bSource.assertUnchanged(t, tt.source)
+			bSecond.assertUnchanged(t, tt.second)
+
+			// EqualsFunc
+			result = tt.source.Except(tt.second, tt.fEquals)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -148,6 +136,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		})
 
 		t.Run(tt.name+"_ExceptBy", func(t *testing.T) {
+			anySecond := asIEnumerableAny(tt.second)
 			bSource := backupForAssetUnchanged(tt.source)
 			bSecond := backupForAssetUnchanged(tt.second)
 
@@ -157,7 +146,7 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			defer deferWantPanicDepends(t, tt.panic)
 
 			// nil
-			result := tt.source.ExceptBy(tt.second, nil)
+			result := tt.source.ExceptBy(anySecond, test_getSelfSelector[int](), nil)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -165,37 +154,15 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 			bSecond.assertUnchanged(t, tt.second)
 
 			// EqualsFunc
-			result = tt.source.ExceptBy(tt.second, tt.fEquals)
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
-
-			bSource.assertUnchanged(t, tt.source)
-			bSecond.assertUnchanged(t, tt.second)
-
-			result = tt.source.ExceptBy(tt.second, EqualsFunc[int](tt.fEquals))
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
-
-			bSource.assertUnchanged(t, tt.source)
-			bSecond.assertUnchanged(t, tt.second)
-
-			// CompareFunc
-			result = tt.source.ExceptBy(tt.second, tt.fCompare)
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
-
-			bSource.assertUnchanged(t, tt.source)
-			bSecond.assertUnchanged(t, tt.second)
-
-			result = tt.source.ExceptBy(tt.second, CompareFunc[int](tt.fCompare))
-
-			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
-
-			bSource.assertUnchanged(t, tt.source)
-			bSecond.assertUnchanged(t, tt.second)
-
-			// IComparer
-			result = tt.source.ExceptBy(tt.second, tt.comparer)
+			var optionalEqualsFunc OptionalEqualsFunc[any]
+			if tt.fEquals != nil {
+				optionalEqualsFunc = func(v1, v2 any) bool {
+					return tt.fEquals(v1.(int), v2.(int))
+				}
+			} else {
+				optionalEqualsFunc = nil
+			}
+			result = tt.source.ExceptBy(anySecond, test_getSelfSelector[int](), optionalEqualsFunc)
 
 			assert.True(t, reflect.DeepEqual(tt.want.ToArray(), result.ToArray()))
 
@@ -208,34 +175,42 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 		ieSrc := NewIEnumerable[int](5, 2, 2, 6).
 			WithDefaultComparer(nil)
 		ieSecond := NewIEnumerable[int](5, 6, 7, 8)
+		anySecond := asIEnumerableAny(ieSecond)
 		ieWant := NewIEnumerable[int](2)
 
 		bSrc := backupForAssetUnchanged(ieSrc)
 
-		got := ieSrc.ExceptBy(ieSecond, nil)
+		got := ieSrc.Except(ieSecond, nil)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
-		var eff func(v1, v2 int) bool
-		got = ieSrc.ExceptBy(ieSecond, eff)
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-		var eft EqualsFunc[int]
-		got = ieSrc.ExceptBy(ieSecond, eft)
+		got = ieSrc.ExceptBy(anySecond, test_getSelfSelector[int](), nil)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
-		var cff func(v1, v2 int) int
-		got = ieSrc.ExceptBy(ieSecond, cff)
-		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
-		var cft CompareFunc[int]
-		got = ieSrc.ExceptBy(ieSecond, cft)
+		var cft1 OptionalEqualsFunc[int]
+		got = ieSrc.Except(ieSecond, cft1)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
-		var comparer comparers.IComparer[int]
-		got = ieSrc.ExceptBy(ieSecond, comparer)
+		var cft2 OptionalEqualsFunc[any]
+		got = ieSrc.ExceptBy(anySecond, test_getSelfSelector[int](), cft2)
 		assert.True(t, reflect.DeepEqual(ieWant.ToArray(), got.ToArray()))
 
 		bSrc.assertUnchanged(t, ieSrc)
 
 		assert.Nil(t, e[int](ieSrc).defaultComparer)
+	})
+
+	t.Run("returns distinct with key selector", func(t *testing.T) {
+		type MyInt64 struct {
+			Value int
+		}
+		ieSrc := NewIEnumerable[MyInt64](MyInt64{Value: 1}, MyInt64{Value: 2}, MyInt64{Value: 2}, MyInt64{Value: 3}, MyInt64{Value: 4})
+		ieSecond := asIEnumerableAny(NewIEnumerable[int](1, 3))
+		got := ieSrc.ExceptBy(ieSecond, func(v MyInt64) any {
+			return v.Value
+		}, nil).ToArray()
+		assert.Equal(t, 2, len(got))
+		assert.Equal(t, 2, got[0].Value)
+		assert.Equal(t, 4, got[1].Value)
 	})
 
 	t.Run("panic if no default resolver (Except)", func(t *testing.T) {
@@ -244,42 +219,15 @@ func Test_enumerable_Except_ExceptBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
-		ieSrc.Except(ieSrc)
+		ieSrc.Except(ieSrc, nil)
 	})
 
 	t.Run("panic if no default resolver (ExceptBy)", func(t *testing.T) {
 		type MyInt64 struct{}
 		ieSrc := NewIEnumerable[MyInt64]()
 
-		defer deferExpectPanicContains(t, "no default comparer registered", true)
+		defer deferExpectPanicContains(t, getErrorFailedCompare2ElementsInArray().Error(), true)
 
-		ieSrc.ExceptBy(ieSrc, nil)
-	})
-
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int]()
-
-		defer deferExpectPanicContains(t, "comparer must be", true)
-
-		var badFunc func(v int) bool
-		ieSrc.ExceptBy(ieSrc, badFunc)
-	})
-
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1)
-
-		defer deferExpectPanicContains(t, "comparer must be", true)
-
-		var badFunc LessFunc[int]
-		ieSrc.ExceptBy(ieSrc, badFunc)
-	})
-
-	t.Run("panic if not supported comparer", func(t *testing.T) {
-		ieSrc := NewIEnumerable[int](1)
-
-		defer deferExpectPanicContains(t, "comparer must be", true)
-
-		var badFunc GreaterFunc[int]
-		ieSrc.ExceptBy(ieSrc, badFunc)
+		ieSrc.ExceptBy(asIEnumerableAny(ieSrc), test_getSelfSelector[MyInt64](), nil)
 	})
 }

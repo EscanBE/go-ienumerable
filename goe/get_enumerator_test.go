@@ -10,7 +10,8 @@ func Test_enumerable_GetEnumerator(t *testing.T) {
 	})
 
 	t.Run("panic when nil enumerator", func(t *testing.T) {
-		defer deferWantPanicDepends(t, true)
+		defer deferExpectPanicContains(t, getErrorCollectionIsNil().Error(), true)
+
 		x := new(enumerator[int])
 		x = nil
 		x.MoveNext()

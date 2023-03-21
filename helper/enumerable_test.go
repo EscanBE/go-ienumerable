@@ -11,7 +11,7 @@ func TestEnumerableHelper_Empty(t *testing.T) {
 	e := Enumerable.Empty()
 	assert.Empty(t, e.ToArray())
 
-	defaultValue := e.FirstOrDefault()
+	defaultValue := e.FirstOrDefault(nil, nil)
 	assert.Zero(t, defaultValue)
 	assert.Equal(t, "int", fmt.Sprintf("%T", defaultValue))
 }

@@ -6,63 +6,34 @@ import (
 )
 
 func Test_enumerable_LastOrDefault(t *testing.T) {
+	var defaultValue = 99
+
 	tests := []struct {
-		name       string
-		src        IEnumerable[int]
-		wantResult int
-		wantErr    bool
+		name         string
+		src          IEnumerable[int]
+		predicate    OptionalPredicate[int]
+		defaultValue *int
+		wantResult   int
 	}{
 		{
 			name:       "last",
 			src:        createIntEnumerable(5, 7),
+			predicate:  nil,
 			wantResult: 7,
-			wantErr:    false,
 		},
 		{
-			name:       "not any",
-			src:        createEmptyIntEnumerable(),
-			wantResult: 0,
-			wantErr:    false,
+			name:         "not any without predicate",
+			src:          createEmptyIntEnumerable(),
+			predicate:    nil,
+			defaultValue: nil,
+			wantResult:   0,
 		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			backSrc := backupForAssetUnchanged(tt.src)
-
-			defer func() {
-				backSrc.assertUnchanged(t, tt.src)
-			}()
-
-			gotResult := tt.src.LastOrDefault()
-			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-
-			backSrc.assertUnchanged(t, tt.src)
-		})
-	}
-
-	t.Run("default string", func(t *testing.T) {
-		eSrc := NewIEnumerable[string]()
-		bSrc := backupForAssetUnchanged(eSrc)
-
-		assert.Equal(t, "", eSrc.LastOrDefault())
-
-		bSrc.assertUnchanged(t, eSrc)
-	})
-}
-
-func Test_enumerable_LastOrDefaultBy(t *testing.T) {
-	tests := []struct {
-		name       string
-		src        IEnumerable[int]
-		predicate  func(int) bool
-		wantResult int
-		wantPanic  bool
-	}{
 		{
-			name:      "nil predicate",
-			src:       createRandomIntEnumerable(3),
-			predicate: nil,
-			wantPanic: true,
+			name:         "not any without predicate",
+			src:          createEmptyIntEnumerable(),
+			predicate:    nil,
+			defaultValue: Ptr(defaultValue),
+			wantResult:   defaultValue,
 		},
 		{
 			name: "last",
@@ -71,7 +42,6 @@ func Test_enumerable_LastOrDefaultBy(t *testing.T) {
 				return i >= 6
 			},
 			wantResult: 7,
-			wantPanic:  false,
 		},
 		{
 			name: "not any match",
@@ -79,8 +49,8 @@ func Test_enumerable_LastOrDefaultBy(t *testing.T) {
 			predicate: func(i int) bool {
 				return i >= 8
 			},
-			wantResult: 0,
-			wantPanic:  false,
+			defaultValue: nil,
+			wantResult:   0,
 		},
 		{
 			name: "sequence contains no element",
@@ -89,7 +59,15 @@ func Test_enumerable_LastOrDefaultBy(t *testing.T) {
 				return i >= 8
 			},
 			wantResult: 0,
-			wantPanic:  false,
+		},
+		{
+			name: "sequence contains no element",
+			src:  createEmptyIntEnumerable(),
+			predicate: func(i int) bool {
+				return i >= 8
+			},
+			defaultValue: Ptr(defaultValue),
+			wantResult:   defaultValue,
 		},
 	}
 	for _, tt := range tests {
@@ -100,9 +78,7 @@ func Test_enumerable_LastOrDefaultBy(t *testing.T) {
 				backSrc.assertUnchanged(t, tt.src)
 			}()
 
-			defer deferWantPanicDepends(t, tt.wantPanic)
-
-			gotResult := tt.src.LastOrDefaultBy(tt.predicate)
+			gotResult := tt.src.LastOrDefault(tt.predicate, tt.defaultValue)
 			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
 		})
 	}
@@ -111,111 +87,15 @@ func Test_enumerable_LastOrDefaultBy(t *testing.T) {
 		eSrc := NewIEnumerable[string]("hello", "world")
 		bSrc := backupForAssetUnchanged(eSrc)
 
-		assert.Equal(t, "", eSrc.LastOrDefaultBy(func(s string) bool {
+		assert.Equal(t, "world", eSrc.LastOrDefault(nil, nil))
+
+		var predicate OptionalPredicate[string] = func(s string) bool {
 			return len(s) < 3
-		}))
+		}
+		assert.Equal(t, "", eSrc.LastOrDefault(predicate, nil))
+
+		assert.Equal(t, "default", eSrc.LastOrDefault(predicate, Ptr("default")))
 
 		bSrc.assertUnchanged(t, eSrc)
 	})
-}
-
-func Test_enumerable_LastOrDefaultUsing(t *testing.T) {
-	tests := []struct {
-		name         string
-		src          IEnumerable[int]
-		defaultValue int
-		wantResult   int
-		wantErr      bool
-	}{
-		{
-			name:         "last",
-			src:          createIntEnumerable(5, 7),
-			defaultValue: 99,
-			wantResult:   7,
-			wantErr:      false,
-		},
-		{
-			name:         "not any",
-			src:          createEmptyIntEnumerable(),
-			defaultValue: 99,
-			wantResult:   99,
-			wantErr:      false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			backSrc := backupForAssetUnchanged(tt.src)
-
-			defer func() {
-				backSrc.assertUnchanged(t, tt.src)
-			}()
-
-			gotResult := tt.src.LastOrDefaultUsing(tt.defaultValue)
-			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-
-			backSrc.assertUnchanged(t, tt.src)
-		})
-	}
-}
-
-func Test_enumerable_LastOrDefaultByUsing(t *testing.T) {
-	tests := []struct {
-		name         string
-		src          IEnumerable[int]
-		predicate    func(int) bool
-		defaultValue int
-		wantResult   int
-		wantPanic    bool
-	}{
-		{
-			name:      "nil predicate",
-			src:       createRandomIntEnumerable(3),
-			predicate: nil,
-			wantPanic: true,
-		},
-		{
-			name: "last",
-			src:  createIntEnumerable(5, 7),
-			predicate: func(i int) bool {
-				return i >= 6
-			},
-			defaultValue: 999,
-			wantResult:   7,
-			wantPanic:    false,
-		},
-		{
-			name: "not any match",
-			src:  createIntEnumerable(5, 7),
-			predicate: func(i int) bool {
-				return i >= 8
-			},
-			defaultValue: 1,
-			wantResult:   1,
-			wantPanic:    false,
-		},
-		{
-			name: "sequence contains no element",
-			src:  createEmptyIntEnumerable(),
-			predicate: func(i int) bool {
-				return i >= 8
-			},
-			defaultValue: 9,
-			wantResult:   9,
-			wantPanic:    false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			backSrc := backupForAssetUnchanged(tt.src)
-
-			defer func() {
-				backSrc.assertUnchanged(t, tt.src)
-			}()
-
-			defer deferWantPanicDepends(t, tt.wantPanic)
-
-			gotResult := tt.src.LastOrDefaultByUsing(tt.predicate, tt.defaultValue)
-			assert.Equalf(t, tt.wantResult, gotResult, "expected result %d, got %d", tt.wantResult, gotResult)
-		})
-	}
 }

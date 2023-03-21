@@ -3,6 +3,7 @@ package goe
 import (
 	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/goe/reflection"
 )
 
 func (src *enumerable[T]) copyExceptData() *enumerable[T] {
@@ -40,14 +41,6 @@ func copySlice[T any](src []T) []T {
 	return dst
 }
 
-func getMapKeys[T comparable](m map[T]bool) []T {
-	keys := make([]T, 0)
-	for k, _ := range m {
-		keys = append(keys, k)
-	}
-	return keys
-}
-
 func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
 	comparer, found := src.tryFindDefaultComparer()
 	if found {
@@ -58,12 +51,6 @@ func (src *enumerable[T]) findDefaultComparer() comparers.IComparer[any] {
 }
 
 func (src *enumerable[T]) tryFindDefaultComparer() (comparers.IComparer[any], bool) {
-	if len(src.dataType) > 0 {
-		if comparer, found := comparers.TryGetDefaultComparerByTypeName(src.dataType); found {
-			return comparer, true
-		}
-	}
-
 	if comparer, found := comparers.TryGetDefaultComparer[T](); found {
 		return comparer, true
 	}
@@ -79,7 +66,33 @@ func (src *enumerable[T]) injectDefaultComparer() IEnumerable[T] {
 	return src
 }
 
+func firstNotNil(values ...any) any {
+	for _, value := range values {
+		_, isNil := reflection.RootValueExtractor(value)
+		if !isNil {
+			return value
+		}
+	}
+	return nil
+}
+
 // cast IEnumerable back to *enumerable for accessing private fields.
 func e[T any](ie IEnumerable[T]) *enumerable[T] {
 	return ie.(*enumerable[T])
+}
+
+// cast IEnumerable[T] to IEnumerable[any]
+func asIEnumerableAny[T any](ie IEnumerable[T]) IEnumerable[any] {
+	if ie == nil {
+		return nil
+	}
+	return ie.Select(func(v T) any {
+		return v
+	})
+}
+
+// Ptr convert a value into pointer form,
+// usually used to provide default value for methods like FirstOrDefault, LastOrDefault, SingleOrDefault,...
+func Ptr[T any](value T) *T {
+	return &value
 }
