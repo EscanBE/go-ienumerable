@@ -3,6 +3,8 @@ package goe
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
 // IEnumerable from C#, brought to Golang by VictorTrustyDev
+//
+//goland:noinspection GoSnakeCaseUsage
 type IEnumerable[T any] interface {
 	// Aggregate applies an accumulator function over a sequence.
 	Aggregate(f func(previousValue, value T) T) T
@@ -480,7 +482,8 @@ type IEnumerable[T any] interface {
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
 
-	// TODO Zip
+	// Zip_ImplementedInHelper Zip methods are implemented as helper, use the Zip methods from the helper package
+	Zip_ImplementedInHelper()
 
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#

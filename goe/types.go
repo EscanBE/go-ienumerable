@@ -46,3 +46,14 @@ type PredicateWithIndex[T any] func(value T, index int) bool
 
 // KeySelector is function that specify key that to be used for comparing elements within a collection.
 type KeySelector[T any] func(value T) any
+
+type ValueTuple2[T1, T2 any] struct {
+	First  T1
+	Second T2
+}
+
+type ValueTuple3[T1, T2, T3 any] struct {
+	First  T1
+	Second T2
+	Third  T3
+}
