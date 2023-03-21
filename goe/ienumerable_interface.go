@@ -470,7 +470,8 @@ type IEnumerable[T any] interface {
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
 
-	// TODO ToDictionary
+	// ToDictionary_ImplementedInHelper the ToDictionary method is also implemented as helper, use the ToDictionary method from the helper package for method signature more likely C#.
+	ToDictionary_ImplementedInHelper()
 
 	// TODO ToHashSet
 
