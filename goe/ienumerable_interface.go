@@ -386,7 +386,10 @@ type IEnumerable[T any] interface {
 	// Select_ImplementedInHelper select methods are also implemented as helper, use the Select* methods from the helper package for method signature more likely C#.
 	Select_ImplementedInHelper()
 
-	// TODO SequenceEqual
+	// SequenceEqual determines whether two sequences are equal according to an equality comparer.
+	//
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
+	SequenceEqual(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) bool
 
 	// Single returns the only element of a sequence that satisfies an optional condition,
 	// and panic if more than one such element exists.
@@ -481,7 +484,7 @@ type IEnumerable[T any] interface {
 
 	// Union produces the set union of two sequences by using an optional equality function to compare values.
 	//
-	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
+	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
 	Union(second IEnumerable[T], optionalEqualsFunc OptionalEqualsFunc[T]) IEnumerable[T]
 
 	// UnionBy produces the set union of two sequences according to a specified key selector function and using the
