@@ -31,7 +31,7 @@ got := goe.NewIEnumerable[byte](array...).
     Select(transform).
     CastInt32().
     Append('"').
-    AggregateWithAnySeed("\"", aggregate)
+    AggregateAnySeed("\"", aggregate)
 
 fmt.Println(got)
 // "Hello World"
@@ -43,6 +43,9 @@ Due to limitation of Go that does not allow generic type in struct method, the f
 - Zip
 
 Example: ❌ instance.Chunk(size:2) | ✅ helper.Chunk(instance, size:2)
+___
+The following methods are implemented IEnumerable instance but also implemented in helper package, since methods in helper package is more likely C# method signature.
+- Aggregate
 
 ## Notices about value comparison:
 Some `IEnumerable[T]` methods like `Order`, `Distinct`, `Except`, `Union`, `Intersect`,... need value comparator to compare between each element in the sequence and the `IComparer[T]` is needed.

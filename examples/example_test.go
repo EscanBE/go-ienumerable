@@ -45,7 +45,7 @@ func Test_example_2(t *testing.T) {
 		Select(transform).
 		CastInt32().
 		Append('"').
-		AggregateWithAnySeed("\"", aggregate)
+		AggregateAnySeed("\"", aggregate)
 
 	fmt.Println(got)
 

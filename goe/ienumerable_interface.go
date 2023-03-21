@@ -9,16 +9,19 @@ type IEnumerable[T any] interface {
 	// Aggregate applies an accumulator function over a sequence.
 	Aggregate(f func(previousValue, value T) T) T
 
-	// AggregateWithSeed applies an accumulator function over a sequence.
+	// AggregateSeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
-	AggregateWithSeed(seed T, f func(previousValue, value T) T) T
+	AggregateSeed(seed T, f func(previousValue, value T) T) T
 
-	// AggregateWithAnySeed applies an accumulator function over a sequence.
+	// AggregateAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
 	// Contract: the type of the seed and the aggregate function `f` param and result,
 	// must be the same type
-	AggregateWithAnySeed(seed any, f func(previousValue any, value T) any) any
+	AggregateAnySeed(seed any, f func(previousValue any, value T) any) any
+
+	// Aggregate_ImplementedInHelper aggregate methods are also implemented as helper, use the Aggregate methods from the helper package for method signature more likely C#.
+	Aggregate_ImplementedInHelper()
 
 	// All returns true if all elements matches with predicate, also true when empty
 	All(predicate func(T) bool) bool
