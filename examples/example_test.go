@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe"
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
-	"github.com/EscanBE/go-ienumerable/helper"
+	"github.com/EscanBE/go-ienumerable/goe_helper"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -109,7 +109,7 @@ func Test_example_4(t *testing.T) {
 			},
 		)
 
-		eGot := helper.SelectManyTransform(eSrc, func(petOwner PetOwner) []string {
+		eGot := goe_helper.SelectManyTransform(eSrc, func(petOwner PetOwner) []string {
 			return petOwner.Pets
 		}, func(petOwner PetOwner, petName string) goe.ValueTuple2[PetOwner, string] {
 			return goe.ValueTuple2[PetOwner, string]{
@@ -182,7 +182,7 @@ func Test_example_5(t *testing.T) {
 		return person1.Name == person2.Name
 	}
 
-	ieGot := helper.Join(iePeople, iePets, func(person Person) Person {
+	ieGot := goe_helper.Join(iePeople, iePets, func(person Person) Person {
 		return person
 	}, func(pet Pet) Person {
 		return pet.Owner

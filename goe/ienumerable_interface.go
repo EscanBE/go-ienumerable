@@ -94,7 +94,7 @@ type IEnumerable[T any] interface {
 	// ChunkToHolder (known as Chunk) supposed to split the elements of a sequence into chunks of size at most size.
 	// Use method GetChunkedIEnumeratorFromHolder to convert from ChunkHolder[T] back to IEnumerable[[]T].
 	//
-	// Suggestion: use helper function helper.Chunk from helper package.
+	// Suggestion: use helper function goe_helper.Chunk from helper package.
 	//
 	// Due to limitation of Golang that can not define a method signature like
 	//
@@ -109,7 +109,7 @@ type IEnumerable[T any] interface {
 
 	// ChunkToAny (Chunk) splits the elements of a sequence into chunks of size at most size.
 	//
-	// Suggestion: use helper function helper.Chunk from helper package.
+	// Suggestion: use helper function goe_helper.Chunk from helper package.
 	//
 	// Due to limitation of Golang that can not define a method signature like
 	//

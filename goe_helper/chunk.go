@@ -1,4 +1,4 @@
-package helper
+package goe_helper
 
 import "github.com/EscanBE/go-ienumerable/goe"
 

@@ -1,4 +1,4 @@
-package helper
+package goe_helper
 
 import (
 	"fmt"

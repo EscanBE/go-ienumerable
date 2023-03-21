@@ -38,14 +38,14 @@ fmt.Println(got)
 ```
 
 ## Notice about some missing methods:
-Due to limitation of Go that does not allow generic type in struct method, the following methods are defined in `helper` package as utility methods, instead of attaching directly into the IEnumerable instance:
+Due to limitation of Go that does not allow generic type in struct method, the following methods are defined in `goe_helper` package as utility methods, instead of attaching directly into the IEnumerable instance:
 - Chunk
 - Join
 - Zip
 
-Example: ❌ instance.Chunk(size:2) | ✅ helper.Chunk(instance, size:2)
+Example: ❌ instance.Chunk(size:2) | ✅ goe_helper.Chunk(instance, size:2)
 ___
-The following methods are implemented IEnumerable instance but also implemented in helper package, since methods in helper package is more likely C# method signature.
+The following methods are implemented IEnumerable instance but also implemented in `goe_helper` package, since methods in helper package is more likely C# method signature.
 - Select
 - SelectMany
 - Aggregate
