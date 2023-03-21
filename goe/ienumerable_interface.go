@@ -319,7 +319,8 @@ type IEnumerable[T any] interface {
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
 
-	// TODO Range
+	// Range_ImplementedInHelper Range method are also implemented as helper, use the Range methods from the helper package for method signature more likely C#.
+	Range_ImplementedInHelper()
 
 	// Repeat generates a new sequence that contains one repeated value.
 	//
