@@ -67,3 +67,19 @@ func GroupBy[TSource, TKey, TElement any](source goe.IEnumerable[TSource], keySe
 
 	return goe.NewIEnumerable[goe.Group[TKey, goe.IEnumerable[TElement]]](data...)
 }
+
+// GroupByTransform groups the elements of a sequence according to a specified key selector function and creates a result value from each group and its key. Key values are compared by using a specified comparer, and the elements of each group are projected by using a specified function.
+func GroupByTransform[TSource, TKey, TElement, TResult any](source goe.IEnumerable[TSource], keySelector func(TSource) TKey, elementSelector func(TSource) TElement, resultSelector func(TKey, goe.IEnumerable[TElement]) TResult, optionalKeyEqualityFunc goe.OptionalEqualsFunc[TKey]) goe.IEnumerable[TResult] {
+	if resultSelector == nil {
+		panic("result selector is nil")
+	}
+
+	groups := GroupBy(source, keySelector, elementSelector, optionalKeyEqualityFunc)
+	results := make([]TResult, groups.Count(nil))
+
+	for i, group := range groups.ToArray() {
+		results[i] = resultSelector(group.Key, group.Elements)
+	}
+
+	return goe.NewIEnumerable[TResult](results...)
+}
