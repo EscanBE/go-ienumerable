@@ -133,17 +133,17 @@ func Test_IOrderedIEnumerable1(t *testing.T) {
 		},
 		{
 			name:    "desc-desc-desc",
-			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescending(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[s1](v4530, v3990, v3530, v2430, v2420, v2160, v1530),
 		},
 		{
 			name:    "desc-asc-asc",
-			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
+			ordered: eSrc.OrderByDescending(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
 			want:    NewIEnumerable[s1](v4530, v3530, v3990, v2160, v2420, v2430, v1530),
 		},
 		{
 			name:    "desc-asc-desc",
-			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescending(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[s1](v4530, v3530, v3990, v2160, v2430, v2420, v1530),
 		},
 	}
@@ -197,17 +197,17 @@ func Test_IOrderedIEnumerable2(t *testing.T) {
 		},
 		{
 			name:    "desc-desc-desc",
-			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescending(keySelector1, nil).ThenByDescending(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[string]("v4530", "v3990", "v3530", "v2430", "v2420", "v2160", "v1530"),
 		},
 		{
 			name:    "desc-asc-asc",
-			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
+			ordered: eSrc.OrderByDescending(keySelector1, nil).ThenBy(keySelector2, nil).ThenBy(keySelector3, nil),
 			want:    NewIEnumerable[string]("v4530", "v3530", "v3990", "v2160", "v2420", "v2430", "v1530"),
 		},
 		{
 			name:    "desc-asc-desc",
-			ordered: eSrc.OrderByDescendingBy(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
+			ordered: eSrc.OrderByDescending(keySelector1, nil).ThenBy(keySelector2, nil).ThenByDescending(keySelector3, nil),
 			want:    NewIEnumerable[string]("v4530", "v3530", "v3990", "v2160", "v2430", "v2420", "v1530"),
 		},
 	}
@@ -429,7 +429,7 @@ func Test_IOrderedIEnumerable5_panic(t *testing.T) {
 
 		defer deferExpectPanicContains(t, "no default comparer registered for [goe.MyStruct]", true)
 
-		oe2 := eSrc2.OrderByDescending()
+		oe2 := eSrc2.OrderDescending()
 
 		_ = oe2.GetOrderedEnumerable()
 	})

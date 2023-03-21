@@ -16,7 +16,7 @@ got := goe.NewIEnumerable[string]("Hello", "World").
     Where(func(v string) bool {
         return len(v) < 3
     }).
-    OrderByDescending().GetOrderedEnumerable().
+    OrderDescending().GetOrderedEnumerable().
     Reverse().
     FirstOrDefault(nil, goe.Ptr("Oops"))
 

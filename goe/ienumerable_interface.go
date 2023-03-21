@@ -280,15 +280,14 @@ type IEnumerable[T any] interface {
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
 	OrderBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
 
-	// OrderByDescending sorts the elements of a sequence in descending order
-	// according to the selected key.
+	// OrderDescending sorts the elements of a sequence in descending order.
 	//
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderByDescending() IOrderedEnumerable[T]
+	OrderDescending() IOrderedEnumerable[T]
 
-	// OrderByDescendingBy sorts the elements of a sequence in descending order
+	// OrderByDescending sorts the elements of a sequence in descending order
 	// according to the selected key.
 	//
 	// ________
@@ -301,7 +300,7 @@ type IEnumerable[T any] interface {
 	// This method is implemented by using deferred execution,
 	// that means you have to call `GetOrderedEnumerable` method
 	// of the IOrderedEnumerable to invoke sorting and get the sorted IEnumerable.
-	OrderByDescendingBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
+	OrderByDescending(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) IOrderedEnumerable[T]
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]

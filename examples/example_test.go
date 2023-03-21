@@ -15,7 +15,7 @@ func Test_example_1(t *testing.T) {
 	got := goe.NewIEnumerable[string]("Hello", "World").
 		Where(func(v string) bool {
 			return len(v) < 3
-		}).OrderByDescending().
+		}).OrderDescending().
 		GetOrderedEnumerable().
 		Reverse().
 		FirstOrDefault(nil, goe.Ptr("Oops"))
@@ -77,7 +77,7 @@ func Test_example_3(t *testing.T) {
 		return str
 	}
 
-	got := eSrc.OrderByDescendingBy(selfSelector, comparatorLevel1).
+	got := eSrc.OrderByDescending(selfSelector, comparatorLevel1).
 		ThenBy(selfSelector, comparatorLevel2).
 		ThenByDescending(selfSelector, comparatorLevel3).
 		GetOrderedEnumerable()

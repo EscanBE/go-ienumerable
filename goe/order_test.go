@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
+func Test_enumerable_Order_OrderBy(t *testing.T) {
 	fCompareFunc := func(t1, t2 any) int {
 		return comparers.NumericComparer.CompareTyped(t1, t2)
 	}
@@ -180,7 +180,7 @@ func Test_enumerable_Order_OrderBy_OrderByComparer(t *testing.T) {
 	})
 }
 
-func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
+func Test_enumerable_OrderDescending_OrderByDescending(t *testing.T) {
 	fGreater := func(t1, t2 int) bool {
 		return t1 > t2
 	}
@@ -224,7 +224,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 		t.Run(fmt.Sprintf("OrderByDescending_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			got := tt.source.OrderByDescending().GetOrderedEnumerable()
+			got := tt.source.OrderDescending().GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -238,7 +238,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 
 			bSrc = backupForAssetUnchanged(cpSrc)
 
-			got = cpSrc.OrderByDescending().GetOrderedEnumerable()
+			got = cpSrc.OrderDescending().GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -251,7 +251,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 		t.Run(fmt.Sprintf("OrderByDescendingBy_%s", tt.name), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(tt.source)
 
-			got := tt.source.OrderByDescendingBy(test_getSelfSelector[int](), nil).GetOrderedEnumerable()
+			got := tt.source.OrderByDescending(test_getSelfSelector[int](), nil).GetOrderedEnumerable()
 
 			if !assert.True(t, reflect.DeepEqual(tt.want.ToArray(), got.ToArray())) {
 				fmt.Printf("Want: %v\nGot: %v\n", tt.want.ToArray(), got.ToArray())
@@ -267,7 +267,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 
 		defer deferExpectPanicContains(t, "no default comparer registered", true)
 
-		ieSrc.OrderByDescending().GetOrderedEnumerable()
+		ieSrc.OrderDescending().GetOrderedEnumerable()
 	})
 
 	t.Run("panic if no default comparer", func(t *testing.T) {
@@ -275,18 +275,18 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 
 		// empty => ok
 		ieSrc := NewIEnumerable[MyInt64]()
-		_ = ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
+		_ = ieSrc.OrderByDescending(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 
 		// one => ok
 		ieSrc = NewIEnumerable[MyInt64](MyInt64{})
-		_ = ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
+		_ = ieSrc.OrderByDescending(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 
 		// many => panic
 		ieSrc = NewIEnumerable[MyInt64](MyInt64{}, MyInt64{})
 
 		defer deferExpectPanicContains(t, "no default comparer found for goe.MyInt64", true)
 
-		_ = ieSrc.OrderByDescendingBy(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
+		_ = ieSrc.OrderByDescending(test_getSelfSelector[MyInt64](), nil).GetOrderedEnumerable()
 	})
 
 	t.Run("default comparer resolved based on key selector", func(t *testing.T) {
@@ -303,7 +303,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 			Value: 3,
 		})
 
-		got := ieSrc.OrderByDescendingBy(func(my MyInt64) any {
+		got := ieSrc.OrderByDescending(func(my MyInt64) any {
 			return my.Value
 		}, nil).GetOrderedEnumerable().ToArray()
 
@@ -328,7 +328,7 @@ func Test_enumerable_OrderByDescending_OrderByDescendingBy(t *testing.T) {
 			Value: 3,
 		})
 
-		got := ieSrc.OrderByDescendingBy(func(me MyInt64) any {
+		got := ieSrc.OrderByDescending(func(me MyInt64) any {
 			return me
 		}, func(x, y any) int {
 			return comparers.NumericComparer.CompareTyped(x.(MyInt64).Value, y.(MyInt64).Value)
