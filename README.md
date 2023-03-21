@@ -50,6 +50,8 @@ The following methods are implemented IEnumerable instance but also implemented 
 - Select
 - SelectMany
 - Aggregate
+- Empty
+- Repeat
 
 ## Notices about value comparison:
 Some `IEnumerable[T]` methods like `Order`, `Distinct`, `Except`, `Union`, `Intersect`,... need value comparator to compare between each element in the sequence and the `IComparer[T]` is needed.
