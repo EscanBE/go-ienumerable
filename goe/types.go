@@ -57,3 +57,8 @@ type ValueTuple3[T1, T2, T3 any] struct {
 	Second T2
 	Third  T3
 }
+
+type Group[TKey, TElement any] struct {
+	Key      TKey
+	Elements TElement
+}

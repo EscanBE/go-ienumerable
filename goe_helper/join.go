@@ -6,7 +6,7 @@ import (
 )
 
 // Join correlates the elements of two sequences based on matching keys. An optional equality function is used to compare keys, or will try resolve default comparer based on type of key on runtime.
-func Join[TOuter, TInner, TKey, TResult any](outer goe.IEnumerable[TOuter], inner goe.IEnumerable[TInner], outerKeySelector func(TOuter) TKey, innerKeySelector func(TInner) TKey, resultSelector func(TOuter, TInner) TResult, optionalKeyEqualityComparer goe.OptionalEqualsFunc[TKey]) goe.IEnumerable[TResult] {
+func Join[TOuter, TInner, TKey, TResult any](outer goe.IEnumerable[TOuter], inner goe.IEnumerable[TInner], outerKeySelector func(TOuter) TKey, innerKeySelector func(TInner) TKey, resultSelector func(TOuter, TInner) TResult, optionalKeyEqualityFunc goe.OptionalEqualsFunc[TKey]) goe.IEnumerable[TResult] {
 	if outer == nil {
 		panic("outer collection is nil")
 	}
@@ -24,8 +24,8 @@ func Join[TOuter, TInner, TKey, TResult any](outer goe.IEnumerable[TOuter], inne
 	}
 
 	var keyEqualityComparer goe.EqualsFunc[TKey]
-	if optionalKeyEqualityComparer != nil {
-		keyEqualityComparer = goe.EqualsFunc[TKey](optionalKeyEqualityComparer)
+	if optionalKeyEqualityFunc != nil {
+		keyEqualityComparer = goe.EqualsFunc[TKey](optionalKeyEqualityFunc)
 	} else {
 		comparer, found := comparers.TryGetDefaultComparer[TKey]()
 		if !found {

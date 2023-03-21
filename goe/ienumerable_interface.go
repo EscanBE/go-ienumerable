@@ -201,7 +201,8 @@ type IEnumerable[T any] interface {
 	// If omitted the optional default value param, default value of T will be returned.
 	FirstOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
-	// TODO GroupBy
+	// GroupBy_ImplementedInHelper the GroupBy method is implemented as helper, use the GroupBy method from the helper package for method signature more likely C#.
+	GroupBy_ImplementedInHelper()
 
 	// TODO GroupJoin
 

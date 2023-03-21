@@ -11,6 +11,11 @@ func (src *enumerable[T]) Chunk_ImplementedInHelper() {
 }
 
 //goland:noinspection GoSnakeCaseUsage
+func (src *enumerable[T]) GroupBy_ImplementedInHelper() {
+	panic("use method in helper")
+}
+
+//goland:noinspection GoSnakeCaseUsage
 func (src *enumerable[T]) Join_ImplementedInHelper() {
 	panic("use method in helper")
 }

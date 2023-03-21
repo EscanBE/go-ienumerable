@@ -133,6 +133,62 @@ func Test_example_4(t *testing.T) {
 }
 
 func Test_example_5(t *testing.T) {
+	type Student struct {
+		Class string
+		Name  string
+	}
+
+	ieSrc := goe.NewIEnumerable[Student](
+		Student{
+			Class: "A",
+			Name:  "John",
+		},
+		Student{
+			Class: "A",
+			Name:  "Camila",
+		},
+		Student{
+			Class: "A",
+			Name:  "Stephen",
+		},
+		Student{
+			Class: "B",
+			Name:  "Hope",
+		},
+		Student{
+			Class: "B",
+			Name:  "Paul",
+		},
+	)
+
+	var compareClassNameFunc goe.OptionalEqualsFunc[string] = func(key1, key2 string) bool {
+		return key1 == key2
+	}
+
+	var groups goe.IEnumerable[goe.Group[string, goe.IEnumerable[string]]]
+
+	groups = goe_helper.GroupBy(ieSrc, func(src Student) string {
+		return src.Class
+	}, func(src Student) string {
+		return src.Name
+	}, compareClassNameFunc)
+	assert.Equal(t, 2, groups.Count(nil))
+
+	group1 := groups.ElementAt(0, false)
+	group2 := groups.ElementAt(1, false)
+
+	assert.Equal(t, "A", group1.Key)
+	assert.Equal(t, 3, group1.Elements.Count(nil))
+	assert.Equal(t, "John", group1.Elements.ElementAt(0, false))
+	assert.Equal(t, "Camila", group1.Elements.ElementAt(1, false))
+	assert.Equal(t, "Stephen", group1.Elements.ElementAt(2, false))
+	assert.Equal(t, "B", group2.Key)
+	assert.Equal(t, 2, group2.Elements.Count(nil))
+	assert.Equal(t, "Hope", group2.Elements.ElementAt(0, false))
+	assert.Equal(t, "Paul", group2.Elements.ElementAt(1, false))
+}
+
+func Test_example_6(t *testing.T) {
 	type Person struct {
 		Name string
 	}
@@ -182,7 +238,9 @@ func Test_example_5(t *testing.T) {
 		return person1.Name == person2.Name
 	}
 
-	ieGot := goe_helper.Join(iePeople, iePets, func(person Person) Person {
+	var ieGot goe.IEnumerable[PetInfo]
+
+	ieGot = goe_helper.Join(iePeople, iePets, func(person Person) Person {
 		return person
 	}, func(pet Pet) Person {
 		return pet.Owner
@@ -192,7 +250,6 @@ func Test_example_5(t *testing.T) {
 			Pet:       pet.Name,
 		}
 	}, compareOwnerFunc)
-
 	got := ieGot.ToArray()
 	assert.Len(t, got, 4)
 
