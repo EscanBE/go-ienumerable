@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/EscanBE/go-ienumerable/goe"
 	"github.com/EscanBE/go-ienumerable/goe/comparers"
+	"github.com/EscanBE/go-ienumerable/helper"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
@@ -80,4 +82,52 @@ func Test_example_3(t *testing.T) {
 
 	fmt.Println(got)
 	// v4530 v3530 v3990 v2160 v2430 v2420 v1530
+}
+
+func Test_example_4(t *testing.T) {
+	t.Run("sample", func(t *testing.T) {
+		type PetOwner struct {
+			Name string
+			Pets []string
+		}
+		eSrc := goe.NewIEnumerable[PetOwner](
+			PetOwner{
+				Name: "Higa",
+				Pets: []string{"Scruffy", "Sam"},
+			},
+			PetOwner{
+				Name: "Ashkenazi",
+				Pets: []string{"Walker", "Sugar"},
+			},
+			PetOwner{
+				Name: "Price",
+				Pets: []string{"Scratches", "Diesel"},
+			},
+			PetOwner{
+				Name: "Hines",
+				Pets: []string{"Dusty"},
+			},
+		)
+
+		eGot := helper.SelectManyTransform(eSrc, func(petOwner PetOwner) []string {
+			return petOwner.Pets
+		}, func(petOwner PetOwner, petName string) goe.ValueTuple2[PetOwner, string] {
+			return goe.ValueTuple2[PetOwner, string]{
+				First:  petOwner,
+				Second: petName,
+			}
+		}).Where(func(ownerAndPet goe.ValueTuple2[PetOwner, string]) bool {
+			return strings.HasPrefix(ownerAndPet.Second, "S")
+		}).Select(func(ownerAndPet goe.ValueTuple2[PetOwner, string]) any {
+			return fmt.Sprintf("{Owner=%s, Pet=%s}", ownerAndPet.First.Name, ownerAndPet.Second)
+		})
+
+		gotData := eGot.ToArray()
+
+		assert.Len(t, gotData, 4)
+		assert.Equal(t, "{Owner=Higa, Pet=Scruffy}", gotData[0])
+		assert.Equal(t, "{Owner=Higa, Pet=Sam}", gotData[1])
+		assert.Equal(t, "{Owner=Ashkenazi, Pet=Sugar}", gotData[2])
+		assert.Equal(t, "{Owner=Price, Pet=Scratches}", gotData[3])
+	})
 }

@@ -12,7 +12,7 @@ func TestSelect(t *testing.T) {
 	t.Run("int8", func(t *testing.T) {
 		eSrc := goe.NewIEnumerable[int8](2, 3, 4, 5)
 
-		eGot := Select(eSrc, func(i int8) any {
+		eGot := Select(eSrc, func(i int8) int8 {
 			return i * 2
 		})
 		gotData := eGot.ToArray()
@@ -26,7 +26,7 @@ func TestSelect(t *testing.T) {
 	t.Run("string", func(t *testing.T) {
 		eSrc := goe.NewIEnumerable[int8](2, 3, 4, 5)
 
-		eGot := Select(eSrc, func(i int8) any {
+		eGot := Select(eSrc, func(i int8) string {
 			return fmt.Sprintf("%d", i+1)
 		})
 		gotData := eGot.ToArray()
@@ -40,7 +40,7 @@ func TestSelect(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
 		eSrc := goe.NewIEnumerable[int8]()
 
-		eGot := Select(eSrc, func(i int8) any {
+		eGot := Select(eSrc, func(i int8) int64 {
 			return int64(i)
 		})
 
@@ -59,7 +59,7 @@ func TestSelect(t *testing.T) {
 	t.Run("automatically inject type and comparer", func(t *testing.T) {
 		ieSrc := goe.NewIEnumerable[int](3, 1)
 
-		ieGot := Select(ieSrc, func(i int) any {
+		ieGot := Select(ieSrc, func(i int) time.Duration {
 			return time.Duration(i) * time.Minute
 		})
 
@@ -81,7 +81,7 @@ func TestSelect(t *testing.T) {
 
 		ieSrc := goe.NewIEnumerable[int](3, 1, 2, 6)
 
-		ieGot := Select(ieSrc, func(i int) any {
+		ieGot := Select(ieSrc, func(i int) *MyInt {
 			if i == 2 {
 				return nil
 			}
@@ -93,9 +93,9 @@ func TestSelect(t *testing.T) {
 		gotArray := ieGot.ToArray()
 
 		assert.Len(t, gotArray, 4)
-		assert.Equal(t, 3, gotArray[0].(*MyInt).Value)
-		assert.Equal(t, 1, gotArray[1].(*MyInt).Value)
+		assert.Equal(t, 3, gotArray[0].Value)
+		assert.Equal(t, 1, gotArray[1].Value)
 		assert.Nil(t, gotArray[2])
-		assert.Equal(t, 6, gotArray[3].(*MyInt).Value)
+		assert.Equal(t, 6, gotArray[3].Value)
 	})
 }

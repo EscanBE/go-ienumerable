@@ -2,9 +2,9 @@ package helper
 
 import (
 	"github.com/EscanBE/go-ienumerable/goe"
-	"github.com/EscanBE/go-ienumerable/goe/comparers"
 )
 
+// SelectMany projects each element of a sequence to a goe.IEnumerable[T] and flattens the resulting sequences into one sequence.
 func SelectMany[TSource, TResult any](source goe.IEnumerable[TSource], selector func(v TSource) []TResult) goe.IEnumerable[TResult] {
 	assertCollectionNotNil(source, "source")
 	assertManyResultSelectorFunctionNotNil(selector)
@@ -30,32 +30,37 @@ func SelectMany[TSource, TResult any](source goe.IEnumerable[TSource], selector 
 		newData = append(newData, a...)
 	}
 
-	result := goe.NewIEnumerable[TResult](newData...)
+	return goe.NewIEnumerable[TResult](newData...)
+}
 
-	if len(newData) > 0 {
-		var nextDefaultComparer comparers.IComparer[any]
+// SelectManyTransform projects each element of a sequence to a goe.IEnumerable[T], flattens the resulting sequences into one sequence, and invokes a result selector function on each element therein. The index of each source element is used in the intermediate projected form of that element.
+func SelectManyTransform[TSource, TCollection, TResult any](source goe.IEnumerable[TSource], collectionSelector func(v TSource) []TCollection, resultSelector func(src TSource, col TCollection) TResult) goe.IEnumerable[TResult] {
+	assertCollectionNotNil(source, "source")
+	assertCollectionSelectorFunctionNotNil(collectionSelector)
+	assertResultSelectorFunctionNotNil2(resultSelector)
 
-		for _, d := range newData {
-			if any(d) == nil {
-				continue
-			}
+	size := source.Count(nil)
+	if size < 1 {
+		return goe.NewIEnumerable[TResult]()
+	}
 
-			if nextDefaultComparer != nil {
-				break
-			}
+	newData := make([]TResult, 0)
 
-			if nextDefaultComparer == nil {
-				comparer, found := comparers.TryGetDefaultComparerFromValue(d)
-				if found {
-					nextDefaultComparer = comparer
-				}
-			}
+	for _, d := range source.ToArray() {
+		col := collectionSelector(d)
+
+		if col == nil {
+			panic("result array can not be nil")
 		}
 
-		if nextDefaultComparer != nil {
-			result = result.WithDefaultComparerAny(nextDefaultComparer)
+		if len(col) < 1 {
+			continue
+		}
+
+		for _, e := range col {
+			newData = append(newData, resultSelector(d, e))
 		}
 	}
 
-	return result
+	return goe.NewIEnumerable[TResult](newData...)
 }

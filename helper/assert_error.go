@@ -29,8 +29,20 @@ func assertResultSelectorFunctionNotNil[TSource, TResult any](f func(v TSource) 
 	}
 }
 
+func assertResultSelectorFunctionNotNil2[TSource, TCollection, TResult any](f func(v TSource, c TCollection) TResult) {
+	if f == nil {
+		panic("result selector function is nil")
+	}
+}
+
 func assertManyResultSelectorFunctionNotNil[TSource, TResult any](f func(v TSource) []TResult) {
 	if f == nil {
 		panic("result selector function is nil")
+	}
+}
+
+func assertCollectionSelectorFunctionNotNil[TSource, TResult any](f func(v TSource) []TResult) {
+	if f == nil {
+		panic("collection selector function is nil")
 	}
 }
