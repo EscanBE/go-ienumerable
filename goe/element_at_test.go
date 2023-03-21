@@ -55,8 +55,8 @@ func Test_enumerable_ElementAt(t *testing.T) {
 		t.Run(fmt.Sprintf("%d", tt.index), func(t *testing.T) {
 			bSrc := backupForAssetUnchanged(src)
 			defer deferWantPanicDepends(t, tt.wantPanic)
-			assert.Equalf(t, tt.want, src.ElementAt(tt.index), "ElementAt(%v)", tt.index)
-			assert.Equalf(t, tt.wantReverse, src.ElementAtReverse(tt.index), "ElementAtReverse(%v)", tt.index)
+			assert.Equalf(t, tt.want, src.ElementAt(tt.index, false), "ElementAt(%v)", tt.index)
+			assert.Equalf(t, tt.wantReverse, src.ElementAt(tt.index, true), "ElementAt(%v,reverse)", tt.index)
 			bSrc.assertUnchanged(t, src)
 		})
 		t.Run(fmt.Sprintf("%d or default", tt.index), func(t *testing.T) {
@@ -67,25 +67,22 @@ func Test_enumerable_ElementAt(t *testing.T) {
 				want = tt.wantDefault
 				wantReverse = tt.wantDefault
 			}
-			assert.Equalf(t, want, src.ElementAtOrDefault(tt.index), "ElementAtOrDefault(%v)", tt.index)
-			assert.Equalf(t, wantReverse, src.ElementAtReverseOrDefault(tt.index), "ElementAtReverseOrDefault(%v)", tt.index)
+			assert.Equalf(t, want, src.ElementAtOrDefault(tt.index, false), "ElementAtOrDefault(%v)", tt.index)
+			assert.Equalf(t, wantReverse, src.ElementAtOrDefault(tt.index, true), "ElementAtOrDefault(%v,reverse)", tt.index)
 			bSrc.assertUnchanged(t, src)
 		})
 	}
 
 	for _, tt := range []int{-2, -1, 0} {
 		t.Run("out of bound", func(t *testing.T) {
-			defer func() {
-				err := recover()
-				if err == nil {
-					t.Errorf("expect error")
-					return
-				}
+			defer deferExpectPanicContains(t, "index out of bound", true)
 
-				assert.Equal(t, "index out of bound", fmt.Sprintf("%v", err))
-			}()
+			NewIEnumerable[int]().ElementAt(tt, false)
+		})
+		t.Run("out of bound (reverse)", func(t *testing.T) {
+			defer deferExpectPanicContains(t, "index out of bound", true)
 
-			NewIEnumerable[int]().ElementAt(tt)
+			NewIEnumerable[int]().ElementAt(tt, true)
 		})
 	}
 }

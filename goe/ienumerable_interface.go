@@ -2,9 +2,8 @@ package goe
 
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
+// IEnumerable from C#, brought to Golang by VictorTrustyDev
 type IEnumerable[T any] interface {
-	// C#
-
 	// Aggregate applies an accumulator function over a sequence.
 	Aggregate(f func(previousValue, value T) T) T
 
@@ -15,7 +14,7 @@ type IEnumerable[T any] interface {
 	// AggregateWithAnySeed applies an accumulator function over a sequence.
 	// The specified seed value is used as the initial accumulator value.
 	//
-	// Notice, the type (specified as 'any') of the seed and the aggregate function `f` param and result,
+	// Contract: the type of the seed and the aggregate function `f` param and result,
 	// must be the same type
 	AggregateWithAnySeed(seed any, f func(previousValue any, value T) any) any
 
@@ -148,25 +147,18 @@ type IEnumerable[T any] interface {
 
 	// ElementAt returns the element at a specified index (0 based, from head) in a sequence.
 	//
-	// Panic if index is less than 0 or greater than or equal to the number of elements in source
-	ElementAt(index int) T
-
-	// ElementAtReverse returns the element at a specified reverse index (0 based, from tail) in a sequence.
+	// When setting reverse to true, index is reverse index (0based, from tail).
 	//
 	// Panic if index is less than 0 or greater than or equal to the number of elements in source
-	ElementAtReverse(reverseIndex int) T
+	ElementAt(index int, reverse bool) T
 
 	// ElementAtOrDefault returns the element at a specified index (0 based, from head) in a sequence.
 	// If index is out of range, return default value of type.
 	//
-	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
-	ElementAtOrDefault(index int) T
-
-	// ElementAtReverseOrDefault returns the element at a specified reverse index (0 based, from tail) in a sequence.
-	// If index is out of range, return default value of type.
+	// When setting reverse to true, index is reverse index (0based, from tail).
 	//
 	// Beware of IEnumerable[any|interface{}], you will get nil no matter real type of underlying data is
-	ElementAtReverseOrDefault(reverseIndex int) T
+	ElementAtOrDefault(index int, reverse bool) T
 
 	// Empty returns a new empty IEnumerable[T] that has the specified type argument.
 	// Comparers will be copied into the new IEnumerable[T].
