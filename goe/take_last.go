@@ -1,6 +1,6 @@
 package goe
 
-func (src *enumerable[T]) Take(count int) IEnumerable[T] {
+func (src *enumerable[T]) TakeLast(count int) IEnumerable[T] {
 	src.assertSrcNonNil()
 
 	if count < 1 {
@@ -12,6 +12,6 @@ func (src *enumerable[T]) Take(count int) IEnumerable[T] {
 	}
 
 	copied := make([]T, count)
-	copy(copied, src.data)
+	copy(copied, src.data[len(src.data)-count:])
 	return src.copyExceptData().withData(copied)
 }

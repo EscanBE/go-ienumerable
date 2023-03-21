@@ -1,6 +1,6 @@
 package goe
 
-func (src *enumerable[T]) Order() IOrderedEnumerable[T] {
+func (src *enumerable[T]) OrderDescending() IOrderedEnumerable[T] {
 	src.assertSrcNonNil()
 
 	comparer := src.defaultComparer
@@ -12,5 +12,5 @@ func (src *enumerable[T]) Order() IOrderedEnumerable[T] {
 		return ele
 	}, func(v1, v2 any) int {
 		return comparer.CompareAny(v1, v2)
-	}, CLC_ASC)
+	}, CLC_DESC)
 }

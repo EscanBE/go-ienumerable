@@ -24,14 +24,6 @@ func (src *enumerable[T]) Distinct(optionalEqualsFunc OptionalEqualsFunc[T]) IEn
 	return src.copyExceptData().withData(uniqueData)
 }
 
-func (src *enumerable[T]) DistinctBy(keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
-	src.assertSrcNonNil()
-	assertKeySelectorNonNil(keySelector)
-
-	unique := distinctByKeySelector(copySlice(src.data), keySelector, optionalEqualsFunc)
-	return src.copyExceptData().withData(unique)
-}
-
 func distinct[T any](data []T, optionalEqualityComparer OptionalEqualsFunc[T]) []T {
 	var equalityComparer EqualsFunc[T]
 
@@ -70,71 +62,4 @@ func distinct[T any](data []T, optionalEqualityComparer OptionalEqualsFunc[T]) [
 	}
 
 	return uniqueSet
-}
-
-func distinctByKeySelector[T any](data []T, requiredKeySelector KeySelector[T], optionalEqualityComparer OptionalEqualsFunc[any]) []T {
-	if requiredKeySelector == nil {
-		panic(getErrorKeySelectorNotNil())
-	}
-
-	var equalityComparer EqualsFunc[any]
-	if optionalEqualityComparer != nil {
-		equalityComparer = EqualsFunc[any](optionalEqualityComparer)
-	}
-
-	type holder struct {
-		elementIndex int
-		key          any
-	}
-
-	holders := make([]holder, len(data))
-
-	for i, d := range data {
-		holders[i] = holder{
-			elementIndex: i,
-			key:          requiredKeySelector(d),
-		}
-
-		if equalityComparer == nil {
-			comparer, found := comparers.TryGetDefaultComparerFromValue(holders[i].key)
-			if found {
-				equalityComparer = func(v1, v2 any) bool {
-					return comparer.CompareAny(v1, v2) == 0
-				}
-			}
-		}
-	}
-
-	if equalityComparer == nil {
-		panic(getErrorFailedCompare2ElementsInArray())
-	}
-
-	if len(data) < 1 {
-		return data
-	}
-
-	uniqueSet := []holder{holders[0]}
-
-	for i1 := 1; i1 < len(data); i1++ {
-		ele := holders[i1]
-
-		var exists bool
-		for _, uniq := range uniqueSet {
-			if equalityComparer(ele.key, uniq.key) {
-				exists = true
-				break
-			}
-		}
-
-		if !exists {
-			uniqueSet = append(uniqueSet, ele)
-		}
-	}
-
-	uniqueResult := make([]T, len(uniqueSet))
-	for i, h := range uniqueSet {
-		uniqueResult[i] = data[h.elementIndex]
-	}
-
-	return uniqueResult
 }

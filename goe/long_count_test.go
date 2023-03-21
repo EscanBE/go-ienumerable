@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func Test_enumerable_Count(t *testing.T) {
+func Test_enumerable_LongCount(t *testing.T) {
 	tests := []struct {
 		name        string
 		src         IEnumerable[any]
@@ -52,8 +52,8 @@ func Test_enumerable_Count(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.wantCount, tt.src.Count(nil), "Count(nil)")
-			assert.Equalf(t, tt.wantCountBy, tt.src.Count(tt.countBy), "Count(predicate)")
+			assert.Equalf(t, int64(tt.wantCount), tt.src.LongCount(nil), "LongCount(nil)")
+			assert.Equalf(t, int64(tt.wantCountBy), tt.src.LongCount(tt.countBy), "LongCount(predicate)")
 		})
 	}
 }

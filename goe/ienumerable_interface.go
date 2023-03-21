@@ -193,6 +193,10 @@ type IEnumerable[T any] interface {
 	// If omitted the optional default value param, default value of T will be returned.
 	FirstOrDefault(optionalPredicate OptionalPredicate[T], optionalDefaultValue *T) T
 
+	// TODO GroupBy
+
+	// TODO GroupJoin
+
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]
 
@@ -208,6 +212,8 @@ type IEnumerable[T any] interface {
 	//
 	// If passing nil as equality comparer function, the default comparer will be used or panic if no default comparer found.
 	IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T]
+
+	// TODO Join
 
 	// Last returns the last element of a sequence that satisfies a specified condition.
 	//
@@ -253,6 +259,8 @@ type IEnumerable[T any] interface {
 	// If omitted the compare func, the default comparer for corresponding type will be used,
 	// or panic if no default compare found.
 	MaxBy(keySelector KeySelector[T], optionalCompareFunc OptionalCompareFunc[any]) T
+
+	// TODO OfType
 
 	// Order sorts the elements of a sequence in ascending order.
 	//
@@ -300,6 +308,8 @@ type IEnumerable[T any] interface {
 
 	// Prepend adds a value to the beginning of the sequence and return a new sequence starts with input `element`
 	Prepend(element T) IEnumerable[T]
+
+	// TODO Range
 
 	// Repeat generates a new sequence that contains one repeated value.
 	//
@@ -363,6 +373,8 @@ type IEnumerable[T any] interface {
 	//
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
+
+	// TODO SequenceEqual
 
 	// Single returns the only element of a sequence that satisfies an optional condition,
 	// and panic if more than one such element exists.
@@ -446,6 +458,14 @@ type IEnumerable[T any] interface {
 	// ToArray creates an array from a IEnumerable[T].
 	ToArray() []T
 
+	// TODO ToDictionary
+
+	// TODO ToHashSet
+
+	// TODO ToList
+
+	// TODO ToLookUp
+
 	// Union produces the set union of two sequences by using an optional equality function to compare values.
 	//
 	// If passing nil as comparer function, the default comparer will be used or panic if no default comparer found.
@@ -459,6 +479,8 @@ type IEnumerable[T any] interface {
 
 	// Where filters a sequence of values based on a predicate.
 	Where(predicate func(T) bool) IEnumerable[T]
+
+	// TODO Zip
 
 	// From this part, extra methods are defined to provide more utilities and/or to workaround
 	// limitation of Golang compares to C#

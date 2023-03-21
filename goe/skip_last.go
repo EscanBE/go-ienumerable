@@ -1,6 +1,6 @@
 package goe
 
-func (src *enumerable[T]) Skip(count int) IEnumerable[T] {
+func (src *enumerable[T]) SkipLast(count int) IEnumerable[T] {
 	src.assertSrcNonNil()
 
 	if count < 1 {
@@ -11,5 +11,5 @@ func (src *enumerable[T]) Skip(count int) IEnumerable[T] {
 		return src.copyExceptData().withEmptyData()
 	}
 
-	return src.copyExceptData().withData(copySlice(src.data[count:]))
+	return src.copyExceptData().withData(copySlice(src.data[:len(src.data)-count]))
 }
