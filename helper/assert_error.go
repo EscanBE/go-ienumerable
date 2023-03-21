@@ -10,3 +10,21 @@ func assertCollectionNotNil[T any](collection goe.IEnumerable[T], collectionName
 		panic(fmt.Sprintf("%s collection is nil", collectionName))
 	}
 }
+
+func assertCollectionEmpty[T any](collection goe.IEnumerable[T], collectionName string) {
+	if collection.Count(nil) < 1 {
+		panic(fmt.Sprintf("%s collection is empty", collectionName))
+	}
+}
+
+func assertAccumulatorFunctionNotNil[TAccumulate, TSource any](f func(pr TAccumulate, v TSource) TAccumulate) {
+	if f == nil {
+		panic("accumulator function is nil")
+	}
+}
+
+func assertResultSelectorFunctionNotNil[TSource, TResult any](f func(v TSource) TResult) {
+	if f == nil {
+		panic("result selector function is nil")
+	}
+}

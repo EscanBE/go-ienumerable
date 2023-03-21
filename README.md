@@ -37,6 +37,13 @@ fmt.Println(got)
 // "Hello World"
 ```
 
+## Notice about some missing methods:
+Due to limitation of Go that does not allow generic type in struct method, the following methods are defined in `helper` package as utility methods, instead of attaching directly into the IEnumerable instance:
+- Chunk
+- Zip
+
+Example: ❌ instance.Chunk(size:2) | ✅ helper.Chunk(instance, size:2)
+
 ## Notices about value comparison:
 Some `IEnumerable[T]` methods like `Order`, `Distinct`, `Except`, `Union`, `Intersect`,... need value comparator to compare between each element in the sequence and the `IComparer[T]` is needed.
 

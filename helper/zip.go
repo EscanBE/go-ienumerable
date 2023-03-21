@@ -4,8 +4,8 @@ import (
 	"github.com/EscanBE/go-ienumerable/goe"
 )
 
-// ZipF applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
-func ZipF[TFirst, TSecond, TResult any](first goe.IEnumerable[TFirst], second goe.IEnumerable[TSecond], resultSelector func(v1 TFirst, v2 TSecond) TResult) goe.IEnumerable[TResult] {
+// ZipSelect applies a specified function to the corresponding elements of two sequences, producing a sequence of the results.
+func ZipSelect[TFirst, TSecond, TResult any](first goe.IEnumerable[TFirst], second goe.IEnumerable[TSecond], resultSelector func(v1 TFirst, v2 TSecond) TResult) goe.IEnumerable[TResult] {
 	if resultSelector == nil {
 		panic("result selector is required")
 	}

@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestZipF(t *testing.T) {
+func TestZipSelect(t *testing.T) {
 	first := goe.NewIEnumerable[int](4, 5, 6, 7)
 	second := goe.NewIEnumerable[string]("9", "8", "7")
 	emptyIntSeq := goe.NewIEnumerable[int]()
@@ -18,12 +18,12 @@ func TestZipF(t *testing.T) {
 	}
 
 	t.Run("one empty sequence", func(t *testing.T) {
-		assert.Empty(t, ZipF(first, emptyStrSeq, resultSelector).ToArray())
-		assert.Empty(t, ZipF(emptyIntSeq, second, resultSelector).ToArray())
+		assert.Empty(t, ZipSelect(first, emptyStrSeq, resultSelector).ToArray())
+		assert.Empty(t, ZipSelect(emptyIntSeq, second, resultSelector).ToArray())
 	})
 
 	t.Run("zip success", func(t *testing.T) {
-		zipped := ZipF(first, second, resultSelector).ToArray()
+		zipped := ZipSelect(first, second, resultSelector).ToArray()
 		assert.Len(t, zipped, 3)
 		assert.Equal(t, "4 9", zipped[0])
 		assert.Equal(t, "5 8", zipped[1])
@@ -33,19 +33,19 @@ func TestZipF(t *testing.T) {
 	t.Run("require result selector", func(t *testing.T) {
 		defer deferExpectPanicContains(t, "result selector is required", true)
 
-		ZipF[int, string, string](first, second, nil)
+		ZipSelect[int, string, string](first, second, nil)
 	})
 
 	t.Run("require first sequence", func(t *testing.T) {
 		defer deferExpectPanicContains(t, "first collection is nil", true)
 
-		ZipF[int, string, string](nil, second, resultSelector)
+		ZipSelect[int, string, string](nil, second, resultSelector)
 	})
 
 	t.Run("require second sequence", func(t *testing.T) {
 		defer deferExpectPanicContains(t, "second collection is nil", true)
 
-		ZipF[int, string, string](first, nil, resultSelector)
+		ZipSelect[int, string, string](first, nil, resultSelector)
 	})
 }
 
