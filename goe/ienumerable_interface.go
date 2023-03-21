@@ -204,7 +204,8 @@ type IEnumerable[T any] interface {
 	// GroupBy_ImplementedInHelper the GroupBy method is implemented as helper, use the GroupBy method from the helper package for method signature more likely C#.
 	GroupBy_ImplementedInHelper()
 
-	// TODO GroupJoin
+	// GroupJoin_ImplementedInHelper the GroupJoin method is implemented as helper, use the GroupJoin method from the helper package for method signature more likely C#.
+	GroupJoin_ImplementedInHelper()
 
 	// GetEnumerator returns an enumerator that iterates through a collection.
 	GetEnumerator() IEnumerator[T]

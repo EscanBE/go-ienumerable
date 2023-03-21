@@ -16,6 +16,11 @@ func (src *enumerable[T]) GroupBy_ImplementedInHelper() {
 }
 
 //goland:noinspection GoSnakeCaseUsage
+func (src *enumerable[T]) GroupJoin_ImplementedInHelper() {
+	panic("use method in helper")
+}
+
+//goland:noinspection GoSnakeCaseUsage
 func (src *enumerable[T]) Join_ImplementedInHelper() {
 	panic("use method in helper")
 }

@@ -41,6 +41,7 @@ fmt.Println(got)
 Due to limitation of Go that does not allow generic type in struct method, the following methods are defined in `goe_helper` package as utility methods, instead of attaching directly into the IEnumerable instance:
 - Chunk
 - GroupBy
+- GroupJoin
 - Join
 - OfType
 - Zip

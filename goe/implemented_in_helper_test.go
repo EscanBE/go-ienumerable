@@ -19,6 +19,10 @@ func Test_enumerable_ImplementedAsHelper(t *testing.T) {
 	})
 	t.Run("unable to call", func(t *testing.T) {
 		defer deferWantPanicDepends(t, true)
+		createEmptyIntEnumerable().GroupJoin_ImplementedInHelper()
+	})
+	t.Run("unable to call", func(t *testing.T) {
+		defer deferWantPanicDepends(t, true)
 		createEmptyIntEnumerable().Join_ImplementedInHelper()
 	})
 	t.Run("unable to call", func(t *testing.T) {
