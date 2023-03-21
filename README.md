@@ -45,6 +45,8 @@ Due to limitation of Go that does not allow generic type in struct method, the f
 Example: ❌ instance.Chunk(size:2) | ✅ helper.Chunk(instance, size:2)
 ___
 The following methods are implemented IEnumerable instance but also implemented in helper package, since methods in helper package is more likely C# method signature.
+- Select
+- SelectMany
 - Aggregate
 
 ## Notices about value comparison:

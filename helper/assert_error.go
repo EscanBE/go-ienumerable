@@ -28,3 +28,9 @@ func assertResultSelectorFunctionNotNil[TSource, TResult any](f func(v TSource) 
 		panic("result selector function is nil")
 	}
 }
+
+func assertManyResultSelectorFunctionNotNil[TSource, TResult any](f func(v TSource) []TResult) {
+	if f == nil {
+		panic("result selector function is nil")
+	}
+}

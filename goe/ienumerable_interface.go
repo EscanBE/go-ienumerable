@@ -382,6 +382,9 @@ type IEnumerable[T any] interface {
 	// - Panic if selector returns nil
 	SelectMany(selector func(v T) []any) IEnumerable[any]
 
+	// Select_ImplementedInHelper select methods are also implemented as helper, use the Select* methods from the helper package for method signature more likely C#.
+	Select_ImplementedInHelper()
+
 	// TODO SequenceEqual
 
 	// Single returns the only element of a sequence that satisfies an optional condition,
