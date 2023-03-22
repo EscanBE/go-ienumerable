@@ -2,6 +2,11 @@ package goe
 
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
+type exceptElementHolder struct {
+	elementIndex int
+	key          any
+}
+
 func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	assertSecondIEnumerableNonNil(second)
@@ -12,16 +17,11 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 		isEquals = EqualsFunc[any](optionalEqualsFunc)
 	}
 
-	type holder struct {
-		elementIndex int
-		key          any
-	}
-
-	srcHolders := make([]holder, len(src.data))
+	srcHolders := make([]exceptElementHolder, len(src.data))
 	secondData := second.ToArray()
 
 	for i, d1 := range src.data {
-		srcHolders[i] = holder{
+		srcHolders[i] = exceptElementHolder{
 			elementIndex: i,
 			key:          requiredKeySelector(d1),
 		}
@@ -44,7 +44,7 @@ func (src *enumerable[T]) ExceptBy(second IEnumerable[any], requiredKeySelector 
 		return src.copyExceptData().withEmptyData()
 	}
 
-	resultHolders := make([]holder, 0)
+	resultHolders := make([]exceptElementHolder, 0)
 	for _, hSource := range srcHolders {
 		var foundInAnother bool
 		for _, d2 := range secondData {

@@ -2,6 +2,11 @@ package goe
 
 import "github.com/EscanBE/go-ienumerable/goe/comparers"
 
+type intersectElementHolder struct {
+	key   any
+	index int
+}
+
 func (src *enumerable[T]) IntersectBy(second IEnumerable[T], keySelector KeySelector[T], optionalEqualsFunc OptionalEqualsFunc[any]) IEnumerable[T] {
 	src.assertSrcNonNil()
 	assertSecondIEnumerableNonNil(second)
@@ -17,17 +22,12 @@ func (src *enumerable[T]) IntersectBy(second IEnumerable[T], keySelector KeySele
 	if len(src.data) < 1 || second.Count(nil) < 1 {
 		result = result.withEmptyData()
 	} else {
-		type holder struct {
-			key   any
-			index int
-		}
-
 		intersectIndex := make([]int, 0)
-		sourceKeys := make([]holder, len(src.data))
+		sourceKeys := make([]intersectElementHolder, len(src.data))
 		secondKeys := make([]any, second.Count(nil))
 
 		for i, t := range src.data {
-			sourceKeys[i] = holder{
+			sourceKeys[i] = intersectElementHolder{
 				key:   keySelector(t),
 				index: i,
 			}
