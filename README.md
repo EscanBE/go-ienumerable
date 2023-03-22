@@ -9,7 +9,7 @@
 
 Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) IEnumerable[T] [here in the enumerable interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerable_interface.go) definition
 
-In addition: Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerator-1) IEnumerator[T] [here in the enumerator interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerator_interface.go) definition
+If you are new to IEnumerable, you can [explore & read examples by Microsoft]([ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1)).
 
 ```go
 got := goe.NewIEnumerable[string]("Hello", "World").

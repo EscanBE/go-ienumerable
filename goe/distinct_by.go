@@ -10,6 +10,11 @@ func (src *enumerable[T]) DistinctBy(keySelector KeySelector[T], optionalEqualsF
 	return src.copyExceptData().withData(unique)
 }
 
+type distinctElementHolder struct {
+	elementIndex int
+	key          any
+}
+
 func distinctByKeySelector[T any](data []T, requiredKeySelector KeySelector[T], optionalEqualityComparer OptionalEqualsFunc[any]) []T {
 	if requiredKeySelector == nil {
 		panic(getErrorKeySelectorNotNil())
@@ -20,15 +25,10 @@ func distinctByKeySelector[T any](data []T, requiredKeySelector KeySelector[T], 
 		equalityComparer = EqualsFunc[any](optionalEqualityComparer)
 	}
 
-	type holder struct {
-		elementIndex int
-		key          any
-	}
-
-	holders := make([]holder, len(data))
+	holders := make([]distinctElementHolder, len(data))
 
 	for i, d := range data {
-		holders[i] = holder{
+		holders[i] = distinctElementHolder{
 			elementIndex: i,
 			key:          requiredKeySelector(d),
 		}
@@ -51,7 +51,7 @@ func distinctByKeySelector[T any](data []T, requiredKeySelector KeySelector[T], 
 		return data
 	}
 
-	uniqueSet := []holder{holders[0]}
+	uniqueSet := []distinctElementHolder{holders[0]}
 
 	for i1 := 1; i1 < len(data); i1++ {
 		ele := holders[i1]
