@@ -1,11 +1,13 @@
 # Golang's IEnumerable[T]
 ### with inspiration from C#'s famous IEnumerable&lt;T&gt;
 
-# go-ienumerable [![GoDoc](https://godoc.org/github.com/EscanBE/go-ienumerable?status.svg)](https://godoc.org/github.com/EscanBE/go-ienumerable) [![Go Report Card](https://goreportcard.com/badge/github.com/EscanBE/go-ienumerable)](https://goreportcard.com/report/github.com/EscanBE/go-ienumerable)
+[![LICENSE](https://img.shields.io/github/license/EscanBE/go-ienumerable.svg)](https://github.com/EscanBE/go-ienumerable/blob/master/LICENSE)
+![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/EscanBE/go-ienumerable)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/EscanBE/go-ienumerable)
+[![Go Report Card](https://goreportcard.com/badge/github.com/EscanBE/go-ienumerable)](https://goreportcard.com/report/github.com/EscanBE/go-ienumerable)
+[![GoDoc](https://godoc.org/github.com/EscanBE/go-ienumerable?status.svg)](https://godoc.org/github.com/EscanBE/go-ienumerable)
 
 > Code coverage: 100%
-
-> Require: Go 1.18+
 
 Check the methods [ported from C#](https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.ienumerable-1) IEnumerable[T] [here in the enumerable interface](https://github.com/EscanBE/go-ienumerable/blob/main/goe/ienumerable_interface.go) definition
 
