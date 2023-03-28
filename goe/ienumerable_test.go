@@ -3,6 +3,7 @@ package goe
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"reflect"
 	"testing"
 )
 
@@ -85,4 +86,93 @@ func testInitWithCorrectDataTypeAndComparer[T any](t *testing.T, lessValue, grea
 		assert.Equal(t, 0, eSrc.defaultComparer.CompareAny(any(greaterValue), any(greaterValue)))
 		assert.Equal(t, 1, eSrc.defaultComparer.CompareAny(any(greaterValue), any(lessValue)))
 	})
+}
+
+func TestNewIEnumerableFromMap(t *testing.T) {
+	tests := []struct {
+		name   string
+		source map[string]int
+		want   IEnumerable[KeyValuePair[string, int]]
+	}{
+		{
+			name:   "nil yields empty",
+			source: nil,
+			want:   NewIEnumerable[KeyValuePair[string, int]](),
+		},
+		{
+			name:   "empty yields empty",
+			source: map[string]int{},
+			want:   NewIEnumerable[KeyValuePair[string, int]](),
+		},
+		{
+			name: "one yields one",
+			source: map[string]int{
+				"1": 1,
+			},
+			want: NewIEnumerable[KeyValuePair[string, int]](KeyValuePair[string, int]{
+				Key:   "1",
+				Value: 1,
+			}),
+		},
+		{
+			name: "two yields two",
+			source: map[string]int{
+				"1": 1,
+				"2": 2,
+			},
+			want: NewIEnumerable[KeyValuePair[string, int]](
+				KeyValuePair[string, int]{
+					Key:   "1",
+					Value: 1,
+				},
+				KeyValuePair[string, int]{
+					Key:   "2",
+					Value: 2,
+				},
+			),
+		},
+		{
+			name: "five yields five",
+			source: map[string]int{
+				"1": 1,
+				"2": 2,
+				"3": 3,
+				"4": 4,
+				"5": 5,
+			},
+			want: NewIEnumerable[KeyValuePair[string, int]](
+				KeyValuePair[string, int]{
+					Key:   "1",
+					Value: 1,
+				},
+				KeyValuePair[string, int]{
+					Key:   "2",
+					Value: 2,
+				},
+				KeyValuePair[string, int]{
+					Key:   "3",
+					Value: 3,
+				},
+				KeyValuePair[string, int]{
+					Key:   "4",
+					Value: 4,
+				},
+				KeyValuePair[string, int]{
+					Key:   "5",
+					Value: 5,
+				},
+			),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewIEnumerableFromMap(tt.source).OrderBy(func(p KeyValuePair[string, int]) any {
+				return p.Key
+			}, nil).GetOrderedEnumerable().ToArray()
+			want := tt.want.OrderBy(func(p KeyValuePair[string, int]) any {
+				return p.Key
+			}, nil).GetOrderedEnumerable().ToArray()
+			assert.True(t, reflect.DeepEqual(got, want))
+		})
+	}
 }

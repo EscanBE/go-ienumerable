@@ -31,6 +31,20 @@ func NewIEnumerable[T any](data ...T) IEnumerable[T] {
 	}).injectDefaultComparer()
 }
 
+// NewIEnumerableFromMap returns an IEnumerable of KeyValuePair elements
+func NewIEnumerableFromMap[K comparable, V any](source map[K]V) IEnumerable[KeyValuePair[K, V]] {
+	data := make([]KeyValuePair[K, V], len(source))
+	cnt := 0
+	for k, v := range source {
+		data[cnt] = KeyValuePair[K, V]{
+			Key:   k,
+			Value: v,
+		}
+		cnt++
+	}
+	return NewIEnumerable(data...)
+}
+
 // Empty returns an empty IEnumerable with specific type
 func Empty[T any]() IEnumerable[T] {
 	return NewIEnumerable[T]()

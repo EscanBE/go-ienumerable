@@ -47,18 +47,27 @@ type PredicateWithIndex[T any] func(value T, index int) bool
 // KeySelector is function that specify key that to be used for comparing elements within a collection.
 type KeySelector[T any] func(value T) any
 
+// ValueTuple2 is tuple of 2 value
 type ValueTuple2[T1, T2 any] struct {
 	First  T1
 	Second T2
 }
 
+// ValueTuple3 is tuple of 3 value
 type ValueTuple3[T1, T2, T3 any] struct {
 	First  T1
 	Second T2
 	Third  T3
 }
 
+// Group represents for elements grouped by key
 type Group[TKey, TElement any] struct {
 	Key      TKey
 	Elements TElement
+}
+
+// KeyValuePair represents for each key&value pair element of map
+type KeyValuePair[TKey comparable, TValue any] struct {
+	Key   TKey
+	Value TValue
 }
