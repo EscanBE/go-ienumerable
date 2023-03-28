@@ -257,10 +257,10 @@ func TestSelectManyTransform(t *testing.T) {
 
 		gotArray := SelectManyTransform[int, *MyInt, *MyInt](ieSrc, func(i int) []*MyInt {
 			return []*MyInt{
-				&MyInt{
+				{
 					Value: i,
 				},
-				&MyInt{
+				{
 					Value: i * 2,
 				},
 			}

@@ -15,4 +15,3 @@ func (src *enumerable[T]) Repeat(element T, count int) IEnumerable[T] {
 
 	return src.copyExceptData().withData(data)
 }
-
