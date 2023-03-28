@@ -62,3 +62,8 @@ type Group[TKey, TElement any] struct {
 	Key      TKey
 	Elements TElement
 }
+
+type KeyValuePair[TKey comparable, TValue any] struct {
+	Key   TKey
+	Value TValue
+}
